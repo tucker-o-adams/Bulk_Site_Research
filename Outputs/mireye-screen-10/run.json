@@ -1,0 +1,60 @@
+{
+ "run_at": "2026-09-21T19:27:44+00:00",
+ "elapsed_s": 8.2,
+ "input": {
+  "path": "E:\\Claude\\Projects\\TBDI Modeling\\Mireye\\scripts\\bulk\\fixtures\\mireye_screen_10.csv",
+  "sha256": "4c0c6e271ac8a501fc27678eb508737e7cd128ae68bcc47b8ba44008d7236d50"
+ },
+ "sites_accepted": 10,
+ "sites_rejected": [],
+ "producers": {
+  "flood": {
+   "source": "FEMA National Flood Hazard Layer (NFHL)",
+   "url": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer",
+   "vintage": null,
+   "fields": [
+    "fema_determination",
+    "fema_flood_zone",
+    "fema_zone_subtype",
+    "fema_sfha",
+    "fema_static_bfe_ft",
+    "fema_dfirm_id",
+    "fema_firm_panel",
+    "fema_panel_effective",
+    "fema_nearest_sfha_m",
+    "fema_nearest_sfha_zone"
+   ],
+   "status_counts": {
+    "ok": 90,
+    "absent": 10
+   }
+  },
+  "wetlands": {
+   "source": "USFWS National Wetlands Inventory (NWI)",
+   "url": "https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services/Wetlands/MapServer/0",
+   "vintage": null,
+   "fields": [
+    "nwi_mapping_status",
+    "nwi_image_year",
+    "nwi_project",
+    "nwi_at_point",
+    "nwi_type_at_point",
+    "nwi_code_at_point",
+    "nwi_nearest_m",
+    "nwi_nearest_type",
+    "nwi_nearest_code",
+    "nwi_nearest_acres",
+    "nwi_count_within_500m",
+    "nwi_polygon_acres_within_500m"
+   ],
+   "status_counts": {
+    "ok": 84,
+    "absent": 36
+   }
+  }
+ },
+ "cache": {
+  "hits": 77,
+  "misses": 3
+ }
+}

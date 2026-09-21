@@ -13,6 +13,7 @@ Writes into --out:
 """
 import argparse, csv, hashlib, importlib, json, os, sys, time
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -20,7 +21,7 @@ from sites import load_sites, REQUIRED, OPTIONAL          # noqa: E402
 from cache import Cache                                     # noqa: E402
 from provenance import PROVENANCE_COLUMNS, now_iso          # noqa: E402
 
-ALL_PRODUCERS = ['transmission']
+ALL_PRODUCERS = ['transmission', 'flood', 'wetlands']
 
 
 def main():
@@ -29,6 +30,7 @@ def main():
     ap.add_argument('--out', required=True)
     ap.add_argument('--producers', default=','.join(ALL_PRODUCERS))
     ap.add_argument('--only', default='')
+    ap.add_argument('--workers', type=int, default=6, help='sites processed concurrently (I/O bound)')
     a = ap.parse_args()
 
     t0 = time.time()
@@ -45,11 +47,13 @@ def main():
 
     prov_rows, site_rows = [], []
     tally = {p.NAME: Counter() for p in producers}
-    for i, s in enumerate(sites, 1):
+
+    def one(s):
         row = {'site_id': s.site_id, 'lat': s.lat, 'lng': s.lng}
         for c in OPTIONAL:
             row[c] = getattr(s, c)
         row.update(s.extra)
+        prov = []
         for p in producers:
             vals = p.run(s, cache)
             got = [v.field for v in vals]
@@ -57,11 +61,17 @@ def main():
                 raise SystemExit(f'{p.NAME} returned fields {got} != FIELDS {list(p.FIELDS)} for {s.site_id}')
             for v in vals:
                 row[v.field] = v.value
-                prov_rows.append(v.row(s.site_id))
-                tally[p.NAME][v.status] += 1
-        site_rows.append(row)
-        if i % 25 == 0 or i == len(sites):
-            print(f'  {i}/{len(sites)}  cache hits {cache.hits} / misses {cache.misses}', flush=True)
+                prov.append((p.NAME, v))
+        return row, prov
+
+    with ThreadPoolExecutor(max_workers=max(1, a.workers)) as ex:
+        for i, (row, prov) in enumerate(ex.map(one, sites), 1):    # map preserves input order
+            site_rows.append(row)
+            for pname, v in prov:
+                prov_rows.append(v.row(row['site_id']))
+                tally[pname][v.status] += 1
+            if i % 25 == 0 or i == len(sites):
+                print(f'  {i}/{len(sites)}  cache hits {cache.hits} / misses {cache.misses}', flush=True)
 
     # --- sites.csv: fixed columns first, then pass-through, then producer fields in producer order
     cols = ['site_id', 'lat', 'lng'] + list(OPTIONAL)
