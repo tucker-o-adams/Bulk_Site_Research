@@ -18,7 +18,8 @@ Last reviewed 2026-09-21.
 | 6 | `neighbors` — hospitals | **No live free point layer** (HIFLD hub 404, `Hospitals_WFL1` needs a token, NASA NCCS mirror unresolvable). Plan: CMS "Hospital General Information" (id `xubh-q36u`, ~5k, addresses only) + **Census batch geocoder** (free, 10k addresses/request). | OSM `amenity=hospital`; HHS/ASPR emPOWER or state hospital lists + geocoder |
 | 7 | `baxtel` — operational / under-construction / planned data centers within 5 & 10 mi | **Manual export only.** Baxtel terms prohibit scraping and commercial use of the Map Tool without written consent; data may be shared when Baxtel is cited. Mike exports the region's CSV (statuses: Operational, Construction, Planned, Prospective, Expansion, Land Bank, In Doubt, Withdrawn, Decommissioned; MW), file goes in `Reference/`, producer runs locally with `status: manual` and the citation. Open: confirm Mike's plan covers export; ask Baxtel in writing about data-room use. | none — this is proprietary data |
 | 8 | `parcel` — boundary, area, owner, APN | County/state ArcGIS parcel services via a registry (tbdi-pasa `county-services.json` pattern). Ozinga expected to supply APN + acreage. | statewide services where they exist (VA, others); OSM has no parcels; mark `manual` with the county assessor URL |
-| 9 | `flags` → `excel` → `kmz` | rules as JSON; openpyxl workbook; Windstream KMZ chain generalised | — |
+| 9 | `excel` → `kmz` (interim deliverables, **next**) | openpyxl workbook; Windstream KMZ chain generalised | — |
+| 9b | `flags` (**deferred** until Michael weighs in on thresholds, 2026-09-21) | rules as JSON | — |
 | 10 | Demand / generation / congestion (Mike's method) | EIA-860 generators + EIA Energy Atlas substations; ISO queue data (PJM, MISO, SPP, ERCOT publish CSVs) | needs Mike's method first |
 
 ## Fallbacks for producers already built
