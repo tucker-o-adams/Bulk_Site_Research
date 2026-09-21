@@ -43,8 +43,7 @@ Rejected rows are listed with a reason in the console and in `run.json`, never d
 | `metro` | `metro_urban_area_at_point, metro_urban_area_at_point_pop, metro_250k_nearest_name/m/pop, metro_1m_nearest_name/m/pop` | Census TIGERweb 2020 Urban Areas with POP100. Straight-line to the urban-area boundary (0 inside), not driving time; urban areas are built-up footprints, not MSAs. 300 km search. | geographic sanity checks (Sugar Land inside Houston 0 km, Baldwin GA 41 km to Atlanta, Riverside TX rural) |
 | `datacenter` | `dc_nearest_m/name/city/state/networks/peeringdb_url, dc_hub_nearest_m/name/city/networks, dc_count_within_25km/50km, dc_max_networks_within_50km` | PeeringDB facility list (`Reference/peeringdb.kmz`, 1,353 US facilities), local, no network. Registered colo/IX facilities only — hyperscale and enterprise data centers are not listed. Hub = >= 20 networks (114 facilities). | geographic sanity checks |
 
-Planned, same frame: `parcel` (county/state GIS, per-county registry), neighbors (Census housing density,
-schools). Then `flags` (go/no-go rules as data), `excel`, `kmz`.
+Planned producers, their verified sources, and the fallback for every source (built or not): **BACKLOG.md**.
 
 **Operating note.** FEMA's NFHL server answers in 30-70 s per site and drops connections
 intermittently; NWI occasionally too. `run.py` processes sites in parallel (`--workers`, default 6)
