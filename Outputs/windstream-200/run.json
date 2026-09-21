@@ -1,6 +1,6 @@
 {
- "run_at": "2026-09-21T20:06:37+00:00",
- "elapsed_s": 43.0,
+ "run_at": "2026-09-21T20:33:22+00:00",
+ "elapsed_s": 48.5,
  "input": {
   "path": "E:\\Claude\\Projects\\TBDI Modeling\\Mireye\\scripts\\bulk\\fixtures\\windstream_200.csv",
   "sha256": "221d226bfd053d1567f5bb78718bbb7ccc46428aa352fd520ed99924948e5f5d"
@@ -33,6 +33,36 @@
    "status_counts": {
     "ok": 3113,
     "absent": 87
+   }
+  },
+  "substations": {
+   "source": "HIFLD Electric Substations (ArcGIS mirror of retired HIFLD Open)",
+   "url": "https://services5.arcgis.com/HDRa0B57OVrv2E1q/ArcGIS/rest/services/Electric_Substations/FeatureServer/0",
+   "vintage": "2021-02-25",
+   "fields": [
+    "sub_nearest_m",
+    "sub_nearest_name",
+    "sub_nearest_type",
+    "sub_nearest_max_kv",
+    "sub_nearest_min_kv",
+    "sub_nearest_kv_inferred",
+    "sub_nearest_lines",
+    "sub_nearest_status",
+    "sub_nearest_source",
+    "sub_nearest_id",
+    "sub_100kv_nearest_m",
+    "sub_100kv_nearest_name",
+    "sub_100kv_max_kv",
+    "sub_100kv_lines",
+    "sub_230kv_nearest_m",
+    "sub_230kv_nearest_name",
+    "sub_230kv_max_kv",
+    "sub_count_within_10km",
+    "sub_max_kv_within_10km"
+   ],
+   "status_counts": {
+    "ok": 3200,
+    "absent": 600
    }
   },
   "flood": {
@@ -81,7 +111,7 @@
   }
  },
  "cache": {
-  "hits": 1221,
-  "misses": 1
+  "hits": 1232,
+  "misses": 190
  }
 }

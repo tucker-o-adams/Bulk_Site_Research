@@ -1,11 +1,11 @@
-site_id,lat,lng,name,group,mireye_fema_zone_2026_08_11
-Ashland,38.4758,-82.64385,"Ashland, Boyd Co KY",mireye-screen,X
-Baldwin_GA,34.49720847,-83.54997767,Baldwin GA - 2000 Communications Blvd,mireye-screen,X
-Northfield_OH,41.31474448,-81.53703932,Northfield OH - 54 Leonard Ave,mireye-screen,X
-Hudson_OH,41.21706309,-81.44250817,Hudson OH - 1300 Terex Rd,mireye-screen,X
-Newark_OH,40.05944853,-82.40487305,Newark OH - 66 N 4th St,mireye-screen,X
-Riverside_TX,30.85154,-95.40012,Riverside TX - FM 980 (Walker Co),mireye-screen,A
-Harrison_AR,36.214283,-93.079052,Harrison AR - 202 Graham St,mireye-screen,X
-Moultrie_GA,31.17748292,-83.78371355,Moultrie GA - 216 4th St SE,mireye-screen,X
-Newton_IA,41.6983315,-93.05448565,Newton IA - 115 S 2nd Ave W,mireye-screen,X
-Sugar_Land_TX,29.63625224,-95.59818132,Sugar Land TX - Fort Bend Co,mireye-screen,X
+site_id,lat,lng,name,group,mireye_fema_zone_2026_08_11,mireye_sub_dist_m,mireye_sub_max_kv,mireye_max_kv_10km,mireye_subs_10km
+Ashland,38.4758,-82.64385,"Ashland, Boyd Co KY",mireye-screen,X,1446.8,69,69,15
+Baldwin_GA,34.49720847,-83.54997767,Baldwin GA - 2000 Communications Blvd,mireye-screen,X,1300.6,115,115,10
+Northfield_OH,41.31474448,-81.53703932,Northfield OH - 54 Leonard Ave,mireye-screen,X,1090.9,absent,345,23
+Hudson_OH,41.21706309,-81.44250817,Hudson OH - 1300 Terex Rd,mireye-screen,X,1054.1,138,138,21
+Newark_OH,40.05944853,-82.40487305,Newark OH - 66 N 4th St,mireye-screen,X,928.1,absent,69,21
+Riverside_TX,30.85154,-95.40012,Riverside TX - FM 980 (Walker Co),mireye-screen,A,1467.8,138,138,2
+Harrison_AR,36.214283,-93.079052,Harrison AR - 202 Graham St,mireye-screen,X,960.6,161,161,3
+Moultrie_GA,31.17748292,-83.78371355,Moultrie GA - 216 4th St SE,mireye-screen,X,565.6,115,115,15
+Newton_IA,41.6983315,-93.05448565,Newton IA - 115 S 2nd Ave W,mireye-screen,X,784.2,161,161,4
+Sugar_Land_TX,29.63625224,-95.59818132,Sugar Land TX - Fort Bend Co,mireye-screen,X,913.6,138,not pulled,18
