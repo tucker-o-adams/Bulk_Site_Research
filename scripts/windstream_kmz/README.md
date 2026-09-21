@@ -6,10 +6,40 @@ CSVs. They were written in Claude Code session "Mireye tools access"
 here was recovered verbatim from that session's transcript on Sep 21 2026,
 with every subsequent edit replayed, so each file is its final version.
 
-**Status: as-recovered.** Paths are hardcoded to the old
-`C:\Users\tucke\OneDrive\...\Mireye` location and to the scratchpad. They
-need path updates before they run again. `fetch_hifld_segments.py` is new
-(Sep 21) and already uses project-relative paths.
+**Status: the KMZ chain is runnable from the repo.** On Sep 21 2026 the seven
+chain scripts (`parse_kmz` → `build_kmz` → `merge_kmz` → `add_folders` →
+`add_verify` → `add_interesting_verify` → `add_parcels`) were converted to
+project-relative paths (`paths.py`) and to read geometry from files frozen
+from the source services, instead of querying live. `run_pipeline.py` runs
+them in order and produces `Outputs/KMZ outputs/TBDI_WS_Combined_3.kmz` in
+~20 s. The verbatim as-recovered versions are in git at commit `1a7078e`.
+
+The side-scripts (parcel, power, screen xlsx) are still as-recovered, with
+old `C:\...\OneDrive` paths.
+
+## Rebuild
+
+```
+.venv_fema/Scripts/python.exe scripts/windstream_kmz/fetch_hifld_segments.py   # network: HIFLD
+.venv_fema/Scripts/python.exe scripts/windstream_kmz/fetch_parcel_polygons.py  # network: county GIS
+.venv_fema/Scripts/python.exe scripts/windstream_kmz/run_pipeline.py           # offline
+.venv_fema/Scripts/python.exe scripts/windstream_kmz/compare_kmz.py A.kmz B.kmz  # structural diff
+```
+
+The two fetchers only need re-running to refresh from source; their outputs
+are committed.
+
+## Reproducibility check, Sep 21 2026 (`_3` rebuilt vs `_2` from Aug 24)
+
+`compare_kmz.py`: 2,362 placemarks present in both, **2,362 identical** in
+geometry and style, 0 differ. Folders A–F match exactly. The only delta is
+folder G (parcel polygons): 30 in `_3` vs 33 in `_2` — 29 common and
+identical; `CHGVNCXA` fetched this time (had failed on Aug 24); `BLVIGABW`
+(Union Co GA) and `CLVLGAXA`/`CRNLGA01`/`CRNLGAXA` (Habersham Co GA) lost
+because both counties' ArcGIS services were decommissioned between Aug 24
+and Sep 21. Those 4 were deliberately **not** back-filled from `_2` — the
+pipeline never reads a prior KMZ. Lesson for the machine: county parcel
+endpoints are unstable; freeze geometry at fetch time.
 
 ## Build chain (in order)
 

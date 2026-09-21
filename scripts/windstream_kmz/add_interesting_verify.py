@@ -7,11 +7,10 @@ import xml.etree.ElementTree as ET
 K = 'http://www.opengis.net/kml/2.2'
 ET.register_namespace('', K)
 NS = '{%s}' % K
-BASE = r'C:\Users\tucke\OneDrive\Documents\Claude\Projects\TBDI Modeling\Mireye'
-KMZ = os.path.join(BASE, 'TBDI_WS_Combined_2.kmz')
-TXCSV = os.path.join(BASE, 'WS_Top200_Transmission_Distance.csv')
-SCRATCH = os.path.dirname(os.path.abspath(__file__))
-WSSITES = os.path.join(SCRATCH, 'ws_sites.csv')   # extracted from the original KMZ
+from paths import COMBINED_KMZ, TX_CSV, WS_SITES_CSV
+KMZ = COMBINED_KMZ
+TXCSV = TX_CSV
+WSSITES = WS_SITES_CSV   # extracted from the broker KMZ by parse_kmz.py
 
 def esc(v):
     return html.escape('' if v is None else str(v))

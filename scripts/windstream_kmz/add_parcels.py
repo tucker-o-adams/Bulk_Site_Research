@@ -2,26 +2,15 @@
 """Fetch parcel polygons for the resolved sites and add them to the KMZ:
    - into each per-site verification folder in F (so you see parcel + site + line together)
    - plus a standalone 'Parcel boundaries' folder."""
-import csv, html, json, os, time, urllib.parse, urllib.request, zipfile
+import csv, html, json, os, zipfile
 import xml.etree.ElementTree as ET
 
 K = 'http://www.opengis.net/kml/2.2'
 ET.register_namespace('', K)
 NS = '{%s}' % K
-UA = {'User-Agent': 'Mozilla/5.0'}
-BASE = r'C:\Users\tucke\OneDrive\Documents\Claude\Projects\TBDI Modeling\Mireye'
-KMZ = os.path.join(BASE, 'TBDI_WS_Combined_2.kmz')
-PARCEL = os.path.join(BASE, 'WS_Sites_Parcel_Sizes_FINAL.csv')
-
-def jget(u, t=50, tries=3):
-    for i in range(tries):
-        try:
-            with urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=t) as r:
-                return json.loads(r.read().decode('utf-8', 'replace'))
-        except Exception:
-            if i == tries - 1:
-                return None
-            time.sleep(1.5)
+from paths import COMBINED_KMZ, PARCEL_CSV, PARCEL_POLYS
+KMZ = COMBINED_KMZ
+PARCEL = PARCEL_CSV
 
 def esc(v):
     return html.escape('' if v is None else str(v))
@@ -30,29 +19,21 @@ rows = [r for r in csv.DictReader(open(PARCEL, encoding='utf-8-sig'))
         if r['status'] == 'ok' and r['source'].startswith('http')]
 print(f'sites with a queryable parcel source: {len(rows)}')
 
+# Polygons frozen from each county's GIS service by fetch_parcel_polygons.py
+byclli = {r['clli']: r for r in rows}
 polys = {}
-for i, r in enumerate(rows, 1):
-    geom = json.dumps({'x': float(r['lng']), 'y': float(r['lat']),
-                       'spatialReference': {'wkid': 4326}})
-    u = (r['source'] + '/query?f=geojson&outFields=*&returnGeometry=true'
-         '&geometryType=esriGeometryPoint&inSR=4326&outSR=4326'
-         '&spatialRel=esriSpatialRelIntersects&geometry=' + urllib.parse.quote(geom))
-    res = jget(u)
-    feats = ((res or {}).get('features') or [])
-    if not feats:
-        print(f"   {r['clli']}: no geometry returned")
+for f in json.load(open(PARCEL_POLYS, encoding='utf-8'))['features']:
+    clli = (f.get('properties') or {}).get('_clli')
+    g = f.get('geometry') or {}
+    if clli not in byclli:
         continue
-    g = feats[0].get('geometry') or {}
     if g.get('type') == 'Polygon':
         rings = [g['coordinates']]
     elif g.get('type') == 'MultiPolygon':
         rings = g['coordinates']
     else:
         continue
-    polys[r['clli']] = (rings, r)
-    if i % 10 == 0:
-        print(f'  {i}/{len(rows)}  polygons: {len(polys)}', flush=True)
-
+    polys[clli] = (rings, byclli[clli])
 print(f'polygons retrieved: {len(polys)}')
 
 root = ET.fromstring(zipfile.ZipFile(KMZ).read('doc.kml').decode('utf-8', 'replace'))

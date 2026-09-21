@@ -21,3 +21,7 @@ out/**/*.gpkg
 
 # --- Office lock files ---
 ~$*
+
+# --- pipeline intermediates (rebuilt by run_pipeline.py) ---
+Outputs/KMZ outputs/WS_Sites_and_Transmission_3.kmz
+scripts/**/__pycache__/

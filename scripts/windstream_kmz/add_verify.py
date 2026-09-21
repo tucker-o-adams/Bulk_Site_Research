@@ -7,9 +7,9 @@ import xml.etree.ElementTree as ET
 K = 'http://www.opengis.net/kml/2.2'
 ET.register_namespace('', K)
 NS = '{%s}' % K
-BASE = r'C:\Users\tucke\OneDrive\Documents\Claude\Projects\TBDI Modeling\Mireye'
-COMBINED = os.path.join(BASE, 'TBDI_WS_Combined.kmz')
-TXCSV = os.path.join(BASE, 'WS_Top200_Transmission_Distance.csv')
+from paths import COMBINED_KMZ, TX_CSV
+COMBINED = COMBINED_KMZ
+TXCSV = TX_CSV
 
 def esc(v):
     return html.escape('' if v is None else str(v))

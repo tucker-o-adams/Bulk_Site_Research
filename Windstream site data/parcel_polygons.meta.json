@@ -1,0 +1,37 @@
+{
+ "fetched_at": "2026-09-21T16:58:43+00:00",
+ "queryable_sites": 34,
+ "polygons": 30,
+ "failed": [
+  [
+   "CLVLGAXA",
+   "{'__error__': 'Expecting value: line 3 column 1 (char 4)'}"
+  ],
+  [
+   "CRNLGA01",
+   "{'__error__': 'Expecting value: line 3 column 1 (char 4)'}"
+  ],
+  [
+   "CRNLGAXA",
+   "{'__error__': 'Expecting value: line 3 column 1 (char 4)'}"
+  ],
+  [
+   "BLVIGABW",
+   "{'__error__': 'HTTP Error 400: Bad Request'}"
+  ]
+ ],
+ "sources": [
+  "https://arcgis5.roktech.net/arcgis/rest/services/habersham/habersham_rokmaps/MapServer/8",
+  "https://gis.rowancountync.gov/arcgis/rest/services/Public/RowanTaxParcels/MapServer/0",
+  "https://gis.whitfieldcountyga.com/server/rest/services/Parcels_and_Development/MapServer/4",
+  "https://services.arcgis.com/ISpzx3B5ZsVA6e1Z/ArcGIS/rest/services/Union_Parcels/FeatureServer/0",
+  "https://services2.arcgis.com/MlJ0G8iWUyC7jAmu/arcgis/rest/services/OhioStatewidePacels_full_view/FeatureServer/0",
+  "https://services5.arcgis.com/OVFGXfRTCVcPwl55/arcgis/rest/services/Barrow_Parcels_w_Owner/FeatureServer/0",
+  "https://services6.arcgis.com/BAJNi3EgCdtQ1BCG/arcgis/rest/services/Lumpkin_2025Parcels/FeatureServer/0",
+  "https://services6.arcgis.com/dpaY3zboICQILFY5/arcgis/rest/services/Property_Value_TY2024/FeatureServer/0",
+  "https://services6.arcgis.com/w1igg0Q14weqYXUh/arcgis/rest/services/parcel_records_base_2/FeatureServer/3",
+  "https://services7.arcgis.com/WOKJvFrknOcT2chj/arcgis/rest/services/Accela_taxparcels/FeatureServer/0",
+  "https://services8.arcgis.com/bcbi4lYRFOsss0F5/ArcGIS/rest/services/jackson_baselayers/FeatureServer/9",
+  "https://services9.arcgis.com/eXIsbyIncFwEzqul/arcgis/rest/services/parcels_zoning/FeatureServer/2"
+ ]
+}

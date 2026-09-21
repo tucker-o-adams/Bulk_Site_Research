@@ -1,5 +1,5 @@
 {
- "fetched_at": "2026-09-21T16:50:57+00:00",
+ "fetched_at": "2026-09-21T16:57:15+00:00",
  "source": "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/US_Electric_Power_Transmission_Lines/FeatureServer/0",
  "source_layer_name": "Electric_Power_Transmission_Lines_A",
  "source_data_last_edit": 1756170730240,
@@ -16,6 +16,10 @@
   "sub100": 307,
   "500+": 13
  },
+ "nearest_segments_file": "hifld_tx_nearest_segments.geojson",
+ "nearest_segments_requested": 264,
+ "nearest_segments_fetched": 264,
+ "nearest_segments_missing_ids": [],
  "segment_ids_per_site": {
   "ABRDNCXA": [
    "142698",

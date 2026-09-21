@@ -4,8 +4,9 @@ import zipfile, xml.etree.ElementTree as ET, csv, sys
 from collections import Counter
 
 K = '{http://www.opengis.net/kml/2.2}'
-SRC = r'C:\Users\tucke\Downloads\WS Targeted Sites Overview 26.8.20.kmz'
-OUT = r'C:\Users\tucke\AppData\Local\Temp\claude\C--Users-tucke-OneDrive-Documents-Claude-Projects-TBDI-Modeling-Mireye\069ba4fb-4a95-4044-854a-837cbdc98b0b\scratchpad\ws_sites.csv'
+from paths import BROKER_KMZ, WS_SITES_CSV
+SRC = BROKER_KMZ
+OUT = WS_SITES_CSV
 
 kml = zipfile.ZipFile(SRC).read('doc.kml').decode('utf-8', 'replace')
 root = ET.fromstring(kml)

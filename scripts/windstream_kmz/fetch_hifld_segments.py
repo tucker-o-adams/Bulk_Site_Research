@@ -16,6 +16,10 @@ SITES_CSV = os.path.join(ROOT, 'Outputs', 'Excel outputs', 'WS_Top200_Transmissi
 OUT_DIR = os.path.join(ROOT, 'Windstream site data')
 OUT_GEOJSON = os.path.join(OUT_DIR, 'hifld_tx_segments_5km.geojson')
 OUT_META = os.path.join(OUT_DIR, 'hifld_tx_segments_5km.meta.json')
+# Second product: the specific segments the Transmission_Distance CSV names as each
+# site's nearest line (any voltage) and nearest >=100 kV line. tx_distance.py found
+# those with a 15 km query, so some lie outside the 5 km set above.
+OUT_NEAREST = os.path.join(OUT_DIR, 'hifld_tx_nearest_segments.geojson')
 
 LYR = ('https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/'
        'US_Electric_Power_Transmission_Lines/FeatureServer/0')
@@ -44,11 +48,47 @@ def query_near(lat, lng):
     return jget(u)
 
 
+def query_by_ids(ids):
+    """Fetch segments by HIFLD ID in chunks; returns {id: feature}."""
+    got = {}
+    ids = sorted(set(str(i) for i in ids if i))
+    for k in range(0, len(ids), 100):
+        chunk = ids[k:k + 100]
+        where = 'ID IN (' + ','.join(chunk) + ')'
+        u = (LYR + f'/query?f=geojson&outFields={FIELDS}&returnGeometry=true&outSR=4326'
+             '&where=' + urllib.parse.quote(where))
+        r = jget(u)
+        if not isinstance(r, dict) or '__error__' in r or 'error' in r:
+            print(f'  by-ID chunk {k // 100} failed: {str(r)[:120]}')
+            continue
+        for f in r.get('features') or []:
+            lid = (f.get('properties') or {}).get('ID')
+            if lid is not None:
+                got[str(lid)] = f
+    return got
+
+
 def main():
     sites = list(csv.DictReader(open(SITES_CSV, encoding='utf-8-sig')))
     print(f'sites: {len(sites)}  radius: {RADIUS} m  layer: {LYR}')
 
     layer_meta = jget(LYR + '?f=json')
+
+    # ---- part 2: named nearest segments, by ID ----
+    want = set()
+    for s in sites:
+        for col in ('line_id', 'line_id_100plus'):
+            if s.get(col):
+                want.add(str(int(float(s[col]))))
+    print(f'named nearest-line IDs in CSV: {len(want)}')
+    named = query_by_ids(want)
+    missing_ids = sorted(want - set(named))
+    with open(OUT_NEAREST, 'w', encoding='utf-8') as f:
+        json.dump({'type': 'FeatureCollection', 'features': list(named.values())}, f,
+                  separators=(',', ':'))
+    print(f'wrote {OUT_NEAREST}  ({len(named)} segments; missing IDs: {missing_ids})')
+
+    # ---- part 1: everything within RADIUS of any site ----
     features = {}          # HIFLD ID -> feature
     per_site = {}          # CLLI -> [ids]
     errors = []
@@ -102,6 +142,10 @@ def main():
         'sites_failed': errors,
         'unique_segments': len(features),
         'segments_by_voltage_band': kv,
+        'nearest_segments_file': os.path.basename(OUT_NEAREST),
+        'nearest_segments_requested': len(want),
+        'nearest_segments_fetched': len(named),
+        'nearest_segments_missing_ids': missing_ids,
         'segment_ids_per_site': per_site,
     }
     with open(OUT_META, 'w', encoding='utf-8') as f:

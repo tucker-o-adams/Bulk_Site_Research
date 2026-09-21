@@ -1,24 +1,11 @@
 # -*- coding: utf-8 -*-
 """Build a Google Earth KMZ: WS sites + nearby HIFLD transmission lines, styled by voltage."""
-import csv, json, math, os, time, urllib.parse, urllib.request, zipfile, html
+import csv, html, os, zipfile
+from paths import TX_CSV, HIFLD_5KM, TX_KMZ, KMZ_OUT, load_geojson_lines
 
-UA = {'User-Agent': 'Mozilla/5.0'}
-LYR = ('https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/'
-       'US_Electric_Power_Transmission_Lines/FeatureServer/0')
-SCRATCH = os.path.dirname(os.path.abspath(__file__))
-TXCSV = r'C:\Users\tucke\OneDrive\Documents\Claude\Projects\TBDI Modeling\Mireye\WS_Top200_Transmission_Distance.csv'
-OUT = r'C:\Users\tucke\OneDrive\Documents\Claude\Projects\TBDI Modeling\Mireye\WS_Sites_and_Transmission.kmz'
-RADIUS = 5000  # metres of line context around each site
-
-def jget(u, t=60, tries=3):
-    for i in range(tries):
-        try:
-            with urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=t) as r:
-                return json.loads(r.read().decode('utf-8', 'replace'))
-        except Exception:
-            if i == tries - 1:
-                return None
-            time.sleep(1.5)
+TXCSV = TX_CSV
+OUT = TX_KMZ
+RADIUS = 5000  # metres of line context around each site (radius used by fetch_hifld_segments.py)
 
 # KML colours are aabbggrr (alpha, blue, green, red)
 def style_for(kv):
@@ -36,31 +23,8 @@ STYLES = [('kvUnknown', '96b4b4b4', 2.0), ('kvSub100', 'ffb4b4b4', 2.4),
 sites = list(csv.DictReader(open(TXCSV, encoding='utf-8-sig')))
 print(f'sites: {len(sites)}')
 
-lines = {}   # ID -> (props, [ [ (lng,lat), ... ], ... ])
-for i, s in enumerate(sites, 1):
-    try:
-        la, ln = float(s['lat']), float(s['lng'])
-    except (TypeError, ValueError):
-        continue
-    geom = json.dumps({'x': ln, 'y': la, 'spatialReference': {'wkid': 4326}})
-    u = (LYR + '/query?f=geojson&outFields=VOLTAGE,VOLT_CLASS,OWNER,STATUS,TYPE,ID,SUB_1,SUB_2,INFERRED'
-         '&returnGeometry=true&geometryType=esriGeometryPoint&inSR=4326&outSR=4326'
-         f'&distance={RADIUS}&units=esriSRUnit_Meter&spatialRel=esriSpatialRelIntersects'
-         '&geometry=' + urllib.parse.quote(geom))
-    r = jget(u)
-    for f in ((r or {}).get('features') or []):
-        p = f.get('properties') or {}
-        lid = p.get('ID') or f'obj{id(f)}'
-        if lid in lines:
-            continue
-        g = f.get('geometry') or {}
-        parts = ([g['coordinates']] if g.get('type') == 'LineString'
-                 else g.get('coordinates') if g.get('type') == 'MultiLineString' else [])
-        if parts:
-            lines[lid] = (p, parts)
-    if i % 40 == 0:
-        print(f'  {i}/{len(sites)}  unique lines so far: {len(lines)}', flush=True)
-
+# Segments within RADIUS of any site, frozen from the HIFLD source by fetch_hifld_segments.py
+lines = load_geojson_lines(HIFLD_5KM)   # ID -> (props, [ [ (lng,lat), ... ], ... ])
 print(f'unique transmission segments: {len(lines)}')
 
 def esc(v):
@@ -139,6 +103,7 @@ for sid in ['kv500', 'kv345', 'kv230', 'kv100', 'kvSub100', 'kvUnknown']:
 buf.append('</Document></kml>')
 kml = '\n'.join(buf)
 
+os.makedirs(KMZ_OUT, exist_ok=True)
 with zipfile.ZipFile(OUT, 'w', zipfile.ZIP_DEFLATED) as z:
     z.writestr('doc.kml', kml)
 print(f'\nwrote {OUT}')

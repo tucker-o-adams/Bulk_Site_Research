@@ -5,29 +5,16 @@
       - a connector from each site to the nearest point on that segment
    E. Interesting Sites (45) promoted to top level
 """
-import csv, html, json, math, os, time, urllib.parse, urllib.request, zipfile
+import csv, html, json, math, os, zipfile
 import xml.etree.ElementTree as ET
 
 K = 'http://www.opengis.net/kml/2.2'
 ET.register_namespace('', K)
 NS = '{%s}' % K
-UA = {'User-Agent': 'Mozilla/5.0'}
-LYR = ('https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/'
-       'US_Electric_Power_Transmission_Lines/FeatureServer/0')
-BASE = r'C:\Users\tucke\OneDrive\Documents\Claude\Projects\TBDI Modeling\Mireye'
-COMBINED = os.path.join(BASE, 'TBDI_WS_Combined.kmz')
-TXCSV = os.path.join(BASE, 'WS_Top200_Transmission_Distance.csv')
-ORIG = r'C:\Users\tucke\Downloads\WS Targeted Sites Overview 26.8.20.kmz'
-
-def jget(u, t=60, tries=3):
-    for i in range(tries):
-        try:
-            with urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=t) as r:
-                return json.loads(r.read().decode('utf-8', 'replace'))
-        except Exception:
-            if i == tries - 1:
-                return None
-            time.sleep(1.5)
+from paths import COMBINED_KMZ, TX_CSV, BROKER_KMZ, HIFLD_5KM, HIFLD_NEAREST, load_geojson_lines
+COMBINED = COMBINED_KMZ
+TXCSV = TX_CSV
+ORIG = BROKER_KMZ
 
 def esc(v):
     return html.escape('' if v is None else str(v))
@@ -48,29 +35,27 @@ def foot(px, py, ax, ay, bx, by):
 sites = list(csv.DictReader(open(TXCSV, encoding='utf-8-sig')))
 print(f'sites: {len(sites)}')
 
+# Candidate segments frozen from the HIFLD source: everything within 5 km of any site
+# plus the specific segments tx_distance.py identified as nearest (some lie 5-14 km out).
+cand = load_geojson_lines(HIFLD_5KM, HIFLD_NEAREST)
+print(f'candidate segments: {len(cand)}')
+
 nearest = {}   # clli -> dict(props, parts, footpoint, dist)
 for i, s in enumerate(sites, 1):
     if not s['nearest_tx_line_m']:
         continue
     la, ln = float(s['lat']), float(s['lng'])
-    geom = json.dumps({'x': ln, 'y': la, 'spatialReference': {'wkid': 4326}})
-    u = (LYR + '/query?f=geojson&outFields=VOLTAGE,VOLT_CLASS,OWNER,STATUS,TYPE,ID,SUB_1,SUB_2,INFERRED'
-         '&returnGeometry=true&geometryType=esriGeometryPoint&inSR=4326&outSR=4326'
-         '&distance=15000&units=esriSRUnit_Meter&spatialRel=esriSpatialRelIntersects'
-         '&geometry=' + urllib.parse.quote(geom))
-    r = jget(u)
     best = None
-    for f in ((r or {}).get('features') or []):
-        g = f.get('geometry') or {}
-        parts = ([g['coordinates']] if g.get('type') == 'LineString'
-                 else g.get('coordinates') if g.get('type') == 'MultiLineString' else [])
+    for lid, (props, parts) in cand.items():
         for part in parts:
             for j in range(len(part) - 1):
                 fp, dd = foot(ln, la, part[j][0], part[j][1], part[j+1][0], part[j+1][1])
                 if best is None or dd < best['dist']:
-                    best = dict(dist=dd, foot=fp, props=f.get('properties') or {}, parts=parts)
+                    best = dict(dist=dd, foot=fp, props=props, parts=parts)
     if best:
         nearest[s['CLLI']] = best
+        if str(best['props'].get('ID')) != str(int(float(s['line_id']))):
+            print(f"  NOTE {s['CLLI']}: geometry-nearest ID {best['props'].get('ID')} != CSV line_id {s['line_id']}")
     if i % 40 == 0:
         print(f'  {i}/{len(sites)}', flush=True)
 
@@ -147,7 +132,7 @@ for f in orig.iter(NS + 'Folder'):
         break
 print(f'Interesting Sites promoted: {n_e}')
 
-OUT = os.path.join(BASE, 'TBDI_WS_Combined.kmz')
+OUT = COMBINED
 data = ET.tostring(root, encoding='utf-8', xml_declaration=True)
 try:
     zf = zipfile.ZipFile(OUT, 'w', zipfile.ZIP_DEFLATED)

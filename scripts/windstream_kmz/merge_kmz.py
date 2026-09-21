@@ -7,11 +7,11 @@ K = 'http://www.opengis.net/kml/2.2'
 ET.register_namespace('', K)
 NS = '{%s}' % K
 
-BASE = r'C:\Users\tucke\OneDrive\Documents\Claude\Projects\TBDI Modeling\Mireye'
-SRC_ORIG = r'C:\Users\tucke\Downloads\WS Targeted Sites Overview 26.8.20.kmz'
-SRC_TX = os.path.join(BASE, 'WS_Sites_and_Transmission.kmz')
-PARCEL = os.path.join(BASE, 'WS_Sites_Parcel_Sizes_FINAL.csv')
-OUT = os.path.join(BASE, 'TBDI_WS_Combined.kmz')
+from paths import BROKER_KMZ, TX_KMZ, PARCEL_CSV, COMBINED_KMZ
+SRC_ORIG = BROKER_KMZ
+SRC_TX = TX_KMZ
+PARCEL = PARCEL_CSV
+OUT = COMBINED_KMZ
 
 
 def read_kml(path):
