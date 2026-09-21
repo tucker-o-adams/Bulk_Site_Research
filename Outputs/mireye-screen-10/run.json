@@ -1,6 +1,6 @@
 {
- "run_at": "2026-09-21T21:47:27+00:00",
- "elapsed_s": 3.7,
+ "run_at": "2026-09-21T23:35:37+00:00",
+ "elapsed_s": 4.3,
  "input": {
   "path": "E:\\Claude\\Projects\\TBDI Modeling\\Mireye\\scripts\\bulk\\fixtures\\mireye_screen_10.csv",
   "sha256": "75e727bb71b05e7604a7f4cd441294a7b923405c5051989e9a59e7c9579a442e"
@@ -8,151 +8,85 @@
  "sites_accepted": 10,
  "sites_rejected": [],
  "producers": {
-  "transmission": {
-   "source": "HIFLD US Electric Power Transmission Lines (ArcGIS mirror of retired HIFLD Open)",
-   "url": "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/US_Electric_Power_Transmission_Lines/FeatureServer/0",
-   "vintage": "2025-08-26",
-   "fields": [
-    "tx_nearest_m",
-    "tx_nearest_ft",
-    "tx_voltage_kv",
-    "tx_volt_class",
-    "tx_voltage_basis",
-    "tx_line_name",
-    "tx_line_id",
-    "tx_owner",
-    "tx_type",
-    "tx_status",
-    "tx_attrs_inferred",
-    "tx_100kv_nearest_m",
-    "tx_100kv_voltage_kv",
-    "tx_100kv_line_name",
-    "tx_100kv_line_id",
-    "tx_100kv_owner"
-   ],
-   "status_counts": {
-    "ok": 160
-   }
-  },
-  "substations": {
-   "source": "HIFLD Electric Substations (ArcGIS mirror of retired HIFLD Open)",
-   "url": "https://services5.arcgis.com/HDRa0B57OVrv2E1q/ArcGIS/rest/services/Electric_Substations/FeatureServer/0",
-   "vintage": "2021-02-25",
-   "fields": [
-    "sub_nearest_m",
-    "sub_nearest_name",
-    "sub_nearest_type",
-    "sub_nearest_max_kv",
-    "sub_nearest_min_kv",
-    "sub_nearest_kv_inferred",
-    "sub_nearest_lines",
-    "sub_nearest_status",
-    "sub_nearest_source",
-    "sub_nearest_id",
-    "sub_100kv_nearest_m",
-    "sub_100kv_nearest_name",
-    "sub_100kv_max_kv",
-    "sub_100kv_lines",
-    "sub_230kv_nearest_m",
-    "sub_230kv_nearest_name",
-    "sub_230kv_max_kv",
-    "sub_count_within_10km",
-    "sub_max_kv_within_10km"
-   ],
-   "status_counts": {
-    "ok": 175,
-    "absent": 15
-   }
-  },
-  "flood": {
-   "source": "FEMA National Flood Hazard Layer (NFHL)",
-   "url": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer",
-   "vintage": null,
-   "fields": [
-    "fema_determination",
-    "fema_flood_zone",
-    "fema_zone_subtype",
-    "fema_sfha",
-    "fema_static_bfe_ft",
-    "fema_dfirm_id",
-    "fema_firm_panel",
-    "fema_panel_effective",
-    "fema_nearest_sfha_m",
-    "fema_nearest_sfha_zone"
-   ],
-   "status_counts": {
-    "ok": 90,
-    "absent": 10
-   }
-  },
-  "wetlands": {
-   "source": "USFWS National Wetlands Inventory (NWI)",
-   "url": "https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services/Wetlands/MapServer/0",
-   "vintage": null,
-   "fields": [
-    "nwi_mapping_status",
-    "nwi_image_year",
-    "nwi_project",
-    "nwi_at_point",
-    "nwi_type_at_point",
-    "nwi_code_at_point",
-    "nwi_nearest_m",
-    "nwi_nearest_type",
-    "nwi_nearest_code",
-    "nwi_nearest_acres",
-    "nwi_count_within_500m",
-    "nwi_polygon_acres_within_500m"
-   ],
-   "status_counts": {
-    "ok": 84,
-    "absent": 36
-   }
-  },
-  "metro": {
-   "source": "Census TIGERweb 2020 Urban Areas (POP100 = Census 2020 count)",
-   "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Urban/MapServer/0",
+  "housing": {
+   "source": "Census TIGERweb 2020 Census Blocks (HU100 housing units, POP100 population)",
+   "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/10",
    "vintage": "2020",
    "fields": [
-    "metro_urban_area_at_point",
-    "metro_urban_area_at_point_pop",
-    "metro_250k_nearest_name",
-    "metro_250k_nearest_m",
-    "metro_250k_nearest_pop",
-    "metro_1m_nearest_name",
-    "metro_1m_nearest_m",
-    "metro_1m_nearest_pop"
+    "hu_block_at_point",
+    "pop_block_at_point",
+    "block_at_point_acres",
+    "hu_within_0_5mi",
+    "pop_within_0_5mi",
+    "hu_within_1mi",
+    "pop_within_1mi",
+    "blocks_within_1mi"
    ],
    "status_counts": {
-    "ok": 78,
-    "absent": 2
+    "ok": 80
    }
   },
-  "datacenter": {
-   "source": "PeeringDB facility list (Reference/peeringdb.kmz)",
-   "url": "https://www.peeringdb.com/",
-   "vintage": null,
+  "schools": {
+   "source": "NCES EDGE school locations (public 2024-25, private 2023-24)",
+   "url": "https://nces.ed.gov/opengis/rest/services/K12_School_Locations/EDGE_GEOCODE_PUBLICSCH_2425/MapServer/0",
+   "vintage": "2024-25 public / 2023-24 private",
    "fields": [
-    "dc_nearest_m",
-    "dc_nearest_name",
-    "dc_nearest_city",
-    "dc_nearest_state",
-    "dc_nearest_networks",
-    "dc_nearest_peeringdb_url",
-    "dc_hub_nearest_m",
-    "dc_hub_nearest_name",
-    "dc_hub_nearest_city",
-    "dc_hub_nearest_networks",
-    "dc_count_within_25km",
-    "dc_count_within_50km",
-    "dc_max_networks_within_50km"
+    "school_nearest_m",
+    "school_nearest_name",
+    "school_nearest_type",
+    "school_nearest_city",
+    "schools_within_0_5mi",
+    "schools_within_1mi",
+    "public_schools_within_1mi",
+    "private_schools_within_1mi"
    ],
    "status_counts": {
-    "ok": 130
+    "ok": 76,
+    "absent": 4
+   }
+  },
+  "worship": {
+   "source": "HIFLD All Places of Worship (ArcGIS mirror; IRS 501(c)(3) geocodes)",
+   "url": "https://services.arcgis.com/XG15cJAlne2vxtgt/ArcGIS/rest/services/All_Places_Of_Worship__HiFLD_Open_/FeatureServer/42",
+   "vintage": "2025-03-24",
+   "fields": [
+    "worship_nearest_m",
+    "worship_nearest_name",
+    "worship_nearest_city",
+    "worship_within_0_5mi",
+    "worship_within_1mi"
+   ],
+   "status_counts": {
+    "ok": 47,
+    "absent": 3
+   }
+  },
+  "healthcare": {
+   "source": "CMS Provider Data Catalog (nursing homes: CMS coordinates; hospitals: Census-geocoded)",
+   "url": "https://data.cms.gov/provider-data/",
+   "vintage": null,
+   "fields": [
+    "nursing_home_nearest_m",
+    "nursing_home_nearest_name",
+    "nursing_home_nearest_beds",
+    "nursing_home_nearest_rating",
+    "nursing_homes_within_0_5mi",
+    "nursing_homes_within_1mi",
+    "hospital_nearest_m",
+    "hospital_nearest_name",
+    "hospital_nearest_type",
+    "hospital_nearest_emergency",
+    "hospital_nearest_geocode_match",
+    "hospitals_within_1mi"
+   ],
+   "status_counts": {
+    "ok": 91,
+    "absent": 29
    }
   }
  },
  "cache": {
-  "hits": 90,
-  "misses": 0
+  "hits": 0,
+  "misses": 50
  }
 }

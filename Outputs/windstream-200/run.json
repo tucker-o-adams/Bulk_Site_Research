@@ -1,6 +1,6 @@
 {
- "run_at": "2026-09-21T21:47:20+00:00",
- "elapsed_s": 65.2,
+ "run_at": "2026-09-21T23:37:48+00:00",
+ "elapsed_s": 109.0,
  "input": {
   "path": "E:\\Claude\\Projects\\TBDI Modeling\\Mireye\\scripts\\bulk\\fixtures\\windstream_200.csv",
   "sha256": "221d226bfd053d1567f5bb78718bbb7ccc46428aa352fd520ed99924948e5f5d"
@@ -150,10 +150,86 @@
    "status_counts": {
     "ok": 2600
    }
+  },
+  "housing": {
+   "source": "Census TIGERweb 2020 Census Blocks (HU100 housing units, POP100 population)",
+   "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/10",
+   "vintage": "2020",
+   "fields": [
+    "hu_block_at_point",
+    "pop_block_at_point",
+    "block_at_point_acres",
+    "hu_within_0_5mi",
+    "pop_within_0_5mi",
+    "hu_within_1mi",
+    "pop_within_1mi",
+    "blocks_within_1mi"
+   ],
+   "status_counts": {
+    "ok": 1600
+   }
+  },
+  "schools": {
+   "source": "NCES EDGE school locations (public 2024-25, private 2023-24)",
+   "url": "https://nces.ed.gov/opengis/rest/services/K12_School_Locations/EDGE_GEOCODE_PUBLICSCH_2425/MapServer/0",
+   "vintage": "2024-25 public / 2023-24 private",
+   "fields": [
+    "school_nearest_m",
+    "school_nearest_name",
+    "school_nearest_type",
+    "school_nearest_city",
+    "schools_within_0_5mi",
+    "schools_within_1mi",
+    "public_schools_within_1mi",
+    "private_schools_within_1mi"
+   ],
+   "status_counts": {
+    "ok": 1520,
+    "absent": 80
+   }
+  },
+  "worship": {
+   "source": "HIFLD All Places of Worship (ArcGIS mirror; IRS 501(c)(3) geocodes)",
+   "url": "https://services.arcgis.com/XG15cJAlne2vxtgt/ArcGIS/rest/services/All_Places_Of_Worship__HiFLD_Open_/FeatureServer/42",
+   "vintage": "2025-03-24",
+   "fields": [
+    "worship_nearest_m",
+    "worship_nearest_name",
+    "worship_nearest_city",
+    "worship_within_0_5mi",
+    "worship_within_1mi"
+   ],
+   "status_counts": {
+    "ok": 958,
+    "absent": 42
+   }
+  },
+  "healthcare": {
+   "source": "CMS Provider Data Catalog (nursing homes: CMS coordinates; hospitals: Census-geocoded)",
+   "url": "https://data.cms.gov/provider-data/",
+   "vintage": null,
+   "fields": [
+    "nursing_home_nearest_m",
+    "nursing_home_nearest_name",
+    "nursing_home_nearest_beds",
+    "nursing_home_nearest_rating",
+    "nursing_homes_within_0_5mi",
+    "nursing_homes_within_1mi",
+    "hospital_nearest_m",
+    "hospital_nearest_name",
+    "hospital_nearest_type",
+    "hospital_nearest_emergency",
+    "hospital_nearest_geocode_match",
+    "hospitals_within_1mi"
+   ],
+   "status_counts": {
+    "ok": 1600,
+    "absent": 800
+   }
   }
  },
  "cache": {
-  "hits": 1442,
-  "misses": 380
+  "hits": 1872,
+  "misses": 950
  }
 }

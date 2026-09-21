@@ -1,0 +1,26 @@
+{
+ "built_at": "2026-09-21T23:33:10+00:00",
+ "nursing_homes": {
+  "dataset": "4pq5-n9py",
+  "title": "Provider Information",
+  "modified": "2026-08-01",
+  "download": "https://data.cms.gov/provider-data/sites/default/files/resources/328596835e6db31b2564cd733c3795f4_1786724150/NH_ProviderInfo_Aug2026.csv",
+  "rows": 14690,
+  "with_coordinates": 14690,
+  "coordinates_from": "CMS (latitude/longitude columns)"
+ },
+ "hospitals": {
+  "dataset": "xubh-q36u",
+  "title": "Hospital General Information",
+  "modified": "2026-07-22",
+  "download": "https://data.cms.gov/provider-data/sites/default/files/resources/893c372430d9d71a1c52737d01239d47_1785189955/Hospital_General_Information.csv",
+  "rows": 5419,
+  "with_coordinates": 4621,
+  "coordinates_from": "Census batch geocoder (Public_AR_Current)",
+  "geocode_tally": {
+   "Match": 4621,
+   "No_Match": 752,
+   "Tie": 46
+  }
+ }
+}

@@ -1,17 +1,17 @@
 # Local-only files (on disk, not in git)
 
-Generated 2026-09-21T21:47+00:00 by `scripts/local_only_inventory.py` from `git ls-files --others --ignored`. Re-run it after any batch or fetch. These files exist only in this working copy; back up the ones marked worth archiving by some other means.
+Generated 2026-09-21T23:38+00:00 by `scripts/local_only_inventory.py` from `git ls-files --others --ignored`. Re-run it after any batch or fetch. These files exist only in this working copy; back up the ones marked worth archiving by some other means.
 
-**Total: 12722 files, 1.53 GB**
+**Total: 13728 files, 1.54 GB**
 
 | Path | Files | Size | Largest file | What it is / how to regenerate |
 |---|---|---|---|---|
-| `data/cache` | 2200 | 672.5 MB | 133.7 MB `38.57342_-82.83963_near500.json` | Raw service responses (FEMA NFHL, USFWS NWI, HIFLD) keyed by coordinate; what makes pipeline reruns offline. Re-fetchable from source with scripts/bulk/run.py, but a source that has since changed or vanished cannot be re-fetched — this is the evidence trail worth archiving. Some NWI files exceed 100 MB. |
+| `data/cache` | 3200 | 679.4 MB | 133.7 MB `38.57342_-82.83963_near500.json` | Raw service responses (FEMA NFHL, USFWS NWI, HIFLD) keyed by coordinate; what makes pipeline reruns offline. Re-fetchable from source with scripts/bulk/run.py, but a source that has since changed or vanished cannot be re-fetched — this is the evidence trail worth archiving. Some NWI files exceed 100 MB. |
 | `.venv_fema` | 10487 | 529.2 MB | 92.5 MB `node.exe` | Python environment. Rebuild: python -m venv .venv_fema; pip install -r requirements-fema.txt -r requirements-bulk.txt |
 | `Reference/FEMA-Toolkit` | 2 | 187.4 MB | 141.2 MB `fema-flood-figure-toolkit.zip` | Toolkit zips: superseded by out/ and tbdi-pasa; the README is committed. Low value. |
 | `out` | 9 | 143.9 MB | 48.8 MB `naip_site2.tif` | FEMA flood-figure pipeline rasters/PNGs/GPKGs; rebuilt by the out/*.py scripts from NAIP/NFHL. Medium value (slow to rebuild). |
 | `Outputs/KMZ outputs/WS_Sites_and_Transmission_3.kmz` | 1 | 637 KB | 637 KB `WS_Sites_and_Transmission_3.kmz` | Pipeline intermediate; rebuilt by scripts/windstream_kmz/run_pipeline.py in seconds. |
-| `scripts` | 21 | 148 KB | 11 KB `add_folders.cpython-312.pyc` | Python __pycache__ only. Nothing to save. |
+| `scripts` | 27 | 177 KB | 11 KB `add_folders.cpython-312.pyc` | Python __pycache__ only. Nothing to save. |
 | `Windstream site data` | 1 | 0 KB | 0 KB `~$TBDI Windstream Top 200 COs v6.29.26 vTA.xlsx` | Excel lock file only (~$...). Nothing to save. |
 | `.claude` | 1 | 0 KB | 0 KB `settings.local.json` | Claude Code per-machine permission settings. Nothing to save. |
 
