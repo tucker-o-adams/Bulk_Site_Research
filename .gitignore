@@ -25,3 +25,6 @@ out/**/*.gpkg
 # --- pipeline intermediates (rebuilt by run_pipeline.py) ---
 Outputs/KMZ outputs/WS_Sites_and_Transmission_3.kmz
 scripts/**/__pycache__/
+
+# --- raw service-response cache: on disk only (see LOCAL_ONLY.md); NWI responses can exceed 100 MB ---
+data/cache/

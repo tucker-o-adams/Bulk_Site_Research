@@ -9,7 +9,7 @@ Writes into --out:
     sites.csv        one row per site: input columns + every producer field
     provenance.csv   one row per site x field: value, status, source, url, vintage, fetched_at, method
     run.json         inputs, counts, rejected rows, per-producer status tallies, cache hit/miss
-    cache/           raw service responses (rerun = offline)
+    (raw service responses go to <repo>/data/cache/, shared across batches; rerun = offline)
 """
 import argparse, csv, hashlib, importlib, json, os, sys, time
 from collections import Counter
@@ -40,7 +40,7 @@ def main():
         keep = set(x.strip() for x in a.only.split(','))
         sites = [s for s in sites if s.site_id in keep]
     producers = [importlib.import_module(f'producers.{n.strip()}') for n in a.producers.split(',') if n.strip()]
-    cache = Cache(os.path.join(a.out, 'cache'))
+    cache = Cache(os.path.join(os.path.dirname(os.path.dirname(HERE)), 'data', 'cache'))   # shared across batches
     print(f'sites: {len(sites)} accepted, {len(rejected)} rejected | producers: {[p.NAME for p in producers]}')
     for n, sid, why in rejected:
         print(f'  REJECTED row {n} {sid!r}: {why}')

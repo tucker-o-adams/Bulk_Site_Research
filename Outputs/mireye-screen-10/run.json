@@ -1,6 +1,6 @@
 {
- "run_at": "2026-09-21T19:27:44+00:00",
- "elapsed_s": 8.2,
+ "run_at": "2026-09-21T20:02:16+00:00",
+ "elapsed_s": 11.0,
  "input": {
   "path": "E:\\Claude\\Projects\\TBDI Modeling\\Mireye\\scripts\\bulk\\fixtures\\mireye_screen_10.csv",
   "sha256": "4c0c6e271ac8a501fc27678eb508737e7cd128ae68bcc47b8ba44008d7236d50"
@@ -54,7 +54,7 @@
   }
  },
  "cache": {
-  "hits": 77,
-  "misses": 3
+  "hits": 40,
+  "misses": 10
  }
 }

@@ -18,6 +18,7 @@ rejected for silently missing 69 kV lines.
 """
 import json, math, urllib.parse
 from provenance import Value, absent, failed, now_iso
+from cache import coord_key
 
 NAME = 'transmission'
 LYR = ('https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/'
@@ -112,7 +113,7 @@ def nearest(features, lat, lng):
 
 def run(site, cache):
     url = query_url(site.lat, site.lng)
-    resp, fetched, err = cache.get_json(NAME, site.site_id, url)
+    resp, fetched, err = cache.get_json(NAME, coord_key(site.lat, site.lng), url)
     mk = lambda fld, val, **kw: Value(fld, val, SOURCE, LYR, METHOD, vintage=VINTAGE,
                                       fetched_at=fetched or now_iso(), note=NOTE, **kw)
     if err:

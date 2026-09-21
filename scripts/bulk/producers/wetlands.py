@@ -15,6 +15,7 @@ clip to anything.
 """
 from geom import arcgis_query, geojson_polygon_dist_m
 from provenance import Value, absent, failed, now_iso
+from cache import coord_key
 
 NAME = 'wetlands'
 BASE = 'https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services'
@@ -26,7 +27,7 @@ SOURCE = 'USFWS National Wetlands Inventory (NWI)'
 VINTAGE = None                      # per site: imagery year from Data_Source
 SEARCH_M = 500
 METHOD = (f'NWI point queries: Wetlands polygon at the point; nearest Wetlands polygon within {SEARCH_M} m '
-          'by exact point-to-polygon distance; Wetlands_Status for mapping coverage; Data_Source for imagery year')
+          'by exact point-to-polygon distance (geometry simplified to ~2 m); Wetlands_Status for mapping coverage; Data_Source for imagery year')
 NOTE = 'NWI is photointerpreted, not a jurisdictional determination; acres are whole NWI polygons, not clipped'
 
 FIELDS = ['nwi_mapping_status', 'nwi_image_year', 'nwi_project', 'nwi_at_point', 'nwi_type_at_point',
@@ -43,10 +44,12 @@ def _attr(props, suffix):
 
 def run(site, cache):
     la, ln = site.lat, site.lng
-    st, f1, e1 = cache.get_json(NAME, f'{site.site_id}_status', arcgis_query(STATUS, la, ln, 'STATUS'))
-    iy, f2, e2 = cache.get_json(NAME, f'{site.site_id}_imgyr', arcgis_query(IMGYR, la, ln, 'PROJECT_NAME,IMAGE_YR'))
-    near, f3, e3 = cache.get_json(NAME, f'{site.site_id}_near', arcgis_query(WET, la, ln, '*', distance_m=SEARCH_M,
-                                                                              geometry=True, fmt='geojson'))
+    st, f1, e1 = cache.get_json(NAME, coord_key(la, ln, 'status'), arcgis_query(STATUS, la, ln, 'STATUS'))
+    iy, f2, e2 = cache.get_json(NAME, coord_key(la, ln, 'imgyr'), arcgis_query(IMGYR, la, ln, 'PROJECT_NAME,IMAGE_YR'))
+    # geometry simplified to ~2 m: a riverine polygon (e.g. the Ohio River) otherwise comes back at 100+ MB
+    near, f3, e3 = cache.get_json(NAME, coord_key(la, ln, f'near{SEARCH_M}'),
+                                  arcgis_query(WET, la, ln, '*', distance_m=SEARCH_M, geometry=True,
+                                               fmt='geojson', precision=6, max_offset_m=2))
     fetched = f3 or now_iso()
     if e3:
         return [failed(f, SOURCE, WET, METHOD, e3) for f in FIELDS]

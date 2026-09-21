@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 """FEMA flood hazard at the site point, from the National Flood Hazard Layer.
 
-Four questions, four NFHL layers, all point queries:
+Two NFHL calls for a typical site, four only when the point is unmapped:
 
-  zone         L28 Flood Hazard Zones      FLD_ZONE, ZONE_SUBTY, SFHA_TF, STATIC_BFE at the point
-  coverage     L22 Political Jurisdictions ANI_TF = T means FEMA carries the area as
-                                           "Area Not Included" on the effective FIRM
-               L0  NFHL Availability       whether any NFHL study covers the point
-  panel        L3  FIRM Panels             effective panel + date (the citation)
-  proximity    L28 again, 1 km buffer, SFHA_TF = 'T', with geometry: distance to the
-                                           nearest Special Flood Hazard Area polygon
+  zones        L28 Flood Hazard Zones, all zones within 1 km, with (simplified) geometry.
+               The polygon containing the point gives FLD_ZONE / ZONE_SUBTY / SFHA_TF /
+               STATIC_BFE; the nearest SFHA polygon gives the proximity fields.
+  panel        L3  FIRM Panels            effective panel + date (the citation)
+  coverage     only if no zone contains the point:
+               L22 Political Jurisdictions  ANI_TF = T means FEMA carries the area as
+                                            "Area Not Included" on the effective FIRM
+               L0  NFHL Availability        whether any NFHL study covers the point
+
+FEMA's server answers slowly (10-70 s a call) so the call count is the cost.
 
 Unmapped is not absent (tbdi-pasa D-008). A point that returns no zone is
 either "Area Not Included" or "no NFHL data" and `fema_determination` says
@@ -21,6 +24,7 @@ is a later, per-survivor step.
 from datetime import datetime, timezone
 from geom import arcgis_query, geojson_polygon_dist_m
 from provenance import Value, absent, failed, now_iso
+from cache import coord_key
 
 NAME = 'flood'
 NFHL = 'https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer'
@@ -29,9 +33,10 @@ SOURCE = 'FEMA National Flood Hazard Layer (NFHL)'
 VINTAGE = None                      # per site: the effective FIRM panel date
 SFHA_ZONES = {'A', 'AE', 'AH', 'AO', 'AR', 'A99', 'V', 'VE'}
 SFHA_SEARCH_M = 1000
-METHOD = ('NFHL point queries: L28 Flood Hazard Zones at the point; L22 Political Jurisdictions '
-          'ANI_TF and L0 NFHL Availability for coverage; L3 FIRM Panels for the effective panel; '
-          f'nearest SFHA polygon (SFHA_TF=T) within {SFHA_SEARCH_M} m by exact point-to-polygon distance')
+METHOD = (f'NFHL L28 Flood Hazard Zones within {SFHA_SEARCH_M} m of the point (geometry simplified to ~2 m): '
+          'zone = polygon containing the point; nearest SFHA polygon by exact point-to-polygon distance; '
+          'L3 FIRM Panels for the effective panel; when no zone contains the point, L22 Political '
+          'Jurisdictions ANI_TF and L0 NFHL Availability decide area_not_included vs no_nfhl_data')
 NOTE = 'point under the pin, not the parcel; Area Not Included / no-data is never reported as Zone X'
 
 FIELDS = ['fema_determination', 'fema_flood_zone', 'fema_zone_subtype', 'fema_sfha',
@@ -46,8 +51,8 @@ def _epoch_to_date(ms):
         return None
 
 
-def _q(cache, site, key, url):
-    resp, fetched, err = cache.get_json(NAME, f'{site.site_id}_{key}', url)
+def _q(cache, lat, lng, key, url):
+    resp, fetched, err = cache.get_json(NAME, coord_key(lat, lng, key), url)
     if err:
         return None, fetched, err
     return [f for f in (resp.get('features') or [])], fetched, None
@@ -55,23 +60,36 @@ def _q(cache, site, key, url):
 
 def run(site, cache):
     la, ln = site.lat, site.lng
-    zones, f1, e1 = _q(cache, site, 'zone', arcgis_query(f'{NFHL}/28', la, ln, 'FLD_ZONE,ZONE_SUBTY,SFHA_TF,STATIC_BFE,DFIRM_ID'))
-    pol, f2, e2 = _q(cache, site, 'pol', arcgis_query(f'{NFHL}/22', la, ln, 'POL_NAME1,ANI_TF,CID'))
-    avail, f3, e3 = _q(cache, site, 'avail', arcgis_query(f'{NFHL}/0', la, ln, 'STUDY_ID'))
-    pans, f4, e4 = _q(cache, site, 'panel', arcgis_query(f'{NFHL}/3', la, ln, 'DFIRM_ID,FIRM_PAN,EFF_DATE'))
-    sfha, f5, e5 = _q(cache, site, 'sfha1km', arcgis_query(f'{NFHL}/28', la, ln, 'FLD_ZONE,SFHA_TF',
-                                                             distance_m=SFHA_SEARCH_M, geometry=True,
-                                                             where="SFHA_TF='T'", fmt='geojson',
-                                                             precision=6, max_offset_m=5))
+    feats, f1, e1 = _q(cache, la, ln, f'zones{SFHA_SEARCH_M}',
+                       arcgis_query(f'{NFHL}/28', la, ln, 'FLD_ZONE,ZONE_SUBTY,SFHA_TF,STATIC_BFE,DFIRM_ID',
+                                    distance_m=SFHA_SEARCH_M, geometry=True, fmt='geojson',
+                                    precision=6, max_offset_m=2))
     fetched = f1 or now_iso()
     if e1:   # no zone answer at all: nothing below can be trusted
         return [failed(f, SOURCE, NFHL, METHOD, e1) for f in FIELDS]
-    pol = pol or []
-    avail = avail or []
+    pans, f4, e4 = _q(cache, la, ln, 'panel', arcgis_query(f'{NFHL}/3', la, ln, 'DFIRM_ID,FIRM_PAN,EFF_DATE'))
+
+    # --- zone under the pin, and nearest SFHA, both from the one geometry answer
+    at_point, nearest_sfha = None, None
+    for f in feats:
+        p = f.get('properties') or {}
+        d = geojson_polygon_dist_m(f.get('geometry'), ln, la)
+        if d == 0.0 and at_point is None:
+            at_point = p
+        if (p.get('SFHA_TF') or '').upper() == 'T' or p.get('FLD_ZONE') in SFHA_ZONES:
+            if nearest_sfha is None or d < nearest_sfha[0]:
+                nearest_sfha = (d, p.get('FLD_ZONE'))
+    zone = at_point or {}
+    dfirm = zone.get('DFIRM_ID')
+
+    # --- coverage layers, only when nothing contains the point
+    pol, avail, e2, e3 = [], [], None, None
+    if not at_point:
+        pol, _, e2 = _q(cache, la, ln, 'pol', arcgis_query(f'{NFHL}/22', la, ln, 'POL_NAME1,ANI_TF,CID'))
+        avail, _, e3 = _q(cache, la, ln, 'avail', arcgis_query(f'{NFHL}/0', la, ln, 'STUDY_ID'))
+        pol, avail = pol or [], avail or []
 
     # --- panel: prefer the one whose DFIRM matches the zone's DFIRM (panels are quads and overlap counties)
-    zone = (zones[0]['attributes'] if zones else {})
-    dfirm = zone.get('DFIRM_ID')
     panel = None
     if pans and not e4:
         cands = [p['attributes'] for p in pans]
@@ -82,9 +100,9 @@ def run(site, cache):
     def mk(fld, val, note=NOTE):
         return Value(fld, val, SOURCE, NFHL, METHOD, vintage=vint, fetched_at=fetched, note=note)
 
-    # --- determination (coverage queries may have failed independently of the zone query)
+    # --- determination
     ani = any((p['attributes'].get('ANI_TF') or '').upper() == 'T' for p in pol)
-    if zones:
+    if at_point:
         det = 'mapped'
     elif e2 or e3:
         det = None                    # no zone, and the coverage layers did not answer: cannot say why
@@ -97,7 +115,7 @@ def run(site, cache):
 
     out = [mk('fema_determination', det) if det else
            failed('fema_determination', SOURCE, NFHL, METHOD, '; '.join(e for e in (e2, e3) if e))]
-    if zones:
+    if at_point:
         z = zone.get('FLD_ZONE')
         bfe = zone.get('STATIC_BFE')
         bfe = None if bfe is None or float(bfe) <= -9999 else float(bfe)
@@ -120,18 +138,10 @@ def run(site, cache):
         out += [absent(f, SOURCE, NFHL, METHOD, note='no FIRM panel at the point', vintage=vint)
                 for f in ('fema_firm_panel', 'fema_panel_effective')]
 
-    # --- nearest SFHA within 1 km
-    if e5:
-        out += [failed(f, SOURCE, NFHL, METHOD, e5) for f in ('fema_nearest_sfha_m', 'fema_nearest_sfha_zone')]
+    # --- nearest SFHA within 1 km (from the same geometry answer)
+    if nearest_sfha:
+        out += [mk('fema_nearest_sfha_m', round(nearest_sfha[0], 1)), mk('fema_nearest_sfha_zone', nearest_sfha[1])]
     else:
-        best = None
-        for f in sfha:
-            d = geojson_polygon_dist_m(f.get('geometry'), ln, la)
-            if best is None or d < best[0]:
-                best = (d, (f.get('properties') or {}).get('FLD_ZONE'))
-        if best:
-            out += [mk('fema_nearest_sfha_m', round(best[0], 1)), mk('fema_nearest_sfha_zone', best[1])]
-        else:
-            out += [absent(f, SOURCE, NFHL, METHOD, note=f'no SFHA polygon within {SFHA_SEARCH_M} m', vintage=vint)
-                    for f in ('fema_nearest_sfha_m', 'fema_nearest_sfha_zone')]
+        out += [absent(f, SOURCE, NFHL, METHOD, note=f'no SFHA polygon within {SFHA_SEARCH_M} m', vintage=vint)
+                for f in ('fema_nearest_sfha_m', 'fema_nearest_sfha_zone')]
     return out

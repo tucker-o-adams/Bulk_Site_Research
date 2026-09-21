@@ -1,15 +1,24 @@
 # -*- coding: utf-8 -*-
-"""Raw-response cache: every service answer is saved once per (producer, key),
-so a rerun of the same batch makes no network calls and reproduces exactly
-what the first run saw. Delete a file (or the folder) to refresh from source.
+"""Raw-response cache, shared across batches.
 
-Layout:  <out>/cache/<producer>/<key>.json
+Every service answer is saved once per (producer, key). Keys are built from the
+query location (see `coord_key`), not the site_id, so the same place fetched in
+any batch is never fetched twice, and a rerun of any batch is offline. A failed
+query is never cached, so a rerun retries exactly the gaps.
+
+Layout:  <repo>/data/cache/<producer>/<key>.json
          {"fetched_at": ..., "url": ..., "response": <parsed JSON>}
+Delete a file (or a producer folder) to refresh from source.
 """
 import json, os, re, time, urllib.request
 from datetime import datetime, timezone
 
 UA = {'User-Agent': 'Mozilla/5.0 (TBDI bulk site research)'}
+
+
+def coord_key(lat, lng, suffix=''):
+    """Cache key for a point query: coordinates to 1e-5 deg (~1 m), plus a sub-query tag."""
+    return f'{lat:.5f}_{lng:.5f}' + (f'_{suffix}' if suffix else '')
 
 
 def _safe(key: str) -> str:
