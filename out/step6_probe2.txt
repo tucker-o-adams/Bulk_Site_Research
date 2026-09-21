@@ -1,0 +1,39 @@
+[msc_nfhl] goto status=200
+[msc_nfhl] networkidle timeout (continuing)
+[msc_nfhl] final url: https://hazards-fema.maps.arcgis.com/apps/webappviewer/index.html?id=8b0adb51996444d4879338b5529aa9cd
+[msc_nfhl] title: FEMA's National Flood Hazard Layer (NFHL) Viewer
+[msc_nfhl] INPUTS (13):
+     |  | text |  | dijitReset dijitInputField dijitValidationIcon dijitValidationInner
+    dijit_form_NumberTextBox_0 |  | text |  | dijitReset dijitInputInner
+     |  | hidden |  | 
+     |  | text |  | dijitReset dijitInputField dijitValidationIcon dijitValidationInner
+    dijit_form_NumberTextBox_1 |  | text |  | dijitReset dijitInputInner
+     |  | hidden |  | 
+     |  | text |  | dijitReset dijitInputField dijitValidationIcon dijitValidationInner
+     |  | hidden |  | 
+     |  | text |  | dijitReset dijitInputField dijitArrowButtonInner
+     |  | text |  | dijitReset dijitInputField dijitValidationIcon dijitValidationInner
+     |  | hidden |  | 
+     |  | text |  | dijitReset dijitInputField dijitArrowButtonInner
+    esri_dijit_Search_0_input |  | text | Find address or place | searchInput firstFocusNode
+[msc_nfhl] BUTTONS (34): Zoom to /  / Zoom to ;; Basemap Gallery /  / ;; Measurement /  / ;; NFHL Print Tool /  / ;; / Fold window / ;; / Maximize window / ;; / Close window / ;; Point /  / ;; Line /  / ;; Polyline /  / ;; Freehand polyline /  / ;; Arrow /  / ;; Triangle /  / ;; Extent /  / ;; Circle /  / ;; Ellipse /  / ;; Polygon /  / ;; Freehand polygon /  / ;; Text /  / ;; Clear /  / ;; Search in /  / ArcGIS World Geocoding Service ;; Search /  / Search ;; Click to enable clicking map to get coordinates /  / ;; / Default extent / ;; Default extent /  / ;; / My Location / ;; Zoom in / Zoom in / + ;; Zoom out / Zoom out / – ;; OK /  / OK ;; OK /  / OK ;; OK /  / OK ;; Open Attribute Table / Open Attribute Table / ;; Layer List /  / ;; Legend /  /
+[msc_nfhl] elapsed 69.2s
+[geoplatform] goto status=200
+[geoplatform] final url: https://hazards-fema.maps.arcgis.com/apps/webappviewer/index.html?id=8b0adb51996444d4879338b5529aa9cd
+[geoplatform] title: FEMA's National Flood Hazard Layer (NFHL) Viewer
+[geoplatform] INPUTS (13):
+     |  | text |  | dijitReset dijitInputField dijitValidationIcon dijitValidationInner
+    dijit_form_NumberTextBox_0 |  | text |  | dijitReset dijitInputInner
+     |  | hidden |  | 
+     |  | text |  | dijitReset dijitInputField dijitValidationIcon dijitValidationInner
+    dijit_form_NumberTextBox_1 |  | text |  | dijitReset dijitInputInner
+     |  | hidden |  | 
+     |  | text |  | dijitReset dijitInputField dijitValidationIcon dijitValidationInner
+     |  | hidden |  | 
+     |  | text |  | dijitReset dijitInputField dijitArrowButtonInner
+     |  | text |  | dijitReset dijitInputField dijitValidationIcon dijitValidationInner
+     |  | hidden |  | 
+     |  | text |  | dijitReset dijitInputField dijitArrowButtonInner
+    esri_dijit_Search_0_input |  | text | Find address or place | searchInput firstFocusNode
+[geoplatform] BUTTONS (34): Zoom to /  / Zoom to ;; Basemap Gallery /  / ;; Measurement /  / ;; NFHL Print Tool /  / ;; / Fold window / ;; / Maximize window / ;; / Close window / ;; Point /  / ;; Line /  / ;; Polyline /  / ;; Freehand polyline /  / ;; Arrow /  / ;; Triangle /  / ;; Extent /  / ;; Circle /  / ;; Ellipse /  / ;; Polygon /  / ;; Freehand polygon /  / ;; Text /  / ;; Clear /  / ;; Search in /  / ArcGIS World Geocoding Service ;; Search /  / Search ;; Click to enable clicking map to get coordinates /  / ;; / Default extent / ;; Default extent /  / ;; / My Location / ;; Zoom in / Zoom in / + ;; Zoom out / Zoom out / – ;; OK /  / OK ;; OK /  / OK ;; OK /  / OK ;; Open Attribute Table / Open Attribute Table / ;; Layer List /  / ;; Legend /  /
+[geoplatform] elapsed 32.7s

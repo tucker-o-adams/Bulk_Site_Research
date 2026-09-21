@@ -1,0 +1,55 @@
+[  30.6s] dismissed 2 dialogs
+[  43.6s] attempt 1: print panel visible = False
+[  50.6s] attempt 2: print panel visible = True
+[  51.2s] panel controls:
+[  51.2s]    {"t": "NFHL Print Tool", "id": "", "x": 255, "y": 147, "w": 398, "h": 35}
+[  51.2s]    {"t": "Input\nOutput\nTo print NFHL", "id": "", "x": 255, "y": 351, "w": 398, "h": 373}
+[  51.2s]    {"t": "Input\nOutput\nTo print NFHL", "id": "dijit__WidgetBase_3", "x": 255, "y": 351, "w": 398, "h": 373}
+[  51.2s]    {"t": "Input\nOutput\nTo print NFHL", "id": "jimu_dijit_TabContainer_0", "x": 255, "y": 337, "w": 398, "h": 345}
+[  51.2s]    {"t": "Input\nOutput", "id": "", "x": 255, "y": 179, "w": 398, "h": 30}
+[  51.2s]    {"t": "Input", "id": "", "x": 156, "y": 179, "w": 199, "h": 30}
+[  51.2s]    {"t": "Output", "id": "", "x": 355, "y": 179, "w": 199, "h": 30}
+[  51.2s]    {"t": "To print NFHL FIRMette or ", "id": "jimu_dijit_ViewStack_0", "x": 255, "y": 352, "w": 398, "h": 315}
+[  51.2s]    {"t": "To print NFHL FIRMette or ", "id": "", "x": 255, "y": 372, "w": 370, "h": 287}
+[  51.2s]    {"t": "To print NFHL FIRMette or ", "id": "", "x": 255, "y": 299, "w": 370, "h": 141}
+[  51.2s]    {"t": "To print NFHL FIRMette or ", "id": "", "x": 255, "y": 262, "w": 370, "h": 68}
+[  51.2s]    {"t": "", "id": "dijit__TemplatedMixin_1", "x": 255, "y": 333, "w": 370, "h": 64}
+[  51.2s]    {"t": "", "id": "jimu_dijit_ViewStack_1", "x": 255, "y": 338, "w": 370, "h": 54}
+[  51.2s]    {"t": "", "id": "jimu_dijit_DrawBox_0", "x": 255, "y": 338, "w": 370, "h": 54}
+[  51.2s]    {"t": "Size*\nFIRMETTE", "id": "", "x": 255, "y": 416, "w": 370, "h": 54}
+[  51.2s]    {"t": "Size*", "id": "", "x": 255, "y": 398, "w": 370, "h": 17}
+[  51.2s]    {"t": "Size", "id": "", "x": 83, "y": 398, "w": 26, "h": 17}
+[  51.2s]    {"t": "FIRMETTE", "id": "", "x": 255, "y": 427, "w": 370, "h": 32}
+[  51.2s]    {"t": "FIRMETTE", "id": "uniqName_17_2", "x": 255, "y": 427, "w": 370, "h": 32}
+[  51.2s]    {"t": "FIRMETTE", "id": "", "x": 246, "y": 427, "w": 349, "h": 21}
+[  51.2s]    {"t": "FIRMETTE", "id": "", "x": 113, "y": 427, "w": 65, "h": 19}
+[  51.2s]    {"t": "\u25bc", "id": "", "x": 431, "y": 427, "w": 16, "h": 19}
+[  51.2s]    {"t": "File Format*\nPDF", "id": "", "x": 255, "y": 490, "w": 370, "h": 54}
+[  51.2s]    {"t": "File Format*", "id": "", "x": 255, "y": 472, "w": 370, "h": 17}
+[  51.2s]    {"t": "File Format", "id": "", "x": 106, "y": 472, "w": 71, "h": 17}
+[  51.2s]    {"t": "PDF", "id": "", "x": 255, "y": 501, "w": 370, "h": 32}
+[  51.2s]    {"t": "PDF", "id": "uniqName_17_3", "x": 255, "y": 501, "w": 370, "h": 32}
+[  51.2s]    {"t": "PDF", "id": "", "x": 246, "y": 501, "w": 349, "h": 21}
+[  51.2s]    {"t": "PDF", "id": "", "x": 94, "y": 501, "w": 27, "h": 19}
+[  51.2s]    {"t": "\u25bc", "id": "", "x": 431, "y": 501, "w": 16, "h": 19}
+[  51.2s]    {"t": "Help\nRun", "id": "", "x": 255, "y": 547, "w": 370, "h": 20}
+[  51.2s]    {"t": "Help", "id": "", "x": 163, "y": 560, "w": 185, "h": 45}
+[  51.2s]    {"t": "Help", "id": "", "x": 85, "y": 560, "w": 30, "h": 17}
+[  51.2s]    {"t": "Run", "id": "", "x": 348, "y": 560, "w": 185, "h": 45}
+[  51.2s]    {"t": "Run", "id": "", "x": 330, "y": 555, "w": 150, "h": 35}
+[  51.2s]    {"t": "", "id": "widgets_HomeButton_Widget_11", "x": 23, "y": 131, "w": 32, "h": 32}
+[  51.2s]    {"t": "", "id": "esri_dijit_HomeButton_0", "x": 23, "y": 131, "w": 30, "h": 30}
+[  51.2s]    {"t": "", "id": "widgets_MyLocation_Widget_12", "x": 23, "y": 166, "w": 32, "h": 32}
+[  61.2s] could not set lat/lon boxes: Page.fill: Timeout 10000ms exceeded.
+Call log:
+  - waiting for locator("#dijit_form_NumberTextBox_0")
+    - locator resolved to <input type="text" tabindex="0" value="29.877" autoc
+[  61.2s] Run control at (348,560)
+[  61.2s] clicked Run; waiting for a download
+[ 241.2s] no download: Timeout 180000ms exceeded while waiting for event "download"
+=========================== logs ===========================
+waiting for event "download"
+===================
+[ 301.7s] panel text now: USDA, USGS The National Map: Orthoimagery. Data refreshed June, 2024. | Vantor | (1 of 4) | FIRM Panels: 08001C0608H |  | Map Effective Date: 3/5/2007 4:00 AM |  | Map is |  | Download a graphic of the map (available if map panel is printed) |  | Download county GIS data |  | Zoom to | NFHL Print Tool | Input | Output | To print NFHL FIRMette or Full FIRM: | 1) Click the pin tool, and click on the map to place the pin. | 2) Choose t
+[ 301.8s] pdf/img links: []
+[ 301.8s] FIRMette/GP network calls: [[200, "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/4/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179.1"], [200, "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/14/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179."], [200, "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/21/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179."], [200, "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/13/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179."], [200, "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/15/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179."], [200, "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/19/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179."], [200, "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/12/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179."], [200, "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/20/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179."]]

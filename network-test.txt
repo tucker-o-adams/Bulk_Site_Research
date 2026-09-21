@@ -1,0 +1,183 @@
+NETWORK / ENVIRONMENT TEST
+Run: 2026-08-26 (America/Denver)
+Session: Claude Cowork (cloud container + connected desktop "desktop-5ss1nce")
+
+RESULT SUMMARY
+  All three geospatial endpoints are BLOCKED by the egress allowlist.
+  No request ever left the network -- every failure is at the outbound proxy
+  (CONNECT tunnel refused), not at the remote server. No HTTP status was ever
+  returned by FEMA / USGS / FWS themselves.
+  pip install geopandas shapely: SUCCESS in both environments.
+
+======================================================================
+PART 1 - HTTP GET TESTS (python requests)
+======================================================================
+
+Two environments were tested:
+  [A] Cloud container  (Anthropic sandbox, proxy http://127.0.0.1:37313)
+  [B] Local desktop VM (proxy localhost:3128, realm "srt")
+
+----------------------------------------------------------------------
+URL 1: https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer?f=json
+----------------------------------------------------------------------
+[A] CLOUD CONTAINER
+    HTTP status .......... none (connection never established)
+    First 200 chars ...... n/a - no response body from origin
+    Exact error:
+      requests.exceptions.ProxyError: HTTPSConnectionPool(host='hazards.fema.gov',
+      port=443): Max retries exceeded with url:
+      /arcgis/rest/services/public/NFHL/MapServer?f=json
+      (Caused by ProxyError('Unable to connect to proxy',
+      OSError('Tunnel connection failed: 403 Forbidden')))
+    Raw proxy CONNECT response:
+      HTTP/1.1 403 Forbidden
+      Content-Type: text/plain; charset=utf-8
+      X-Content-Type-Options: nosniff
+      Content-Length: 74
+      Connection: close
+
+      request blocked: no rule or allowlist entry allows host "hazards.fema.gov"
+    x-deny-reason header .. NOT PRESENT
+      (the proxy conveys the reason in the 403 body, quoted above, and on the
+       desktop proxy via the X-Proxy-Error header - see [B])
+
+[B] LOCAL DESKTOP VM
+    HTTP status .......... none (connection never established)
+    Exact error:
+      requests.exceptions.ProxyError: HTTPSConnectionPool(host='hazards.fema.gov',
+      port=443): Max retries exceeded with url:
+      /arcgis/rest/services/public/NFHL/MapServer?f=json
+      (Caused by ProxyError('Unable to connect to proxy',
+      OSError('Tunnel connection failed: 403 Forbidden')))
+    Raw proxy CONNECT response (with proxy auth supplied):
+      HTTP/1.1 403 Forbidden
+      Content-Type: text/plain
+      X-Proxy-Error: blocked-by-allowlist
+
+      Connection blocked by network allowlist
+    x-deny-reason header .. NOT PRESENT (equivalent header is X-Proxy-Error: blocked-by-allowlist)
+
+----------------------------------------------------------------------
+URL 2: https://epqs.nationalmap.gov/v1/json?x=-76.78&y=37.29&units=Feet
+----------------------------------------------------------------------
+[A] CLOUD CONTAINER
+    HTTP status .......... none (connection never established)
+    First 200 chars ...... n/a - no response body from origin
+    Exact error:
+      requests.exceptions.ProxyError: HTTPSConnectionPool(host='epqs.nationalmap.gov',
+      port=443): Max retries exceeded with url: /v1/json?x=-76.78&y=37.29&units=Feet
+      (Caused by ProxyError('Unable to connect to proxy',
+      OSError('Tunnel connection failed: 403 Forbidden')))
+    Raw proxy CONNECT response:
+      HTTP/1.1 403 Forbidden
+      Content-Type: text/plain; charset=utf-8
+      X-Content-Type-Options: nosniff
+      Content-Length: 78
+      Connection: close
+
+      request blocked: no rule or allowlist entry allows host "epqs.nationalmap.gov"
+    x-deny-reason header .. NOT PRESENT
+
+[B] LOCAL DESKTOP VM
+    HTTP status .......... none (connection never established)
+    Exact error:
+      requests.exceptions.ProxyError: HTTPSConnectionPool(host='epqs.nationalmap.gov',
+      port=443): Max retries exceeded with url: /v1/json?x=-76.78&y=37.29&units=Feet
+      (Caused by ProxyError('Unable to connect to proxy',
+      OSError('Tunnel connection failed: 403 Forbidden')))
+    Raw proxy CONNECT response:
+      HTTP/1.1 403 Forbidden
+      X-Proxy-Error: blocked-by-allowlist
+      Connection blocked by network allowlist
+    x-deny-reason header .. NOT PRESENT
+
+----------------------------------------------------------------------
+URL 3: https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services/Wetlands/MapServer?f=json
+----------------------------------------------------------------------
+[A] CLOUD CONTAINER
+    HTTP status .......... none (connection never established)
+    First 200 chars ...... n/a - no response body from origin
+    Exact error:
+      requests.exceptions.ProxyError:
+      HTTPSConnectionPool(host='fwspublicservices.wim.usgs.gov', port=443):
+      Max retries exceeded with url:
+      /wetlandsmapservice/rest/services/Wetlands/MapServer?f=json
+      (Caused by ProxyError('Unable to connect to proxy',
+      OSError('Tunnel connection failed: 403 Forbidden')))
+    Raw proxy CONNECT response:
+      HTTP/1.1 403 Forbidden
+      Content-Type: text/plain; charset=utf-8
+      X-Content-Type-Options: nosniff
+      Content-Length: 88
+      Connection: close
+
+      request blocked: no rule or allowlist entry allows host "fwspublicservices.wim.usgs.gov"
+    x-deny-reason header .. NOT PRESENT
+
+[B] LOCAL DESKTOP VM
+    HTTP status .......... none (connection never established)
+    Exact error:
+      requests.exceptions.ProxyError:
+      HTTPSConnectionPool(host='fwspublicservices.wim.usgs.gov', port=443):
+      Max retries exceeded with url:
+      /wetlandsmapservice/rest/services/Wetlands/MapServer?f=json
+      (Caused by ProxyError('Unable to connect to proxy',
+      OSError('Tunnel connection failed: 403 Forbidden')))
+    Raw proxy CONNECT response:
+      HTTP/1.1 403 Forbidden
+      X-Proxy-Error: blocked-by-allowlist
+      Connection blocked by network allowlist
+    x-deny-reason header .. NOT PRESENT
+
+======================================================================
+PART 2 - pip install geopandas shapely
+======================================================================
+
+[A] CLOUD CONTAINER -- SUCCESS
+    Command: pip install geopandas shapely --break-system-packages
+    Exit code: 0
+    Successfully installed:
+      geopandas 1.1.4
+      shapely   2.1.2
+      pyogrio   0.13.0
+      pyproj    3.7.2
+    Already satisfied: numpy 2.4.4, pandas 3.0.2, packaging 26.1, certifi
+    Import smoke test: OK
+      >>> from shapely.geometry import Point
+      >>> Point(0,0).buffer(1).area  ->  3.136548490545939
+
+[B] LOCAL DESKTOP VM -- SUCCESS
+    Command: pip install geopandas shapely
+    Successfully installed:
+      geopandas 1.1.4
+      shapely   2.1.2
+      pyogrio   0.13.0
+      pyproj    3.7.1
+    Note: warning that the 'pyproj' script dir (~/.local/bin) is not on PATH.
+          Harmless for library use; only affects the pyproj CLI.
+
+======================================================================
+PART 3 - WHY THE URLs FAILED
+======================================================================
+
+Both environments route all outbound HTTPS through an allowlist proxy.
+Package registries are allowlisted; arbitrary hosts are not.
+
+  Allowed (cloud container NO_PROXY / allowlist):
+    pypi.org, files.pythonhosted.org, registry.npmjs.org, jsr.io,
+    index.crates.io, proxy.golang.org, api.anthropic.com, private ranges
+
+  Allowed (desktop VM): pypi.org -> CONNECT returned "200 Connection Established"
+
+  Denied: hazards.fema.gov, epqs.nationalmap.gov, fwspublicservices.wim.usgs.gov
+
+That is why pip works and the ArcGIS / EPQS / NWI services do not. The three
+hosts need to be added to the session egress allowlist (org / account network
+settings) before any live NFHL, elevation-point-query, or NWI wetlands call
+can succeed from either environment.
+
+Until then, options for the TBDI / Mireye model:
+  1. Add the three hosts to the egress allowlist.
+  2. Pre-download the data (NFHL county GDBs, NWI state geodatabases, USGS 3DEP
+     DEM tiles) onto the desktop and read them locally with geopandas -- both
+     libraries are now installed and working in both environments.

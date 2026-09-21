@@ -1,0 +1,29 @@
+{
+  "mosaic_urls": [
+    "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer/exportImage?bbox=506260.914359%2C4407795.492952%2C509093.652689%2C4409388.908263&bboxSR=32613&imageSR=32613&size=3200%2C1800&format=tiff&f=image&adjustAspectRatio=false",
+    "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer/exportImage?bbox=509093.652689%2C4407795.492952%2C511926.391018%2C4409388.908263&bboxSR=32613&imageSR=32613&size=3200%2C1800&format=tiff&f=image&adjustAspectRatio=false",
+    "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer/exportImage?bbox=506260.914359%2C4406202.077642%2C509093.652689%2C4407795.492952&bboxSR=32613&imageSR=32613&size=3200%2C1800&format=tiff&f=image&adjustAspectRatio=false",
+    "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer/exportImage?bbox=509093.652689%2C4406202.077642%2C511926.391018%2C4407795.492952&bboxSR=32613&imageSR=32613&size=3200%2C1800&format=tiff&f=image&adjustAspectRatio=false"
+  ],
+  "size_px": [
+    6400,
+    3600
+  ],
+  "res_m": 0.8852307279708111,
+  "extent_utm13n": [
+    506260.9143594065,
+    4406202.07764191,
+    511926.3910184197,
+    4409388.908262605
+  ],
+  "scenes": [
+    [
+      "m_3910409_ne_13_060_20190803",
+      2019,
+      "2019-08-03",
+      0.6,
+      "METER",
+      "USDA-FSA-APFO"
+    ]
+  ]
+}

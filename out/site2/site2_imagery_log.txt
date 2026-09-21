@@ -1,0 +1,25 @@
+[   0.1s] extent EPSG:32618  356991.4 4117266.1 360840.0 4119430.9  (3849 x 2165 m)
+[   0.1s] mosaic 6400 x 3600 px -> 0.601 m/px (2x2 tiles of 3200 px, server cap 4000)
+[   9.0s]   tile 0,0 OK (24580598 bytes)
+[  19.1s]   tile 0,1 OK (24580598 bytes)
+[  32.9s]   tile 1,0 OK (24580598 bytes)
+[  48.2s]   tile 1,1 OK (24580598 bytes)
+[  49.7s] wrote naip_site2.tif  48.8 MB
+[  49.9s]   quad 00 mean 133.53 std 49.45
+[  50.0s]   quad 01 mean 118.09 std 39.15
+[  50.1s]   quad 10 mean 128.01 std 48.15
+[  50.3s]   quad 11 mean 123.06 std 45.14
+[  50.4s]   NAIP scene: ['m_3707652_nw_18_060_20231010', 2023, '2023-10-10', 0.6, 'METER', 'USDA-FSA-APFO']
+[  50.4s] TIGERweb context:
+[  51.0s]   roads_primary      L2  -> 2 features
+[  51.4s]      named (1): I- 64
+[  51.4s]   roads_secondary    L6  -> 9 features
+[  51.8s]      named (7): Jefferson Ave, Pocahontas Trl, State Rte 143, State Rte 238, US Hwy 60, Warwick Blvd, Yorktown Rd
+[  52.0s]   roads_local        L8  -> 85 features
+[  52.4s]      named (45): Angel Ct, B A S F Dr, Beckie Ln, Blow Flats Rd, Carleton Rd, Carol Ln, Chelsea Pl, Columbia Dr, Commerce Blvd, Cottage Ln, Creek Ct, Creekmere Cv, Creekpoint Cv, Creekshire Cres
+[  52.5s]   railroads          L9  -> 4 features
+[  52.7s]      named (1): Csx Transportation
+[  52.7s]   hydro_linear       L0  -> 3 features
+[  53.2s]      named (1): Skiffes Crk
+[  53.3s]   hydro_areal        L1  -> 4 features
+[  53.7s]      named (2): Skiffes Crk, Skiffs Creek Reservoir

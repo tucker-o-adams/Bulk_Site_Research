@@ -1,0 +1,374 @@
+{
+  "panel_controls": [
+    {
+      "t": "NFHL Print Tool",
+      "id": "",
+      "x": 255,
+      "y": 147,
+      "w": 398,
+      "h": 35
+    },
+    {
+      "t": "Input\nOutput\nTo print NFHL",
+      "id": "",
+      "x": 255,
+      "y": 351,
+      "w": 398,
+      "h": 373
+    },
+    {
+      "t": "Input\nOutput\nTo print NFHL",
+      "id": "dijit__WidgetBase_3",
+      "x": 255,
+      "y": 351,
+      "w": 398,
+      "h": 373
+    },
+    {
+      "t": "Input\nOutput\nTo print NFHL",
+      "id": "jimu_dijit_TabContainer_0",
+      "x": 255,
+      "y": 337,
+      "w": 398,
+      "h": 345
+    },
+    {
+      "t": "Input\nOutput",
+      "id": "",
+      "x": 255,
+      "y": 179,
+      "w": 398,
+      "h": 30
+    },
+    {
+      "t": "Input",
+      "id": "",
+      "x": 156,
+      "y": 179,
+      "w": 199,
+      "h": 30
+    },
+    {
+      "t": "Output",
+      "id": "",
+      "x": 355,
+      "y": 179,
+      "w": 199,
+      "h": 30
+    },
+    {
+      "t": "To print NFHL FIRMette or ",
+      "id": "jimu_dijit_ViewStack_0",
+      "x": 255,
+      "y": 352,
+      "w": 398,
+      "h": 315
+    },
+    {
+      "t": "To print NFHL FIRMette or ",
+      "id": "",
+      "x": 255,
+      "y": 372,
+      "w": 370,
+      "h": 287
+    },
+    {
+      "t": "To print NFHL FIRMette or ",
+      "id": "",
+      "x": 255,
+      "y": 299,
+      "w": 370,
+      "h": 141
+    },
+    {
+      "t": "To print NFHL FIRMette or ",
+      "id": "",
+      "x": 255,
+      "y": 262,
+      "w": 370,
+      "h": 68
+    },
+    {
+      "t": "",
+      "id": "dijit__TemplatedMixin_1",
+      "x": 255,
+      "y": 333,
+      "w": 370,
+      "h": 64
+    },
+    {
+      "t": "",
+      "id": "jimu_dijit_ViewStack_1",
+      "x": 255,
+      "y": 338,
+      "w": 370,
+      "h": 54
+    },
+    {
+      "t": "",
+      "id": "jimu_dijit_DrawBox_0",
+      "x": 255,
+      "y": 338,
+      "w": 370,
+      "h": 54
+    },
+    {
+      "t": "Size*\nFIRMETTE",
+      "id": "",
+      "x": 255,
+      "y": 416,
+      "w": 370,
+      "h": 54
+    },
+    {
+      "t": "Size*",
+      "id": "",
+      "x": 255,
+      "y": 398,
+      "w": 370,
+      "h": 17
+    },
+    {
+      "t": "Size",
+      "id": "",
+      "x": 83,
+      "y": 398,
+      "w": 26,
+      "h": 17
+    },
+    {
+      "t": "FIRMETTE",
+      "id": "",
+      "x": 255,
+      "y": 427,
+      "w": 370,
+      "h": 32
+    },
+    {
+      "t": "FIRMETTE",
+      "id": "uniqName_17_2",
+      "x": 255,
+      "y": 427,
+      "w": 370,
+      "h": 32
+    },
+    {
+      "t": "FIRMETTE",
+      "id": "",
+      "x": 246,
+      "y": 427,
+      "w": 349,
+      "h": 21
+    },
+    {
+      "t": "FIRMETTE",
+      "id": "",
+      "x": 113,
+      "y": 427,
+      "w": 65,
+      "h": 19
+    },
+    {
+      "t": "\u25bc",
+      "id": "",
+      "x": 431,
+      "y": 427,
+      "w": 16,
+      "h": 19
+    },
+    {
+      "t": "File Format*\nPDF",
+      "id": "",
+      "x": 255,
+      "y": 490,
+      "w": 370,
+      "h": 54
+    },
+    {
+      "t": "File Format*",
+      "id": "",
+      "x": 255,
+      "y": 472,
+      "w": 370,
+      "h": 17
+    },
+    {
+      "t": "File Format",
+      "id": "",
+      "x": 106,
+      "y": 472,
+      "w": 71,
+      "h": 17
+    },
+    {
+      "t": "PDF",
+      "id": "",
+      "x": 255,
+      "y": 501,
+      "w": 370,
+      "h": 32
+    },
+    {
+      "t": "PDF",
+      "id": "uniqName_17_3",
+      "x": 255,
+      "y": 501,
+      "w": 370,
+      "h": 32
+    },
+    {
+      "t": "PDF",
+      "id": "",
+      "x": 246,
+      "y": 501,
+      "w": 349,
+      "h": 21
+    },
+    {
+      "t": "PDF",
+      "id": "",
+      "x": 94,
+      "y": 501,
+      "w": 27,
+      "h": 19
+    },
+    {
+      "t": "\u25bc",
+      "id": "",
+      "x": 431,
+      "y": 501,
+      "w": 16,
+      "h": 19
+    },
+    {
+      "t": "Help\nRun",
+      "id": "",
+      "x": 255,
+      "y": 547,
+      "w": 370,
+      "h": 20
+    },
+    {
+      "t": "Help",
+      "id": "",
+      "x": 163,
+      "y": 560,
+      "w": 185,
+      "h": 45
+    },
+    {
+      "t": "Help",
+      "id": "",
+      "x": 85,
+      "y": 560,
+      "w": 30,
+      "h": 17
+    },
+    {
+      "t": "Run",
+      "id": "",
+      "x": 348,
+      "y": 560,
+      "w": 185,
+      "h": 45
+    },
+    {
+      "t": "Run",
+      "id": "",
+      "x": 330,
+      "y": 555,
+      "w": 150,
+      "h": 35
+    },
+    {
+      "t": "",
+      "id": "widgets_HomeButton_Widget_11",
+      "x": 23,
+      "y": 131,
+      "w": 32,
+      "h": 32
+    },
+    {
+      "t": "",
+      "id": "esri_dijit_HomeButton_0",
+      "x": 23,
+      "y": 131,
+      "w": 30,
+      "h": 30
+    },
+    {
+      "t": "",
+      "id": "widgets_MyLocation_Widget_12",
+      "x": 23,
+      "y": 166,
+      "w": 32,
+      "h": 32
+    }
+  ],
+  "coords_set": false,
+  "print_ok": false,
+  "print_file": null,
+  "net": [
+    [
+      200,
+      "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/21?f=json"
+    ],
+    [
+      200,
+      "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/20?f=json"
+    ],
+    [
+      200,
+      "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/2/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179.1"
+    ],
+    [
+      200,
+      "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/8/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179.1"
+    ],
+    [
+      200,
+      "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/9/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179.1"
+    ],
+    [
+      200,
+      "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/5/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179.1"
+    ],
+    [
+      200,
+      "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/7/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179.1"
+    ],
+    [
+      200,
+      "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/4/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179.1"
+    ],
+    [
+      200,
+      "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/14/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179."
+    ],
+    [
+      200,
+      "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/21/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179."
+    ],
+    [
+      200,
+      "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/13/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179."
+    ],
+    [
+      200,
+      "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/15/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179."
+    ],
+    [
+      200,
+      "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/19/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179."
+    ],
+    [
+      200,
+      "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/12/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179."
+    ],
+    [
+      200,
+      "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/20/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A-11678179."
+    ]
+  ],
+  "total_s": 302.4
+}

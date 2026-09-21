@@ -1,0 +1,103 @@
+goto status=200 url=https://hazards.fema.gov/femaportal/wps/portal/NFHLWMS
+final url: https://hazards.fema.gov/femaportal/wps/portal/NFHLWMS
+title: NOPAGETAB_NFHLWMS
+--- BODY TEXT ---
+Log In |    Need an Account? |  FEMA Dictionary  |  MIP Help?
+Home Studies Post Launch TIPs Tools & Links MIP User Care
+v id="staticrules">
+GIS Web Services for the FEMA National Flood Hazard Layer (NFHL)
+TLS 1.2 with Cipher Suites
+
+Due to recent changes, hazards.fema.gov only supports TLS 1.2 with Cipher Suites. This change impacts Windows 2012 R2 and prior versions, as well any applications that do not support TLS 1.2 with Cipher Suites. For more information, contact Risk MAP IT Help.
+
+Applications that do not support these ciphers include:
+
+IE 11 / Win 7
+IE 11 / Win 8.1
+IE 11 / Win Phone 8.1
+IE 11 / Win Phone 8.1 Update
+Safari 6/ iOS 6.0.1
+Safari 7 / 7.1
+Safari 7 / OS X 10.9
+Safari 8 / iOS 8.4
+Safari 8 / OS X 10.10
+FEMA’s National Flood Hazard Layer
+
+FEMA provides access to the National Flood Hazard Layer (NFHL) through web mapping services. The NFHL is a computer database that contains FEMA.s flood hazard map data. The simplest way for you to access the flood hazard data, including the NFHL, is through FEMAs Map Service Center (MSC). If you want to explore the current digital effective flood hazard data in a map, the best tool to use is the NFHL Viewer. From the NFHL Viewer, you may view, download, and print flood maps for your location
+
+The data depict effective flood hazard information and supporting data used to develop the information. The primary flood hazard classification is indicated in the Flood Hazard Zones layer.
+
+The NFHL layers include:
+
+Flood hazard zones and labels
+River Miles Markers
+Cross-sections and coastal transects and their labels
+Letter of Map Revision (LOMR) boundaries and case numbers
+	
+Flood Insurance Rate Map (FIRM) boundaries, labels and effective dates
+Coastal Barrier Resources System (CBRS) and Otherwise Protected Area (OPA) units
+Community boundaries and names
+Levees
+	
+Hydraulic and flood control structures
+Profile and coastal transect baselines
+Limit of Moderate Wave Action(LiMWA)
+
+Not all effective Flood Insurance Rate Maps (FIRM) have geographic information system (GIS) data available. To view a list of available county and single-jurisdiction flood study data in GIS format and check the status of the NFHL GIS services please visit the NFHL Status Page.
+
+Preliminary & Pending National Flood Hazard Layers
+
+The Preliminary and Pending NFHL dataset represents the current pre-effective flood data for the country. These layers are updated as new preliminary and pending data becomes available, and data is removed from these layers as it becomes effective.
+
+Preliminary & Pending Data
+
+Preliminary data are for review and guidance purposes only. By viewing preliminary data and maps, the user acknowledges that the information provided is preliminary and subject to change. Preliminary data are not final and are presented in this national layer as the best information available at this time. Additionally, preliminary data cannot be used to rate flood insurance policies or enforce the Federal mandatory purchase requiremen
+--- LINKS (39) ---
+                                                https://hazards.fema.gov/femaportal/wps/portal/NFHLWMS#top
+                                                https://hazards.fema.gov/femaportal/wps/portal/portal/miphome/!ut/p/z1/04_Sj9CPykssy0xPLMnMz0vMAfIjo8zivdxdzDwcvQ0C3L0sXQ0CzULCQr1C_QwN3E30w8EKfAI83D38vQ38LQJNjQwCnX0sPf2CLA0NTMz1o0jSb-APUmBibBgQbOoINMmYOP0GOICjAXH68SiIwm98uH4UWAm-EEBVgMWLhCwpyA0NDY0wyPR0VFQEAGWBPHc!/dz/d5/L2dJQSEvUUt3QS80TmxFL1o2X0xQSEdIT0swTzhBNEQwUUNDVEpVTkUxMEc2/
+                                                https://fema.gov/
+  Log In |                                      javascript: void(0)
+  Need an Account?                              https://hazards.fema.gov/femaportal/wps/portal/!ut/p/z1/04_Sj9CPykssy0xPLMnMz0vMAfIjo8zivdxdzDwcvQ0C3L0sXQ0CzULCQr1C_QwN3E30w8EKfAI83D38vQ38LQJNjQwCnX0sPf2CLA0NTMz1o0jSb-APUmBibBgQbOoINMmYOP0GOICjAXH68SiIwm98uH4UWAm-EEBVgMWLhCwpyA0NDY0wyPR0VFQEAGWBPHc!/dz/d5/L2dJQSEvUUt3QS80TmxFL1o2X0xQSEdIT0swTzBGUzkwUUMzRDNRTTUzMDg0/
+  FEMA Dictionary                               https://hazards.fema.gov/femaportal/wps/portal/!ut/p/z1/04_Sj9CPykssy0xPLMnMz0vMAfIjo8zivdxdzDwcvQ0C3L0sXQ0CzULCQr1C_QwN3E30w8EKfAI83D38vQ38LQJNjQwCnX0sPf2CLA0NTMz1o0jSb-APUmBibBgQbOoINMmYOP0GOICjAXH68SiIwm98uH4UWAm-EEBVgMWLhCwpyA0NDY0wyPR0VFQEAGWBPHc!/dz/d5/L2dJQSEvUUt3QS80TmxFL1o2X0xQSEdIT0swTzBGUzkwUUMzRDNRTTUzMDYw/
+  MIP Help?                                     https://hazards.fema.gov/femaportal/wps/portal/!ut/p/z1/04_Sj9CPykssy0xPLMnMz0vMAfIjo8zivdxdzDwcvQ0C3L0sXQ0CzULCQr1C_QwN3E30w8EKfAI83D38vQ38LQJNjQwCnX0sPf2CLA0NTMz1o0jSb-APUmBibBgQbOoINMmYOP0GOICjAXH68SiIwm98uH4UWAm-EEBVgMWLhCwpyA0NDY0wyPR0VFQEAGWBPHc!/dz/d5/L2dJQSEvUUt3QS80TmxFL1o2X0xQSEdIT0swT09DVkEwUUMzTDlHOE4yMDAw/
+  Home                                          https://hazards.fema.gov/femaportal/wps/portal/NFHLWMS?uri=nm:oid:Z6_LPHGHOK0O8A4D0QCCTJUNE10G6&st=
+  Studies Post Launch TIPs                      https://hazards.fema.gov/femaportal/wps/portal/NFHLWMS?uri=nm:oid:Z6_LPHGHOK0O0FS90QC3D3QM530E6&st=
+  Tools & Links                                 https://hazards.fema.gov/femaportal/wps/portal/NFHLWMS?uri=nm:oid:Z6_LPHGHOK0O0O9E0Q431PS5A20M4&st=
+  MIP User Care                                 https://hazards.fema.gov/femaportal/wps/portal/NFHLWMS?uri=nm:oid:Z6_LPHGHOK0OOCVA0QC3L9G8N2000&st=
+  Component Action Menu
+				
+				
+					
+						
+						
+							$ javascript:;
+  Actions                                       javascript:;
+  hazards.fema.gov                              https://hazards.fema.gov/femaportal/wps/portal/hazards.fema.gov
+  Risk MAP IT Help                              mailto:FEMA-RiskMAP-ITHelp@fema.dhs.gov
+  FEMAs Map Service Center (MSC)                https://msc.fema.gov/
+  NFHL Viewer                                   https://msc.fema.gov/nfhl
+  NFHL Status Page                              https://www.floodmaps.fema.gov/NFHL/status.shtml
+  preliminary FEMA Map Products page            https://hazards.fema.gov/femaportal/prelimdownload/
+  Flood Map Changes Viewer (FMCV)               https://msc.fema.gov/fmcv
+  Preliminary National Flood Hazard Layer webpage https://www.fema.gov/view-your-communitys-preliminary-flood-hazard-data-0
+  site                                          https://www.fema.gov/flood-maps/national-flood-hazard-layer
+  NFHL on FEMA GeoPlatform                      https://hazards-fema.maps.arcgis.com/apps/webappviewer/index.html?id=8b0adb51996444d4879338b5529aa9cd
+  Base Map Standards (420)                      https://pm.riskmapcds.com/kss/Lists/KSS_Standards2/DispForm.aspx?ID=2566
+  https://riskmapportal.msc.fema.gov/kss/MapChanges/default.as https://riskmapportal.msc.fema.gov/kss/MapChanges/default.aspx
+  MSC                                           https://msc.fema.gov/portal/advanceSearch
+  an example of a WFS GetFeature request for the Flood Hazard  https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/WFSServer?SERVICE=WFS&VERSION=1.1.0&REQUEST=GetFeature&TYPENAME=public_NFHL%3AFlood_Hazard_Zones&BBOX=40.779527%2C-72.788755%2C40.789527%2C-72.778755%2Curn%3Aogc%3Adef%3Acrs%3AEPSG%3A6.9%3A4269&MAXFEATURES=1000
+  the topic on the ESRI help site               https://resources.arcgis.com/en/help/main/10.1/index.html#//0154000004rz000000
+  Risk MAP IT Help                              mailto:FEMA-RiskMAP-ITHelp@fema.dhs.gov
+  DHS.gov                                       https://www.dhs.gov/
+  FEMA.gov                                      https://fema.gov/
+  Privacy Policy                                https://www.fema.gov/privacy-comment-policy
+  Terms of Use                                  https://hazards.fema.gov/femaportal/wps/portal/!ut/p/z1/04_Sj9CPykssy0xPLMnMz0vMAfIjo8zivdxdzDwcvQ0C3L0sXQ0CzULCQr1C_QwN3E30w8EKfAI83D38vQ38LQJNjQwCnX0sPf2CLA0NTMz1o0jSb-APUmBibBgQbOoINMmYOP0GOICjAXH68SiIwm98uH4UWAm-EEBVgMWLhCwpyA0NDY0wyPR0VFQEAGWBPHc!/dz/d5/L2dJQSEvUUt3QS80TmxFL1o2X0xQSEdIT0swTzBGUzkwUUMzRDNRTTUzMDY3/
+  Accessibility                                 https://www.fema.gov/accessibility
+  Site Help                                     https://www.fema.gov/website-resources
+  Site Map                                      https://hazards.fema.gov/femaportal/wps/portal/!ut/p/z1/04_Sj9CPykssy0xPLMnMz0vMAfIjo8zivdxdzDwcvQ0C3L0sXQ0CzULCQr1C_QwN3E30w8EKfAI83D38vQ38LQJNjQwCnX0sPf2CLA0NTMz1o0jSb-APUmBibBgQbOoINMmYOP0GOICjAXH68SiIwm98uH4UWAm-EEBVgMWLhCwpyA0NDY0wyPR0VFQEAGWBPHc!/dz/d5/L2dJQSEvUUt3QS80TmxFL1o2X0lJQzYxMjgwUDhUTEIwUUlTU1RLM0MzMDAx/
+  Contact Us                                    https://www.fema.gov/contact-us
+  Deferred Modules                              https://hazards.fema.gov/femaportal/wps/contenthandler/!ut/p/digest!cHjRKn-eUv59BtO81BV89w/mashup/ra:collection?themeID=ZJ_LPHGHOK0O0KV80QKQLJ6KR10K7&locale=en&mime-type=text%2Fjavascript&lm=1787231717000&entry=wp_liveobject_framework_core__0.0%3Aconfig_js&entry=wp_portal_ui_utils__0.0%3Aconfig_js&entry=wp_contextmenu_js__0.0%3Aconfig_js&entry=wp_skin_cam__0.0%3Aconfig_js&entry=wp_contextmenu_config_lof__0.0%3Aconfig_js&entry=wp_federated_documents_picker__0.0%3Aconfig_js&entry=wp_dnd_main__0.0%3Aconfig_js&entry=wp_movecontrols__0.0%3Aconfig_js&entry=wp_toolbar_controlactions__0.0%3Aconfig_js&entry=wp_content_targeting_cam__0.0%3Aconfig_js&entry=wp_analytics_tags__0.0%3Aconfig_js&deferred=true
+  Deferred Modules                              https://hazards.fema.gov/femaportal/wps/contenthandler/!ut/p/digest!MOed0N96AJ6hDDsIZZMTuQ/mashup/ra:collection?themeID=ZJ_LPHGHOK0O0KV80QKQLJ6KR10K7&locale=en&mime-type=text%2Fplain&entry=wp_contextmenu_templates__0.0%3Aconfig_markup&entry=wp_skin_cam__0.0%3Aconfig_markup&entry=wp_dnd_main__0.0%3Aconfig_markup&deferred=true
+--- FRAMES ---
+https://hazards.fema.gov/femaportal/wps/portal/NFHLWMS
+

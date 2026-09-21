@@ -1,0 +1,18 @@
+[   2.4s] ENTRY https://hazards.fema.gov/femaportal/wps/portal/NFHLWMS -> HTTP 200 (1.8s) - documentation page, not the viewer
+[   2.5s] followed its "NFHL Viewer" link -> https://msc.fema.gov/nfhl
+[   9.4s] https://msc.fema.gov/nfhl -> redirected to https://hazards-fema.maps.arcgis.com/apps/webappviewer/index.html?id=8b0adb51996444d4879338b5529aa9cd
+[  46.1s] dismissed 3 modal dialog button(s)
+[  50.1s] viewer loaded + map rendered (40.7s)
+[  51.8s] typed "39.819984, -104.893607" into the viewer search box
+[  69.8s] search submitted; box reads "39.819984, -104.893607"
+[  69.8s] visible result popup elements: 1
+[ 119.7s] dismissed 3 modal dialog button(s)
+[ 126.3s] full-page screenshot -> out/nfhl_viewer_screenshot.png (2763 KB, 56.0s)
+[ 126.3s] opened NFHL Print Tool
+[ 131.4s] pin control not found by name; widget has 1 buttons, clicking the first
+[ 137.4s] fallback pin click failed: Locator.click: Timeout 6000ms exceeded.
+Call log:
+  - waiting for locator("div[role=dialog] button, .jimu-widget button"
+[ 139.4s] clicked map at (1150,560) to drop the print pin
+[ 146.0s] no Execute button visible; widget body text follows
+[ 146.0s] NFHL Print Tool |   No preconfigured geoprocessing task available. |    |      |      |    | InputOutput |       input_latinput_lonTo print NFHL FIRMette or Full FIRM:1) Click the pin tool, and click on the map to place the pin. 2) Choose to create a print-size FIRMette or full-size FIRM. 3) Press "Execute" - The process may take up to 1 minute.* |    |    |  |    | 	 | 		 | 		 | 		 | 		 | 		 | 		 | 		 | 		 | 		 | 		 | 		 | 		 | 		 | 	 |  |   Size*FIRMETTEFile Format*PDF |        |          |           Help |          |          |           Run |          |        |      |        |           |          |        |        |     

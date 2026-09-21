@@ -1,0 +1,30 @@
+{
+  "extent": [
+    356991.3916932466,
+    4117266.1106843906,
+    360839.98463690834,
+    4119430.9442152004
+  ],
+  "crs": 32618,
+  "size_px": [
+    6400,
+    3600
+  ],
+  "res_m": 0.6013426474471453,
+  "urls": [
+    "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer/exportImage?bbox=356991.391693%2C4118348.527450%2C358915.688165%2C4119430.944215&bboxSR=32618&imageSR=32618&size=3200%2C1800&format=tiff&f=image&adjustAspectRatio=false",
+    "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer/exportImage?bbox=358915.688165%2C4118348.527450%2C360839.984637%2C4119430.944215&bboxSR=32618&imageSR=32618&size=3200%2C1800&format=tiff&f=image&adjustAspectRatio=false",
+    "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer/exportImage?bbox=356991.391693%2C4117266.110684%2C358915.688165%2C4118348.527450&bboxSR=32618&imageSR=32618&size=3200%2C1800&format=tiff&f=image&adjustAspectRatio=false",
+    "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer/exportImage?bbox=358915.688165%2C4117266.110684%2C360839.984637%2C4118348.527450&bboxSR=32618&imageSR=32618&size=3200%2C1800&format=tiff&f=image&adjustAspectRatio=false"
+  ],
+  "scenes": [
+    [
+      "m_3707652_nw_18_060_20231010",
+      2023,
+      "2023-10-10",
+      0.6,
+      "METER",
+      "USDA-FSA-APFO"
+    ]
+  ]
+}

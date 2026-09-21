@@ -1,0 +1,33 @@
+[   0.0s] geocode (Esri World Geocoding, score 100): -76.589452, 37.201089
+[   0.5s]   VGIN parcel HTTP 200 -> 1 features (attempt 1)
+[   0.6s] PARCEL: id=6010200001 locality=James City County FIPS=51095
+[   0.6s]   vertices=78  interior rings=0
+[   0.6s]   centroid -76.5891982, 37.2011340
+[   0.6s]   area EPSG:5070 = 135072.34 m2 = 33.3771 acres
+[   0.6s]   bbox [-76.5933088, 37.1984678, -76.5862795, 37.2034494]
+[   0.6s]   last updated 2026-04-06
+[   1.6s]   TIGERweb county HTTP 200 -> 1 features (attempt 1)
+[   1.6s] COUNTY:
+[   1.6s]   GEOID 51095  James City County          135072.3 m2  100.00%
+[   1.9s] FEMA NFHL:
+[   7.6s]   L28 S_FLD_HAZ_AR HTTP 200 -> 2 features (attempt 1)
+[   8.6s]   clipped features: 2
+[   8.6s]    A      nan                                SFHA=T BFE=-9999    0.0683 ac    0.20%
+[   8.6s]    X      AREA OF MINIMAL FLOOD HAZARD       SFHA=F BFE=-9999   33.3088 ac   99.80%
+[   8.6s]   --- per zone ---
+[   8.6s]    A      nan                                SFHA=T    0.0683 ac    0.20%
+[   8.6s]    X      AREA OF MINIMAL FLOOD HAZARD       SFHA=F   33.3088 ac   99.80%
+[   8.6s]   TOTAL SFHA: 0.0683 ac (0.20% of parcel)
+[   8.6s]   mapped total: 33.3771 ac (100.00%)
+[   9.0s]   L3 S_FIRM_PAN HTTP 200 -> 3 features (attempt 1)
+[   9.0s]   panels intersecting: 3
+[   9.0s]    DFIRM 51199C  51199C0105D   eff 2015-01-16
+[   9.0s]    DFIRM 510103  5101030029D   eff 2014-12-09
+[   9.0s]    DFIRM 51095C  51095C0229D   eff 2015-12-16
+[   9.0s]   kept (DFIRM matches county 51095): 1
+[   9.5s]   L22 S_POL_AR HTTP 200 -> 1 features (attempt 1)
+[   9.5s]   political areas:
+[   9.5s]    James City County Unincorporated Areas CID 510201  ANI=F  100.00%
+[   9.7s]   no ANI area on this parcel
+[   9.8s]   L0 NFHL Availability HTTP 200 -> 1 features (attempt 1)
+[   9.8s]   NFHL study coverage of parcel: 100.00% (studies ['51095C'])

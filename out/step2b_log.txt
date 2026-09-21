@@ -1,0 +1,7 @@
+layer 22 HTTP 200 OK on attempt 1 (2 features)
+layer 0 HTTP 200 OK on attempt 1 (1 features)
+layer 27 attempt 1 ERROR {"code": 400, "message": "Failed to execute query.", "details": []}
+layer 27 attempt 2 ERROR {"code": 400, "message": "Failed to execute query.", "details": []}
+layer 27 attempt 3 ERROR {"code": 400, "message": "Failed to execute query.", "details": []}
+layer 27 attempt 4 ERROR {"code": 400, "message": "Failed to execute query.", "details": []}
+layer 27 attempt 5 ERROR {"code": 400, "message": "Failed to execute query.", "details": []}

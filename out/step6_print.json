@@ -1,0 +1,20 @@
+{
+  "coords_filled": false,
+  "print_ok": false,
+  "print_file": null,
+  "network": [
+    [
+      200,
+      "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer?f=json"
+    ],
+    [
+      200,
+      "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/33?f=json"
+    ],
+    [
+      200,
+      "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/export?dpi=96&transparent=true&format=png32&layers=show%3A0%2C2%2C4%2C5%2C7%2C8%2C9%2C12%2C13%2C14%2C15%2C18%2C19%2C20%2C21&bbox=-11678996.029558174%2C4838575.122511948%2C-11674409.807860944%2C4841059.325931282&bboxSR=102100&imageSR=102100&size=1920%2C1040&f=image"
+    ]
+  ],
+  "total_s": 108.0
+}

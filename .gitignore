@@ -1,0 +1,23 @@
+# --- Python environment ---
+.venv_fema/
+__pycache__/
+*.pyc
+
+# --- Claude Code local settings (machine-specific permissions) ---
+.claude/settings.local.json
+
+# --- LinkedIn email export and everything derived from it (personal data, 588 MB) ---
+Linkedin_Job_Alerts.mbox
+messages.csv
+companies.csv
+postings.csv
+
+# --- Large downloads / rebuildable rasters (GitHub hard limit is 100 MB per file) ---
+fema-flood-figure-toolkit.zip
+fema-flood-figure-toolkit-slim.zip
+out/**/*.tif
+out/**/*.png
+out/**/*.gpkg
+
+# --- Office lock files ---
+~$*

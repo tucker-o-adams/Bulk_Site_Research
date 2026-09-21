@@ -1,0 +1,27 @@
+[  27.7s] dismissed 3 dialogs
+[  32.7s] opened NFHL Print Tool
+[  38.7s] widget controls:
+[  38.7s]    {"i": 1, "tag": "INPUT", "id": "dijit_form_NumberTextBox_0", "cls": "dijitReset dijitInputInner", "txt": "29.877", "vis": false}
+[  38.7s]    {"i": 4, "tag": "INPUT", "id": "dijit_form_NumberTextBox_1", "cls": "dijitReset dijitInputInner", "txt": "-81.2837", "vis": false}
+[  38.7s]    {"i": 27, "tag": "DIV", "id": "esri_dijit_Search_0_menu_button", "cls": "searchBtn searchToggle", "txt": "ArcGIS World Geocoding Servi", "vis": false}
+[  38.7s]    {"i": 28, "tag": "INPUT", "id": "esri_dijit_Search_0_input", "cls": "searchInput firstFocusNode", "txt": "", "vis": true}
+[  38.7s]    {"i": 30, "tag": "DIV", "id": "", "cls": "searchBtn searchSubmit lastFocusNode", "txt": "Search", "vis": true}
+[  38.7s]    {"i": 31, "tag": "DIV", "id": "", "cls": "coordinate-locate jimu-float-leading firstFoc", "txt": "", "vis": true}
+[  38.7s]    {"i": 33, "tag": "DIV", "id": "", "cls": "home", "txt": "", "vis": true}
+[  38.7s]    {"i": 34, "tag": "DIV", "id": "", "cls": "zoom zoom-in jimu-corner-top firstFocusNode", "txt": "+", "vis": true}
+[  38.7s]    {"i": 35, "tag": "DIV", "id": "", "cls": "zoom zoom-out jimu-corner-bottom lastFocusNod", "txt": "\u2013", "vis": true}
+[  38.7s]    {"i": 39, "tag": "DIV", "id": "", "cls": "jimu-widget-attributetable-switch close", "txt": "", "vis": true}
+[  38.7s]    {"i": 40, "tag": "A", "id": "", "cls": "", "txt": "", "vis": true}
+[  38.7s]    {"i": 44, "tag": "DIV", "id": "", "cls": "icon-node jimu-float-trailing", "txt": "", "vis": true}
+[  38.7s]    {"i": 45, "tag": "DIV", "id": "", "cls": "icon-node jimu-float-trailing", "txt": "", "vis": true}
+[  39.4s] Run control visible: False
+[  54.4s] no download event: Locator.click: Timeout 15000ms exceeded.
+Call log:
+  - waiting for locator(".jimu-widget :text-is(\"Run\"), div[role=button]:has-text(\"Run\"), .jimu-btn:has-text(\"Run\")").first
+    - locator resolv
+[ 108.0s] output tab: Locator.click: Timeout 8000ms exceeded.
+Call log:
+  - waiting for locator(":text-is(\"Output\")").first
+    - locator resolved to <div tabindex="-1" l
+[ 108.0s] pdf/png links in DOM: []
+[ 108.0s] GP/PDF network responses seen: [[200, "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer?f=json"], [200, "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/33?f=json"], [200, "https://hazards.fema.gov/arcgis/rest/services/FIRMette/NFHLREST_FIRMette/MapServer/export?dpi=96&transparent=true&format=png32&layers=show%3A0%2C2%2C4%2C5%2C7%2C8%2C9%2C12%2C13%2C14%2C15%2C18%2C19%2C20%2C21&bbox=-11678996.029558174%2C4838575.122511948%2C-11674409.807860944%2C4841059.325931282&bboxSR=102100&imageSR=102100&size=1920%2C1040&f=image"]]
