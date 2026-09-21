@@ -1,6 +1,6 @@
 {
- "run_at": "2026-09-21T20:33:22+00:00",
- "elapsed_s": 48.5,
+ "run_at": "2026-09-21T21:47:20+00:00",
+ "elapsed_s": 65.2,
  "input": {
   "path": "E:\\Claude\\Projects\\TBDI Modeling\\Mireye\\scripts\\bulk\\fixtures\\windstream_200.csv",
   "sha256": "221d226bfd053d1567f5bb78718bbb7ccc46428aa352fd520ed99924948e5f5d"
@@ -108,10 +108,52 @@
     "ok": 1819,
     "absent": 581
    }
+  },
+  "metro": {
+   "source": "Census TIGERweb 2020 Urban Areas (POP100 = Census 2020 count)",
+   "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Urban/MapServer/0",
+   "vintage": "2020",
+   "fields": [
+    "metro_urban_area_at_point",
+    "metro_urban_area_at_point_pop",
+    "metro_250k_nearest_name",
+    "metro_250k_nearest_m",
+    "metro_250k_nearest_pop",
+    "metro_1m_nearest_name",
+    "metro_1m_nearest_m",
+    "metro_1m_nearest_pop"
+   ],
+   "status_counts": {
+    "ok": 1349,
+    "absent": 251
+   }
+  },
+  "datacenter": {
+   "source": "PeeringDB facility list (Reference/peeringdb.kmz)",
+   "url": "https://www.peeringdb.com/",
+   "vintage": null,
+   "fields": [
+    "dc_nearest_m",
+    "dc_nearest_name",
+    "dc_nearest_city",
+    "dc_nearest_state",
+    "dc_nearest_networks",
+    "dc_nearest_peeringdb_url",
+    "dc_hub_nearest_m",
+    "dc_hub_nearest_name",
+    "dc_hub_nearest_city",
+    "dc_hub_nearest_networks",
+    "dc_count_within_25km",
+    "dc_count_within_50km",
+    "dc_max_networks_within_50km"
+   ],
+   "status_counts": {
+    "ok": 2600
+   }
   }
  },
  "cache": {
-  "hits": 1232,
-  "misses": 190
+  "hits": 1442,
+  "misses": 380
  }
 }
