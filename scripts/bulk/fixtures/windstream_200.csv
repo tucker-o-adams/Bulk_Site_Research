@@ -1,0 +1,201 @@
+site_id,lat,lng,name,address,state,county,group,notes,city,land_ownership,asset_type,primary_use,rack_count
+ABRDNCXA,35.13471956,-79.4267825499999,WNS1899,211 North Poplar Street,NC,,Interesting,,Aberdeen,Owned,Building,Central Office,27
+ADELGAXA,31.13789183,-83.4224465199999,WNS1464,106 North Parrish Avenue,GA,,Other,,Adel,Owned,Building,Central Office,27
+ANWOIAXO,41.2891466499999,-91.5551446799999,WNS0433,240 5th Street,IA,,Other,,Ainsworth,Owned,Building,Central Office,8
+ALCHFL01,29.80235134,-82.49220798,WNS1425,13715 West County Road 235,FL,,Other,,Alachua,Owned,Building,Central Office,4
+ALCHFLAJ,29.78938708,-82.4958955799999,,14600 Main Street,FL,,Other,,Alachua,Owned,Building,Central Office,#N/A
+ALCHFLXA,29.7894,-82.4962,WNS1426,14600 Main St,FL,,Other,,Alachua,Owned,Building,Central Office,32
+ALBYKYXA,36.6930220799999,-85.13449812,WNS1699,400 N Washington,KY,,Other,,Albany,Owned,Building,Central Office,38
+ALBMNCXA,35.3540421499999,-80.19909173,WNS1901,250 North 1st Street,NC,,Interesting,,Albemarle,Owned,Building,Central Office,55
+ALBIIAXO,41.0259585599999,-92.80564617,WNS0435,202 Washington Avenue E,IA,,Other,,Albia,Owned,Building,Central Office,13
+ANDRTXXA,32.31761412,-102.5477171,WNS2514,112 Southwest 1st,TX,,Other,,Andrews,Owned,Building,Central Office,46
+ASLDKYXA,38.4758,-82.64385,WNS1701,619 15th Street,KY,,Interesting,,Ashland,Owned,Building,Central Office,232
+MEDSKYXA,38.4096499699999,-82.71303235,WNS1703,9216 Highway 60,KY,,Interesting,,Ashland,Owned,Building,Central Office,76
+ADBNIAXO,41.72127167,-94.9293833299999,WNS1601,620 LEROY,IA,,Other,,Audubon,Owned,Building,Central Office,30
+AURROHXA,41.31715803,-81.3465993899999,WNS2239,27 East  Garfield Road,OH,,Other,,Aurora,Owned,Building,Central Office,70
+BNBGOHXA,41.3856989499999,-81.34062923,WNS1052,8425 Baindridge Road,OH,,Interesting,,Bainbridge,Owned,Building,Central Office,64
+CRNLGA01,34.4972084699999,-83.54997767,WNS0048,2000 Communications Boulevard,GA,,Interesting,,Baldwin,Owned,Building,Central Office,11
+BBVLKYXA,36.86533403,-83.88827335,WNS1705,207 South Main Street,KY,,Other,,Barbourville,Owned,Building,Central Office,28
+FRVWOHXA,40.0594973999999,-81.22041851,WNS2241,32699 Old National Road,OH,,Interesting,,Barnesville,Owned,Building,Central Office,28
+BEREKYXA,37.57334353,-84.2857390799999,WNS1709,310 Center Street,KY,,Other,,Berea,Owned,Building,Central Office,90
+SHBGKYAB,38.2426062099999,-83.87447858,,160 Old Highway 11,KY,,Other,,BETHEL,Owned,Building,Central Office,3
+BLVIGABW,34.8640250999999,-83.9848088499999,WNS3282,40 River Road Connector,GA,,Interesting,,Blairsville,Owned,Building,Central Office,2
+BLKLGAXA,31.3825399999999,-84.957519,WNS0261,15166 River St,GA,,Other,,Blakely,Owned,Building,Central Office,35
+BRFRFLXA,29.96008262,-82.9279976299999,,108 Drane St Nw| Branford| FL| 32008,FL,,Other,,Branford,Owned,Building,Central Office,20
+BRHDKYXA,37.3416834599999,-84.44990833,,4297 Highway 70,KY,,Other,,BRODHEAD,Owned,Building,Central Office,14
+BRAROKXA,36.0526137,-95.7918259599999,WNS2324,114 West Broadway,OK,,Other,,Broken Arrow,Owned,Building,Central Office,150
+BRAROKXC,35.99867768,-95.7968520799999,WNS2325,5301 South Elm Place W,OK,,Other,,Broken Arrow,Owned,Building,Central Office,109
+BRAROKXD,36.0896024099999,-95.7905582,WNS2327,201 East Omaha Street,OK,,Other,,Broken Arrow,Owned,Building,Central Office,106
+BRAROKXE,36.0615241599999,-95.68429788,WNS2326,1025 North 84th Street,OK,,Other,,Broken Arrow,Owned,Building,Central Office,38
+BKVLKYXA,38.6825019999999,-84.067487,WNS1712,202 Madison St,KY,,Other,,Brooksville,Owned,Building,Central Office,16
+BWFDTXXA,33.1772204099999,-102.274424499999,,101 East Tate,TX,,Other,,Brownfield,Owned,Building,Central Office,93
+BRSDKYXA,36.98978863,-84.5993733199999,WNS1715,53 E French Ave 03,KY,,Other,,BURNSIDE,Owned,Building,Central Office,41
+CAIRGAXA,30.8785318,-84.2089730499999,WNS1480,48 2nd Avenue,GA,,Other,,Cairo,Owned,Building,Central Office,37
+CLHNFLXA,30.56435631,-81.8314212899999,WNS1430,45403 Green Avenue,FL,,Other,,Callahan,Owned,Building,Central Office,44
+CMVLKYXA,37.342599,-85.3439159999999,WNS1718,303 E Broadway,KY,,Other,,Campbellsville,Owned,Building,Central Office,85
+CNTNGAXA,34.23610953,-84.4906549899999,WNS1482,190 South Church Street,GA,,Interesting,,Canton,Owned,Building,Central Office,81
+CECLOHXA,41.2181456499999,-84.6021258899999,WNS2243,105 North Main Street,OH,,Other,,CECIL,Owned,Building,Central Office,5
+CNVLIAXO,40.7322668999999,-92.8761186699999,WNS0461,236 West Maple Street,IA,,Other,,Centerville,Owned,Building,Central Office,19
+CNVLGAXA,32.6234985899999,-83.6879990999999,WNS1487,109 Gunn Road,GA,,Other,,Centerville,Owned,Building,Central Office,23
+CHRDOHXA,41.5812845399999,-81.2021328499999,WNS2244,205 South Hambden Street,OH,,Interesting,,Chardon,Owned,Building,Central Office,100
+CHRTIAXC,41.0162491099999,-93.30642589,WNS1606,220 North Grand Chariton,IA,,Other,,Chariton,Owned,Building,Central Office,32
+CHWOGAXA,34.76833751,-84.76820927,WNS1488,220 North 2nd Avenue,GA,,Interesting,,Chatsworth,Owned,Building,Central Office,40
+CHTHOKXD,35.47096122,-95.52363062,,115 Northwest 1st Street,OK,,Other,,Checotah,Owned,Building,Central Office,21
+CHGVNCXA,35.55692203,-80.59588229,WNS1906,1525 South Main Street,NC,,Interesting,,China Grove,Owned,Building,Central Office,38
+CLRDIAXT,40.7405471699999,-95.03873151,WNS1607,115 West Chestnut Street,IA,,Other,,Clarinda,Owned,Building,Central Office,24
+CLVLGAXA,34.61483837,-83.52435581,WNS1489,390 Jefferson Street,GA,,Interesting,,Clarkesville,Owned,Building,Central Office,25
+CLEVGAXA,34.59702662,-83.7661271599999,WNS1491,158 West Kytle Street,GA,,Interesting,,Cleveland,Owned,Building,Central Office,124
+CLSTOHXA,41.3129062399999,-81.9161510299999,WNS2248,25038 Royalton Road,OH,,Other,,Columbia Station,Owned,Building,Central Office,24
+CLJTIAWH,41.28189291,-91.38120865,WNS3288,326 Hilltop Drive,IA,,Other,,Columbus Junction,Owned,Building,Central Office,2
+CMRCGAXA,34.2039764199999,-83.4594712199999,WNS1495,45 Georgia Avenue,GA,,Interesting,,Commerce,Owned,Building,Central Office,128
+CLDGTXXA,31.75403928,-96.64933392,WNS2557,102 S Second,TX,,Other,,Coolidge,Owned,Building,Central Office,23
+CRNLGAXA,34.5145162099999,-83.52818003,WNS3179,350 North Main Street,GA,,Interesting,,Cornelia,Owned,Building,Central Office,77
+COWTOKXB,35.95075827,-95.6516158099999,WNS2335,124 West Sycamore Street,OK,,Other,,Coweta,Owned,Building,Central Office,49
+CRESIAXO,43.37396074,-92.1173488499999,WNS1610,118 2nd Avenue W,IA,,Other,,Cresco,Owned,Building,Central Office,20
+CETNIAXC,41.0581730099999,-94.36359446,WNS0057,117 North Elm Street,IA,,Other,,Creston,Owned,Building,Central Office,24
+CRSTARXA,33.1282574299999,-91.96229117,WNS1356,104 West 6th Avenue,AR,,Other,,Crossett,Owned,Building,Central Office,36
+CMLDKYXA,36.9772090299999,-82.99018402,WNS1724,309 Main Street,KY,,Other,,Cumberland,Owned,Building,Central Office,26
+DHLNGAXA,34.53542378,-83.98251372,WNS1498,200 Boyd Circle,GA,,Interesting,,Dahlonega,Owned,Building,Central Office,50
+DLRKARXA,34.03811246,-92.88737906,WNS1358,13 Dallas 311,AR,,Other,,Dalark,Leased/Easement,Building,Central Office,6
+DLHRTXXA,36.0601455099999,-102.5215033,WNS2567,601 Denver Avenue,TX,,Other,,Dalhart,Owned,Building,Central Office,20
+DLTNGAXD,34.6750547199999,-84.9663878399999,WNS1500,350 Cross Plains Blvd,GA,,Interesting,,Dalton,Owned,Building,Central Office,18
+DWSNGAXA,31.7742450299999,-84.4456435299999,WNS1504,163 Stonewall Street NE,GA,,Other,,Dawson,Owned,Building,Central Office,35
+DELTOHXA,41.5749082299999,-84.0076585099999,WNS2259,201 Monroe Street,OH,,Other,,Delta,Owned,Building,Central Office,26
+DMMTTXXA,34.5517060099999,-102.311284299999,WNS2575,113 Northeast 2nd Street,TX,,Other,,Dimmitt,Owned,Building,Central Office,28
+DNVLGAXA,31.0413469699999,-84.8845435,WNS1509,202 Knox Street,GA,,Other,,Donalsonville,Owned,Building,Central Office,30
+DNSNIAXO,40.6428221999999,-91.56532493,WNS0481,517 Elm Street,IA,,Other,,Donnellson,Owned,Building,Central Office,21
+DUMSTXXA,35.85904172,-101.974124399999,WNS2579,116 West 7th Street,TX,,Other,,Dumas,Owned,Building,Central Office,74
+DYVLIAXO,42.4840607399999,-91.1230571899999,WNS1624,116 2nd Street,IA,,Other,,Dyersville,Owned,Building,Central Office,26
+EDWDIAXO,42.6451855999999,-91.40056771,,105 E MAIN,IA,,Other,,Edgewood,Owned,Building,Central Office,4
+ELYROHXA,41.36574092,-82.1099927799999,WNS2262,363 3rd Street,OH,,Interesting,,Elyria,Owned,Building,Central Office,159
+ELYROHXB,41.3846400899999,-82.07799558,WNS2263,400 Abbe Norht Road,OH,,Other,,Elyria,Owned,Building,Central Office,52
+ELYROHXE,41.3999024199999,-82.1325053799999,WNS2264,41786 Griswald Road,OH,,Other,,Elyria,Owned,Building,Central Office,33
+EMBGIAXP,43.11080562,-94.6673863299999,WNS3292,1301 10th Street,IA,,Other,,Emmetsburg,Owned,Building,Central Office,23
+EVRSKYXA,36.8618690699999,-83.1824016099999,WNS1728,159 E. Main St,KY,,Other,,EVARTS,Owned,Building,Central Office,42
+FRFDIAXC,41.00742291,-91.9658781199999,WNS1627,204 West Broadway,IA,,Other,,Fairfield,Owned,Building,Central Office,40
+FTZGGAXA,31.71514352,-83.2537944099999,WNS1514,110 East Central,GA,,Other,,Fitzgerald,Owned,Building,Central Office,92
+RSSLKYXB,38.51718043,-82.7220606199999,WNS1730,2400 Argillite Road,KY,,Other,,FLATWOODS,Owned,Building,Central Office,73
+FMBGKYXA,38.4249156799999,-83.73666597,WNS1732,226 West Water Street,KY,,Other,,FLEMINGSBURG,Owned,Building,Central Office,69
+FLTNGAXA,30.8294520799999,-82.00521745,WNS1515,201 East Martin Street,GA,,Other,,Folkston,Owned,Building,Central Office,25
+FRDYARXA,33.81287436,-92.4135129099999,WNS1367,308 North Oak Street,AR,,Other,,Fordyce,Owned,Building,Central Office,36
+FRCYIAXO,43.2657654699999,-93.63893779,WNS0504,145 West L Street,IA,,Other,,Forest City,Owned,Building,Central Office,15
+GENVOHXA,41.80531692,-80.94567163,WNS2267,37 South Forest Street,OH,,Interesting,,Geneva,Owned,Building,Central Office,25
+GRVIOHXA,40.06756012,-82.5189784699999,WNS2268,131 East Broadway,OH,,Interesting,,Granville,Owned,Building,Central Office,24
+GNBRARXA,35.2326627699999,-92.38835084,WNS1370,9 South Broadview Street,AR,,Other,,Greenbrier,Owned,Building,Central Office,64
+GNFDIAAJ,41.2948208099999,-94.46017161,WNS3295,South Townline Road,IA,,Other,,Greenfield,Owned,Building,Central Office,0
+GNUPKYXA,38.5734244699999,-82.83962673,WNS1737,304 Laurel St.,KY,,Interesting,,Greenup,Owned,Building,Central Office,52
+GRNLIAXC,41.74516982,-92.72541513,WNS1631,1010 Main Street,IA,,Other,,Grinnell,Owned,Building,Central Office,84
+HRSNARXA,36.214283,-93.079052,,202 Graham Street,AR,,Other,,Harrison,Owned,Building,Central Office,81
+HZRDKYXA,37.24986502,-83.1939202399999,WNS1739,101 Winterberry Drive,KY,,Other,,Hazard,Owned,Building,Central Office,133
+HWSSGAXA,34.95173821,-83.7583057399999,WNS1525,228 North Main Street,GA,,Interesting,,Hiawassee,Owned,Building,Central Office,19
+HLRDFLXA,30.68973301,-81.9186614599999,WNS1438,3745 Pecan Street,FL,,Other,,Hilliard,Owned,Building,Central Office,30
+HIRMOHXA,41.31000644,-81.14604119,WNS2272,11677 Hayden Street Rear,OH,,Other,,Hiram,Owned,Building,Central Office,14
+HLCRIAXP,42.5992163399999,-90.9921891999999,WNS1638,5778 MAPLE RD,IA,,Other,,Holy Cross,Owned,Building,Central Office,6
+HDSNOHXB,41.21706309,-81.4425081699999,WNS1063,1300 Terex Road,OH,,Other,,Hudson,Owned,Building,Central Office,20
+HDSNOHXA,41.24341435,-81.4400342499999,WNS2275,245 North Main Street,OH,,Other,,Hudson,Owned,Building,Central Office,170
+WTWDTXXA,30.81159231,-95.2597377099999,WNS2619,24500 Waterwood Parkway,TX,,Other,,Huntsville,Owned,Building,Central Office,9
+IRTNGAXA,32.8202546099999,-83.1678256299999,WNS1529,113 Wriley Road,GA,,Other,,Irwinton,Owned,Building,Central Office,26
+JSPRGAXA,34.46817879,-84.43144501,WNS1532,69 Stegall Drive,GA,,Interesting,,Jasper,Owned,Building,Central Office,22
+JLLYIAXE,42.47842132,-94.7184655599999,,Alley East Of 129 Maston St,IA,,Other,,Jolley,Owned,Building,Central Office,3
+KNTNOHXA,40.6478963699999,-83.6102986599999,WNS2278,225 West Columbus Street,OH,,Interesting,,Kenton,Owned,Building,Central Office,30
+KRVLTXXA,30.0453475899999,-99.13997664,WNS2631,812 Water Street,TX,,Other,,Kerrville,Owned,Building,Central Office,144
+KGVLOHXA,41.88940328,-80.67476628,WNS2279,3124 Main Street,OH,,Other,,KINGSVILLE,Owned,Building,Central Office,23
+KNVLIAXD,41.34934878,-93.0255881399999,,1690 Kennedy,IA,,Other,,Knoxviile,Owned,Building,Central Office,5
+KNVLIAWH,41.3202682,-93.06150375,WNS3298,606 North Godfrey Lane,IA,,Other,,Knoxville,Owned,Building,Central Office,5
+KNVLIAXC,41.3195514299999,-93.0983319999999,WNS0529,108 East Marion Street,IA,,Other,,Knoxville,Owned,Building,Central Office,79
+LFYTGAXA,34.70665255,-85.2827404899999,WNS1536,105 Cherokee Street,GA,,Interesting,,Lafayette,Owned,Building,Central Office,37
+ELYROHXD,41.3125910199999,-82.1173181099999,WNS1065,12045 State Route 301,OH,,Other,,LaGrange,Owned,Building,Central Office,16
+LKCYIAXO,42.26849988,-94.73361558,WNS0532,106 East Washington,IA,,Other,,Lake City,Owned,Building,Central Office,9
+LAMSTXXA,32.73209717,-101.9508835,WNS2635,313 South 1st Street,TX,,Other,,Lamesa,Owned,Building,Central Office,20
+LAVNGAXA,34.43593356,-83.1044045799999,WNS1538,5801 Vickery Street,GA,,Other,,Lavonia,Owned,Building,Central Office,42
+LEDSALXA,33.54372706,-86.54439521,WNS1345,8372 1St Avenue Southeast,AL,,Other,,Leeds,Owned,Building,Central Office,27
+LTFDKYXA,37.48445892,-86.2939511299999,WNS1752,399 N Cannon Dr BLDG A,KY,,Other,,Leitchfield,Owned,Building,Central Office,35
+LVLDTXXA,33.58805583,-102.379543499999,WNS2638,506 Avenue I,TX,,Other,,Levelland,Owned,Building,Central Office,75
+LTFDTXXA,33.9210429999999,-102.329773,WNS2640,600 East 5th Street,TX,,Other,,Littlefield,Owned,Building,Central Office,39
+LVOKFLXA,30.29397346,-82.98207915,WNS1448,206 White Avenue SE,FL,,Other,,Live Oak,Owned,Building,Central Office,123
+MDSNOHXA,41.8002742199999,-81.0489853899999,WNS2282,2740 Hubbard Road,OH,,Interesting,,MADISON,Owned,Building,Central Office,28
+MNCHIAXO,42.48472283,-91.45717681,WNS1646,107 East Fayette Street,IA,,Other,,Manchester,Owned,Building,Central Office,30
+MNCHIAWH,42.45587333,-91.4783707299999,WNS1645,1614 230Th Street,IA,,Other,,Manchester,Owned,Building,Central Office,2
+MNCHGAXA,32.85132378,-84.61593315,WNS1542,212 2nd Street,GA,,Other,,Manchester,Owned,Building,Central Office,31
+MRNGIAXO,41.7988809399999,-92.06939307,WNS1648,151 East Hilton,IA,,Other,,Marengo,Owned,Building,Central Office,15
+MAYOFLXA,30.05422767,-83.1762577599999,WNS1450,153 Northwest Crawford Street,FL,,Other,,Mayo,Owned,Building,Central Office,20
+MCRAGAXA,32.0667820099999,-82.89752257,WNS1545,8 East Oak Street,GA,,Other,,McRae,Owned,Building,Central Office,23
+MLRSIAXO,40.97544741,-93.0481071399999,,105 TRINITY AVE,IA,,Other,,Melrose,Owned,Building,Central Office,7
+MMPHTXXA,34.72450811,-100.5393755,WNS2654,721 West Noel Street,TX,,Other,,Memphis,Owned,Building,Central Office,48
+MDVLGAXA,33.0908148099999,-83.2284728199999,WNS1550,750 North Jefferson Street,GA,,Other,,Milledgeville,Owned,Building,Central Office,93
+MONRGAXB,33.8904380199999,-83.71992317,WNS0397,3375 GA-11,GA,,Interesting,,Monroe,Owned,Building,Central Office,3
+MONRGAXA,33.7964565799999,-83.71253894,WNS1551,129 East Highland Avenue,GA,,Interesting,,Monroe,Owned,Building,Central Office,36
+MTZMGAXA,32.3017480299999,-84.03082915,WNS1552,111 Drayton Street,GA,,Other,,Montezuma,Owned,Building,Central Office,25
+MNTIKYXA,36.83127068,-84.85042624,WNS1775,45 Huffaker Street,KY,,Other,,Monticello,Owned,Building,Central Office,42
+LEDSALXB,33.5934139599999,-86.49852364,WNS1346,920 Park Avenue,AL,,Other,,Moody,Owned,Building,Central Office,52
+MORVIAIC,40.8920549899999,-92.9835000199999,,10435 160th Ave,IA,,Other,,Moravia,Leased/Easement,Building,Central Office,5
+MRHDKYXA,38.18366375,-83.43477901,WNS1776,154 East 2nd Street,KY,,Other,,Morehead,Owned,Building,Central Office,160
+MLTRGAXA,31.1774829199999,-83.78371355,WNS1556,216 4th Street SE,GA,,Other,,Moultrie,Owned,Building,Central Office,89
+MLTRGA05,31.17919025,-83.74876131,WNS0398,282 Industrial Drive,GA,,Other,,Moultrie,Owned,Building,Central Office,4
+MTAYIAXC,40.71260431,-94.2373037699999,WNS0579,300 South Taylor,IA,,Other,,Mount Ayr,Owned,Building,Central Office,9
+MNPLIAXC,40.96786585,-91.5533856899999,WNS1653,101 West Madison,IA,,Other,,Mount Pleasant,Owned,Building,Central Office,48
+MTVRKYXA,37.3542603599999,-84.3415178999999,WNS1780,80 West Main St,KY,,Other,,Mount Vernon,Owned,Building,Central Office,20
+NSVLGAXA,31.2060928299999,-83.2513356599999,WNS1558,203 South Bartow Street,GA,,Other,,Nashville,Owned,Building,Central Office,32
+NEVDIAXC,42.02086028,-93.4511339099999,WNS1654,635 J Avenue,IA,,Other,,Nevada,Owned,Building,Central Office,24
+NHTNIAWH,43.0661261999999,-92.3077757899999,WNS3303,627 North Pleasant Hill Avenue,IA,,Other,,New Hampton,Owned,Building,Central Office,1
+NHTNIAXC,43.05909211,-92.31272332,WNS1655,201 East Main,IA,,Other,,New Hampton,Owned,Building,Central Office,32
+NWRKOHXA,40.0594485299999,-82.40487305,WNS2289,66 North 4th Street,OH,,Interesting,,Newark,Owned,Building,Central Office,145
+NWRKOHXC,40.0575081,-82.4271879399999,WNS2294,214 Neal Avenue,OH,,Interesting,,Newark,Owned,Building,Central Office,21
+NWRKOHXD,40.01356485,-82.4046177299999,WNS2291,7322 Dorsey Mill Road Southeast,OH,,Interesting,,Newark,Owned,Building,Central Office,24
+NWRKOHXB,40.08689351,-82.42710726,WNS2290,320 Deo Drive,OH,,Interesting,,Newark,Owned,Building,Central Office,25
+HETHOHXA,40.0413168899999,-82.44171796,WNS2292,1046 Harris Avenue,OH,,Interesting,,Newark,Owned,Building,Central Office,27
+NWTNIAXC,41.6983315,-93.05448565,WNS1656,115 S Second Ave W,IA,,Other,,Newton,Owned,Building,Central Office,60
+NCVLKYXA,37.8806709099999,-84.57236611,WNS1784,105 North York Street,KY,,Other,,Nicholasville,Owned,Building,Central Office,121
+NCNATXXA,33.78899947,-97.7264983099999,WNS2673,117 East Oak Street,TX,,Other,,Nocona,Owned,Building,Central Office,21
+NRVLOHXA,41.39099066,-82.01914082,WNS1068,6874 Avon Belden Road,OH,,Other,,North Ridgeville,Owned,Building,Central Office,57
+NRFDOHXA,41.31474448,-81.53703932,WNS2297,54 Leonard Avenue,OH,,Interesting,,Northfield,Owned,Building,Central Office,93
+NRWDNCXA,35.22668599,-80.12266339,WNS1925,238 North Main Street,NC,,Interesting,,Norwood,Owned,Building,Central Office,15
+OLHLKYXA,38.30218139,-83.1702961099999,WNS1785,133 Mills Street,KY,,Other,,Olive Hill,Owned,Building,Central Office,42
+OWVLKYXA,38.1410863699999,-83.76592121,WNS1787,148 Treadway Street,KY,,Other,,OWINGSVILLE,Owned,Building,Central Office,50
+PLNGOHXA,41.1360556599999,-84.58159009,WNS2300,117 West Harrison Street,OH,,Other,,Paulding,Owned,Building,Central Office,30
+PECSTXXB,31.40444183,-103.5034902,WNS2681,924 West Daggett Street,TX,,Interesting,,Pecos,Owned,Building,Central Office,35
+PNSLOHXA,41.2412452,-81.54544115,WNS2301,1515 State Route 303,OH,,Other,,Peninsula,Owned,Building,Central Office,15
+PRRYGAAI,32.4358179099999,-83.7608892599999,WNS3437,2031 US HWY 41 S,GA,,Other,,Perry,Owned,Building,Central Office,4
+PRRYGAXA,32.4573819499999,-83.73262665,WNS1566,910 Main Street,GA,,Other,,Perry,Owned,Building,Central Office,95
+PRRYOHXA,41.75907565,-81.1385295,WNS2302,4165 Main Street,OH,,Other,,PERRY,Owned,Building,Central Office,20
+PYTNTXXA,36.39730102,-100.803753299999,WNS2683,301 South Amherst Street,TX,,Other,,Perryton,Owned,Building,Central Office,36
+PERSIAXP,41.58003601,-95.56854909,,Alley Behind 103 Main Street,IA,,Other,,Persia,Leased/Easement,Building,Central Office,4
+PITSGAXA,31.94497002,-83.5413853299999,WNS1568,108 7Th Ave W,GA,,Other,,Pitts,Owned,Building,Central Office,9
+POTEOKAY,35.0207959299999,-94.65992454,WNS1096,201 Kerr Ave,OK,,Other,,Poteau,Owned,Building,Central Office,1
+POTEOKXA,35.0521843699999,-94.6202629499999,WNS2358,310 Clayton Avenue,OK,,Other,,Poteau,Owned,Building,Central Office,37
+PWPNOHXA,39.8659507599999,-80.79901046,WNS2305,101 Ben Avenue,OH,,Interesting,,Powhatan Point,Owned,Building,Central Office,18
+PRCLOKXA,35.0113368399999,-97.36365886,WNS2360,319 West Apache,OK,,Other,,Purcell,Owned,Building,Central Office,55
+QKCYOHXA,39.97051805,-81.29860963,WNS2306,181 Broadway Street,OH,,Other,,Quaker City,Owned,Building,Central Office,18
+RCFDOHXA,41.23925717,-81.6557576,,4676 West Streetsboro Road,OH,,Interesting,,Richfield,Owned,Building,Central Office,27
+TRNYTXXH,30.85154,-95.40012,WNS1293,75 FRONT ST @ F.M. 980 Riverside TX 77367 US,TX,,Other,,Riverside,Owned,Building,Central Office,10
+GRQYNCXA,35.5720107499999,-80.4178416,WNS1932,8145 Highway 52,NC,,Interesting,,Rockwell,Owned,Building,Central Office,30
+SYMRTXXA,33.59135941,-99.2600727699999,WNS2709,400 North Main Street,TX,,Other,,Seymour,Owned,Building,Central Office,54
+SHPVKYXA,37.99026484,-85.7157907099999,WNS1795,144 South Buckman Street,KY,,Other,,Sheperdsville,Owned,Building,Central Office,44
+SHRDARXA,34.3065086399999,-92.398274,WNS1404,209 East Center,AR,,Other,,Sheridan,Owned,Building,Central Office,33
+SHDNKYXA,37.5251636699999,-85.89526014,WNS1801,21 1st Street,KY,,Other,,SONORA,Owned,Building,Central Office,22
+STWLOKXA,35.81283854,-94.6278948,WNS2368,116 South 1st Street,OK,,Other,,Stilwell,Owned,Building,Central Office,28
+SGLDTXXE,29.63625224,-95.5981813199999,WNS2726,12626 Dairy Ashford Road,TX,,Other,,Sugar Land,Owned,Building,Central Office,159
+SGLDTXXD,29.5860816699999,-95.62071487,WNS2722,1850 Austin Parkway,TX,,Other,,Sugar Land,Owned,Building,Central Office,64
+SUVLGAXA,34.4815202899999,-85.34870994,WNS1584,66 West Washington Street,GA,,Interesting,,Summerville,Owned,Building,Central Office,33
+SWNYTXXA,29.03860427,-95.6995736899999,WNS2733,202 Pecan Street,TX,,Other,,Sweeny,Owned,Building,Central Office,29
+SYVNGAXA,32.7517568299999,-81.6332240899999,WNS1585,303 East Ogeechee Street,GA,,Other,,Sylvania,Owned,Building,Central Office,12
+TCMSOKXB,35.25843195,-96.9359090699999,WNS2370,112 East Park Street,OK,,Other,,Tecumseh,Owned,Building,Central Office,33
+THTNGAXA,32.8869667499999,-84.3254854999999,WNS3198,118 East Gordon Street,GA,,Other,,Thomaston,Owned,Building,Central Office,53
+THTNGAXB,32.9334372699999,-84.3334017899999,WNS3284,1444 Highway 19 N,GA,,Other,,Thomaston,Owned,Building,Central Office,15
+TPTNIAXO,41.77051661,-91.12666418,WNS1668,506 Meridian,IA,,Other,,Tipton,Owned,Building,Central Office,25
+TOLDIAXO,41.98152657,-92.5812656199999,WNS1669,1201 South County Road,IA,,Other,,Toledo,Owned,Building,Central Office,23
+TRARIAXO,42.19143728,-92.46705144,WNS1670,505 3rd Street,IA,,Other,,Traer,Owned,Building,Central Office,10
+TRINGAXA,34.54083387,-85.31313762,WNS1588,207 Allgood Street,GA,,Other,,Trion,Owned,Building,Central Office,21
+BRAROKXB,36.0575717899999,-95.8690106199999,WNS2371,7200 S Mingo Rd,OK,,Other,,Tulsa,Owned,Building,Central Office,226
+TWBGOHIR,41.3112491199999,-81.4423444499999,,2684 East Aurora Road,OH,,Interesting,,Twinsburg,Owned,Building,Central Office,
+TWBGOHXA,41.31113087,-81.44232343,,2684 Route 82,OH,,Interesting,,Twinsburg,TBD,Building,Central Office,99
+VNBGKYXA,38.5941079999999,-83.321195,WNS1806,403 Fairlane Dr.,KY,,Other,,Vanceburg,Owned,Building,Central Office,44
+VIANOK05,35.49846823,-94.9714586,,109 Blackstone St,OK,,Other,,Vian,Owned,Building,Central Office,13
+VILNARXA,35.0831462599999,-92.2113457699999,,1078 Main Street,AR,,Other,,Vilonia,Owned,Building,Central Office,2
+WGNROKXD,35.9589769999999,-95.3675769999999,WNS2375,Rear Of 812 E. Cherokee,OK,,Other,,Wagoner,Owned,Building,Central Office,38
+WASHIAXO,41.3001165299999,-91.6896805899999,WNS1674,217 East 2nd Street,IA,,Other,,Washington,Owned,Building,Central Office,33
+WFRKARXA,35.9236825699999,-94.1893365899999,WNS1411,265 Wheeler Street,AR,,Other,,West Fork,Owned,Building,Central Office,19
+WLBGIAXO,41.66044645,-92.00825998,WNS1676,105 West Welsh,IA,,Other,,Williamsburg,Owned,Building,Central Office,28
+WNDRGAXA,33.99464785,-83.72118785,WNS1594,74 Woodlawn Avenue,GA,,Interesting,,Winder,Owned,Building,Central Office,119
+ASHTOHXA,41.86554916,-80.78344219,WNS2238,4616 Park Avenue,OH,,Interesting,,WYMAN,Owned,Building,Central Office,125
+ZNTNKYXA,38.0672,-85.66875,WNS1811,135 Windy Hill Spur,KY,,Other,,Zoneton,Owned,Building,Central Office,54

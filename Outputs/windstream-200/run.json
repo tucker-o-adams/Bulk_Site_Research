@@ -1,0 +1,43 @@
+{
+ "run_at": "2026-09-21T17:56:45+00:00",
+ "elapsed_s": 2.9,
+ "input": {
+  "path": "E:\\Claude\\Projects\\TBDI Modeling\\Mireye\\scripts\\bulk\\fixtures\\windstream_200.csv",
+  "sha256": "221d226bfd053d1567f5bb78718bbb7ccc46428aa352fd520ed99924948e5f5d"
+ },
+ "sites_accepted": 200,
+ "sites_rejected": [],
+ "producers": {
+  "transmission": {
+   "source": "HIFLD US Electric Power Transmission Lines (ArcGIS mirror of retired HIFLD Open)",
+   "url": "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/US_Electric_Power_Transmission_Lines/FeatureServer/0",
+   "vintage": "2025-08-26",
+   "fields": [
+    "tx_nearest_m",
+    "tx_nearest_ft",
+    "tx_voltage_kv",
+    "tx_volt_class",
+    "tx_voltage_basis",
+    "tx_line_name",
+    "tx_line_id",
+    "tx_owner",
+    "tx_type",
+    "tx_status",
+    "tx_attrs_inferred",
+    "tx_100kv_nearest_m",
+    "tx_100kv_voltage_kv",
+    "tx_100kv_line_name",
+    "tx_100kv_line_id",
+    "tx_100kv_owner"
+   ],
+   "status_counts": {
+    "ok": 3113,
+    "absent": 87
+   }
+  }
+ },
+ "cache": {
+  "hits": 200,
+  "misses": 0
+ }
+}
