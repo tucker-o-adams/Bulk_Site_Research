@@ -171,7 +171,8 @@ def site_desc(s, srcs):
     def m(v):
         return '—' if v in (None, '') else f'{float(v):,.0f} m ({float(v) / MI:.2f} mi)'
     rows = [
-        ('Site', f"<b>{esc(s['site_id'])}</b> {esc(s.get('name'))}<br/>{esc(s.get('address'))} {esc(s.get('city') or '')} {esc(s.get('state'))}<br/>group: {esc(s.get('group'))}"),
+        ('Site', f"<b>{esc(s['site_id'])}</b> {esc(s.get('name'))}<br/>{esc(s.get('address'))} {esc(s.get('city') or '')} {esc(s.get('state'))}<br/>group: {esc(s.get('group'))}"
+                 + (f"<br/><i>basis: {'parcel boundary' if s.get('parcel_status') == 'ok' else 'point only - no parcel service registered for ' + esc(s.get('parcel_county') or 'this county') + '; values are measured at the pin'}</i>" if s.get('parcel_status') else '')),
         (srcs.get('transmission', 'Transmission'), f"nearest line {m(s.get('tx_nearest_m'))} — {fmt(s.get('tx_voltage_kv'), ' kV')} [{esc(s.get('tx_voltage_basis'))}] {esc(s.get('tx_owner'))}<br/>"
                                                     f"nearest ≥100 kV {m(s.get('tx_100kv_nearest_m'))} — {fmt(s.get('tx_100kv_voltage_kv'), ' kV')}"),
         (srcs.get('substations', 'Substations'), f"nearest {m(s.get('sub_nearest_m'))} — {esc(s.get('sub_nearest_name'))} {fmt(s.get('sub_nearest_max_kv'), ' kV')} ({esc(s.get('sub_nearest_type'))}, kV inferred={esc(s.get('sub_nearest_kv_inferred'))})<br/>"

@@ -1,0 +1,89 @@
+{
+ "state": "OK",
+ "checked": 6,
+ "probe_points": [
+  [
+   "BRAROKXA",
+   36.0526137,
+   -95.7918259599999
+  ],
+  [
+   "BRAROKXC",
+   35.99867768,
+   -95.7968520799999
+  ],
+  [
+   "BRAROKXD",
+   36.0896024099999,
+   -95.7905582
+  ],
+  [
+   "BRAROKXE",
+   36.0615241599999,
+   -95.68429788
+  ]
+ ],
+ "note": "PROPOSAL ONLY \u2014 a person reviews and moves the winner into parcel-services.json.",
+ "candidates": [
+  {
+   "url": "https://gis.ne.gov/Enterprise/rest/services/StatewideParcelsExternal/FeatureServer/0",
+   "name": "StatewideParcels",
+   "records": 1154898,
+   "fields_guess": {
+    "apn": "Parcel_ID",
+    "owner": "Ownership_Type",
+    "acres": "GIS_Acres",
+    "address": "Situs_Address"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 15,
+   "why": "ArcGIS Hub: Statewide Parcels"
+  },
+  {
+   "url": "https://arcgis-central.gis.vt.edu/arcgis/rest/services/facilities/VABuildingandParcel/FeatureServer/1",
+   "name": "Virginia Tech Statewide Parcels",
+   "records": 76,
+   "fields_guess": {
+    "apn": "parcel_id",
+    "owner": "owner1",
+    "acres": "gis_acres",
+    "address": "site_addr"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 15,
+   "why": "ArcGIS Hub: Virginia Tech Statewide Parcels"
+  },
+  {
+   "url": "https://services8.arcgis.com/euhkr1dAJeQBIjV0/arcgis/rest/services/TaxParcelsPublics_view/FeatureServer/0",
+   "name": "TaxParcelPublic",
+   "records": 337032,
+   "fields_guess": {
+    "apn": "accountno",
+    "acres": "acres",
+    "address": "mailingaddress1"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 10,
+   "why": "AGOL item: Tax Parcels Public (owner artimcon)"
+  },
+  {
+   "url": "https://services2.arcgis.com/0NjdXxmJp53hZWPd/arcgis/rest/services/ParcelDataService_2_view/FeatureServer/0",
+   "name": "Subdivisions",
+   "records": 1394,
+   "fields_guess": {
+    "acres": "acres"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 0,
+   "why": "AGOL item: Canadian County Parcel Data (Public) (owner CanadianCounty)"
+  }
+ ]
+}

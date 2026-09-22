@@ -81,11 +81,23 @@ def main():
     # ------------------------------------------------------------------ Sites
     ws = wb.active; ws.title = 'Sites'
     site_cols = ['site_id', 'lat', 'lng'] + [c for c in OPTIONAL if any(s.get(c) for s in sites)]
+    # G: every row says which basis its answers rest on. A site with no parcel boundary is not a
+    # blank row - its values are real, they are just measured at the pin rather than over a parcel.
+    has_parcel = any('parcel_status' in s for s in sites)
+    if has_parcel:
+        for s in sites:
+            s['basis'] = 'parcel boundary' if s.get('parcel_status') == 'ok' else 'point only'
+        site_cols.insert(1, 'basis')
     prod_fields = [f for p in producers.values() for f in p['fields']]
     extra_cols = [c for c in sites[0].keys() if c not in site_cols and c not in prod_fields and c not in OPTIONAL]
     bands = [('Site', site_cols + extra_cols)] + [(BAND_TITLES.get(n, n), p['fields']) for n, p in producers.items()]
-    ws.cell(1, 1, f'{name} — {len(sites)} sites — run {run["run_at"][:16].replace("T", " ")} UTC — distances in metres '
-                  '(1 mi = 1,609 m) — grey = source confirmed nothing there (absent), red = source failed (see Gaps)').font = Font(italic=True)
+    legend = (f'{name} — {len(sites)} sites — run {run["run_at"][:16].replace("T", " ")} UTC — distances in metres '
+              '(1 mi = 1,609 m) — grey = source confirmed nothing there (absent), red = source failed (see Gaps)')
+    if has_parcel:
+        legend += ('   |   basis: "parcel boundary" = a parcel polygon resolved, so acreage and any parcel-clipped '
+                   'figure describe the site; "point only" = no parcel service is registered for that county, so every '
+                   'value is measured at the pin (flood zone at the pin, nearest wetland from the pin) and no acreage is claimed')
+    ws.cell(1, 1, legend).font = Font(italic=True)
     col = 1
     for bi, (title, fields) in enumerate(bands):
         c0 = col

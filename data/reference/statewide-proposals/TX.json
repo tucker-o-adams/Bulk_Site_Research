@@ -1,0 +1,119 @@
+{
+ "state": "TX",
+ "checked": 27,
+ "probe_points": [
+  [
+   "ANDRTXXA",
+   32.31761412,
+   -102.5477171
+  ],
+  [
+   "BWFDTXXA",
+   33.1772204099999,
+   -102.274424499999
+  ],
+  [
+   "CLDGTXXA",
+   31.75403928,
+   -96.64933392
+  ],
+  [
+   "DLHRTXXA",
+   36.0601455099999,
+   -102.5215033
+  ]
+ ],
+ "note": "PROPOSAL ONLY \u2014 a person reviews and moves the winner into parcel-services.json.",
+ "candidates": [
+  {
+   "url": "https://gis.ne.gov/Enterprise/rest/services/StatewideParcelsExternal/FeatureServer/0",
+   "name": "StatewideParcels",
+   "records": 1154898,
+   "fields_guess": {
+    "apn": "Parcel_ID",
+    "owner": "Ownership_Type",
+    "acres": "GIS_Acres",
+    "address": "Situs_Address"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 15,
+   "why": "ArcGIS Hub: Statewide Parcels"
+  },
+  {
+   "url": "https://arcgis-central.gis.vt.edu/arcgis/rest/services/facilities/VABuildingandParcel/FeatureServer/1",
+   "name": "Virginia Tech Statewide Parcels",
+   "records": 76,
+   "fields_guess": {
+    "apn": "parcel_id",
+    "owner": "owner1",
+    "acres": "gis_acres",
+    "address": "site_addr"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 15,
+   "why": "ArcGIS Hub: Virginia Tech Statewide Parcels"
+  },
+  {
+   "url": "https://services3.arcgis.com/n6uYoouQZW75n5WI/arcgis/rest/services/Wisconsin_Statewide_Parcels_DB/FeatureServer/0",
+   "name": "V1200_WisconsinParcels_2026",
+   "records": 3574646,
+   "fields_guess": {
+    "apn": "PARCELID",
+    "owner": "OWNERNME1",
+    "acres": "GISACRES"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 15,
+   "why": "ArcGIS Hub: Tax Parcels (Statewide Service)"
+  },
+  {
+   "url": "https://services2.arcgis.com/MlJ0G8iWUyC7jAmu/arcgis/rest/services/OhioStatewidePacels_full_view/FeatureServer/0",
+   "name": "Parcels",
+   "records": 6313610,
+   "fields_guess": {
+    "apn": "LocalParcelID",
+    "address": "SitusAddressAll"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 10,
+   "why": "ArcGIS Hub: Ohio Statewide Parcels Public View"
+  },
+  {
+   "url": "https://services2.arcgis.com/5fBksrmhqE9Y6xQi/arcgis/rest/services/Mountain_Grove_Wright_County_and_Texas_County_Parcels/FeatureServer/0",
+   "name": "MtnGrove_WrightCoParcels",
+   "records": 2363,
+   "fields_guess": {
+    "apn": "parcelid",
+    "acres": "acres"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 10,
+   "why": "ArcGIS Hub: Mountain Grove Wright County and Texas County Parcels"
+  },
+  {
+   "url": "https://services.arcgis.com/8vL8ZFWfQxhb4uIP/arcgis/rest/services/Parcels_Final/FeatureServer/0",
+   "name": "Parcels_Final",
+   "records": 3454,
+   "fields_guess": {
+    "owner": "OWNER_NAME",
+    "acres": "AreaAcres",
+    "address": "SITUS_ADDR"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 5,
+   "why": "ArcGIS Hub: Parcels Final"
+  }
+ ]
+}

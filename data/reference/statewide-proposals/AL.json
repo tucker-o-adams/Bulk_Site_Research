@@ -1,0 +1,110 @@
+{
+ "state": "AL",
+ "checked": 9,
+ "probe_points": [
+  [
+   "LEDSALXA",
+   33.54372706,
+   -86.54439521
+  ],
+  [
+   "LEDSALXB",
+   33.5934139599999,
+   -86.49852364
+  ]
+ ],
+ "note": "PROPOSAL ONLY \u2014 a person reviews and moves the winner into parcel-services.json.",
+ "candidates": [
+  {
+   "url": "https://gis.ne.gov/Enterprise/rest/services/StatewideParcelsExternal/FeatureServer/0",
+   "name": "StatewideParcels",
+   "records": 1154898,
+   "fields_guess": {
+    "apn": "Parcel_ID",
+    "owner": "Ownership_Type",
+    "acres": "GIS_Acres",
+    "address": "Situs_Address"
+   },
+   "probe_hits": 0,
+   "probe_tried": 2,
+   "sample": null,
+   "score": 15,
+   "why": "ArcGIS Hub: Statewide Parcels"
+  },
+  {
+   "url": "https://arcgis-central.gis.vt.edu/arcgis/rest/services/facilities/VABuildingandParcel/FeatureServer/1",
+   "name": "Virginia Tech Statewide Parcels",
+   "records": 76,
+   "fields_guess": {
+    "apn": "parcel_id",
+    "owner": "owner1",
+    "acres": "gis_acres",
+    "address": "site_addr"
+   },
+   "probe_hits": 0,
+   "probe_tried": 2,
+   "sample": null,
+   "score": 15,
+   "why": "ArcGIS Hub: Virginia Tech Statewide Parcels"
+  },
+  {
+   "url": "https://services3.arcgis.com/n6uYoouQZW75n5WI/arcgis/rest/services/Wisconsin_Statewide_Parcels_DB/FeatureServer/0",
+   "name": "V1200_WisconsinParcels_2026",
+   "records": 3574646,
+   "fields_guess": {
+    "apn": "PARCELID",
+    "owner": "OWNERNME1",
+    "acres": "GISACRES"
+   },
+   "probe_hits": 0,
+   "probe_tried": 2,
+   "sample": null,
+   "score": 15,
+   "why": "ArcGIS Hub: Tax Parcels (Statewide Service)"
+  },
+  {
+   "url": "https://services6.arcgis.com/VUsVQlvugJlIRS3I/arcgis/rest/services/Alabama_Parcel_Data/FeatureServer/0",
+   "name": "Wilcox County Parcels",
+   "records": 17180,
+   "fields_guess": {
+    "apn": "PARCELNUMB",
+    "owner": "OWNER",
+    "address": "ADDRESS"
+   },
+   "probe_hits": 0,
+   "probe_tried": 2,
+   "sample": null,
+   "score": 15,
+   "why": "AGOL item: Alabama Parcel Data (owner karen.hall@POWERSOUTH.COM_PowerSouth)"
+  },
+  {
+   "url": "https://services2.arcgis.com/MlJ0G8iWUyC7jAmu/arcgis/rest/services/OhioStatewidePacels_full_view/FeatureServer/0",
+   "name": "Parcels",
+   "records": 6313610,
+   "fields_guess": {
+    "apn": "LocalParcelID",
+    "address": "SitusAddressAll"
+   },
+   "probe_hits": 0,
+   "probe_tried": 2,
+   "sample": null,
+   "score": 10,
+   "why": "ArcGIS Hub: Ohio Statewide Parcels Public View"
+  },
+  {
+   "url": "https://services2.arcgis.com/d53H8HWVL7iicQLS/arcgis/rest/services/Parcels_GS/FeatureServer/0",
+   "name": "PARCELS_GSPJ",
+   "records": 20071,
+   "fields_guess": {
+    "apn": "PIN",
+    "acres": "CalcAcres",
+    "address": "ADDRESS"
+   },
+   "probe_hits": 0,
+   "probe_tried": 2,
+   "sample": null,
+   "score": 10,
+   "why": "AGOL item: Parcels_GS (owner sdhenderson)"
+  }
+ ]
+}

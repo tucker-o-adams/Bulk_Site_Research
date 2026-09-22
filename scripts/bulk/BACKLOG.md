@@ -41,15 +41,21 @@ carries OWN_NAME), **VA** (VGIN). Counties: 12. Together these resolve 54 of the
 
 Unresolved, by state — what each needs:
 
-| State | Sites | Counties | Status |
+| State | Sites | Counties | Statewide sweep result (2026-09-22) |
 |---|---|---|---|
-| IA | 40 | 29 | **No current statewide source found.** Checked 2026-09-22: AGOL has only `Iowa_Parcels_2017` (a 2017 snapshot on a university account — rejected as a copy of unknown age); Iowa DOT's REST `Cadastre` and `Boundaries` folders enumerate zero services; the Iowa AGOL org (8lRhdTsQyJpO52F1, 264 services) has no parcel service. Next: ask a person to check geodata.iowa.gov (an ArcGIS Hub, not a REST root) or the Iowa Land Records / county auditors. 29 counties otherwise. |
-| GA | 35 | 28 | county-by-county; 5 already registered from the Aug 2026 work |
-| KY | 27 | 21 | county-by-county |
-| TX | 20 | 19 | county-by-county (Dallas Co registered) |
-| OK | 14 | 8 | county-by-county |
-| AR | 8 | 6 | county-by-county |
-| AL | 2 | 2 | county-by-county |
+| IA | 40 | 29 | **Only `Iowa_Parcels_2017`** answers all four probe points (2.45M records, university-hosted 2017 snapshot). Confirmed by three independent methods now. The choice is: register it with its 2017 vintage stated, or go county-by-county. |
+| GA | 35 | 28 | none — 21 candidate URLs checked, 5 probed |
+| KY | 27 | 21 | none — 17 checked, 8 probed |
+| TX | 20 | 19 | none — 27 checked, 6 probed |
+| OK | 14 | 8 | none — 6 checked, 4 probed (Tulsa registered individually) |
+| AR | 8 | 6 | none — 9 checked, 4 probed |
+| AL | 2 | 2 | none — 9 checked, 6 probed |
+
+**Sweep verdict: 1 statewide layer in 7 states, and it is a 2017 snapshot.** 97 candidate URLs
+checked, 40 probed at four real sites each. The statewide shortcut that won Ohio (35 sites) and
+Florida (8) does not exist for the six states holding 106 of the 154 unresolved sites. Those are
+county-by-county or nothing. Re-run `sweep_statewide_parcels.py` for any new batch's states before
+touching counties — it is cheap and the payoff when it hits is large.
 
 **Discovery techniques, all built and measured 2026-09-22:**
 
@@ -71,6 +77,19 @@ layer** as parcels. Esri basemap hosts are excluded outright.
 positive now rejected. Tulsa County is a genuine win (4 sites, unreachable by any other route).
 **Discovery does not eliminate manual research on the tail** — it makes the search cheaper and
 much safer, and a person still reviews every proposal.
+
+**Graceful degradation (G, built 2026-09-22).** A site with no parcel boundary is not a blank row.
+Every workbook now carries a frozen **`basis`** column — `parcel boundary` or `point only` — with a
+legend saying what each means, and every KMZ site popup says the same. Windstream 200: 58 parcel
+boundary, 142 point only. A "point only" site still has its flood zone, wetland distance, power,
+metro and neighbour values; it simply has no acreage and no parcel-clipped figure, and says so.
+
+Not deliverable as originally scoped: **there is no free national building-footprint service** to
+estimate buildable area from — every Hub hit is a single county or city layer, and Microsoft's
+footprints ship as per-state files, not a queryable endpoint. That half of G needs a download-and-host
+step (see E). **BLM PLSS is verified working** as a free national service (township/section at any
+point) but a section is 640 acres — useful as context for large rural parcels, useless for a
+0.17-acre telecom exchange.
 
 **Economics.** At 1–2 sites per county, discovery + human review is poor value for a broker batch.
 Treat `parcel` as a **survivor-only** step: run it after the flags cut a batch to ~20 sites, and
