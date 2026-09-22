@@ -1,0 +1,59 @@
+{
+ "geoid": "40143",
+ "county": "Tulsa County",
+ "state": "OK",
+ "probe": "36.1156,-95.9169",
+ "note": "PROPOSAL ONLY - a person reviews this and moves the chosen service into parcel-services.json. Nothing here is used by a run.",
+ "candidates": [
+  {
+   "score": 0,
+   "why": [
+    "owner 'Josh060123' not obviously the authority"
+   ],
+   "title": "INCOG 911 Address Map",
+   "owner": "Josh060123",
+   "type": "Feature Service",
+   "url": "https://services2.arcgis.com/yvplvZXPdeJQfw7F/arcgis/rest/services/INCOG_911_Address_Map_WFL1/FeatureServer",
+   "modified": 1770147605000,
+   "item": "https://www.arcgis.com/home/item.html?id=2e1c85f1e6bb4395ba8d0d66fd11a60c",
+   "layers": [
+    {
+     "layer": 2,
+     "layer_name": "roco_parcel",
+     "name": "roco_parcel",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "FID",
+      "OBJECTID_1",
+      "AREA",
+      "PERIMETER",
+      "SHAPE_Leng",
+      "ACCOUNT",
+      "OID_",
+      "CAMA",
+      "CADASTRAL",
+      "LOTSIZE",
+      "OWNERSNAM",
+      "DESCRIPTI",
+      "PROPERTYC",
+      "LEGAL",
+      "SITUS",
+      "YEARBUILT",
+      "TOTALAREA",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": "OWNERSNAM",
+      "acres": null,
+      "address": "SITUS"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  }
+ ]
+}
