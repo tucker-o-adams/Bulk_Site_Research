@@ -91,15 +91,17 @@ step (see E). **BLM PLSS is verified working** as a free national service (towns
 point) but a section is 640 acres — useful as context for large rural parcels, useless for a
 0.17-acre telecom exchange.
 
-**Iowa 2017, registered deliberately (2026-09-22).** Tucker'''s call, with the trade stated: parcel
-*boundaries* are the stable attribute and a split since 2017 shows as an over-large acreage rather
-than a wrong location, so 2017 is fine for screening. Probed acreages are plausible for telecom
-exchanges (0.02–0.97 ac, matching the Ohio and Florida profile). The service carries 
-2017-11-02 and **every value carries that vintage, not the review date** —  now prefers
- over  for exactly this case.  is 2017 ownership: it returns the
-CSL entities (e.g. CSL Iowa System LLC), which are Windstream-affiliated and consistent with the
-portfolio, but predate the late-2025 CSL→Kinetic transfers seen in the Ohio county records. Treat
-owner from this layer as a 2017 fact.
+**Iowa 2017, registered deliberately (2026-09-22).** Tucker's call, with the trade stated: parcel
+*boundaries* are the stable attribute, and a split since 2017 shows up as an over-large acreage
+rather than a wrong location, so 2017 is fine for screening. Probed acreages are plausible for
+telecom exchanges (0.02–0.97 ac, matching the Ohio and Florida profile). The service carries
+`data_vintage` 2017-11-02 and **every value carries that vintage, not the review date** —
+`parcel.py` now prefers `data_vintage` over `reviewed` for exactly this case.
+
+`DEEDHOLDER` is 2017 ownership: it returns the CSL entities (e.g. `CSL IOWA SYSTEM LLC`), which are
+Windstream-affiliated and consistent with the portfolio, but predate the late-2025 CSL→Kinetic
+transfers the Aug 2026 county-record work found in Ohio. Treat owner from this layer as a 2017 fact,
+never as current ownership.
 
 **Economics.** At 1–2 sites per county, discovery + human review is poor value for a broker batch.
 Treat `parcel` as a **survivor-only** step: run it after the flags cut a batch to ~20 sites, and
