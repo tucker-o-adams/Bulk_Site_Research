@@ -31,6 +31,22 @@
     },
     "notes": "6,313,610 records covering all Ohio counties from one service. Used and verified by the Aug 2026 Windstream parcel work (19 sites across 8 counties); re-probed 2026-09-22, 12/12 Ohio Windstream sites returned exactly one polygon. LocalParcelID is the county parcel number (StateParcelID also present). NO owner field - Ohio's aggregation omits owner names; use the county auditor link in CAMADataSite. LandArea is empty across the service (0 non-zero in a 400-row sample), so acreage comes from the geometry. SitusAddressAll is sparse. A county-level entry, if one is ever registered, wins over this."
    }
+  },
+  "12": {
+   "state": "FL",
+   "reviewed": "2026-09-22",
+   "service": {
+    "base": "https://services9.arcgis.com/Gh9awoU677aKree0/arcgis/rest/services/Florida_Statewide_Cadastral/FeatureServer",
+    "layer": 0,
+    "name": "FDOR Cadastral 2025 (Florida Statewide Parcels)",
+    "owner": "Florida Geographic Information Office (FloridaGIO)",
+    "fields": {
+     "apn": "PARCEL_ID",
+     "owner": "OWN_NAME",
+     "address": "PHY_ADDR1"
+    },
+    "notes": "10,831,924 records covering all Florida counties, published by the state GIO from Department of Revenue cadastral data; service data last edited 2026-09-16. Probed 2026-09-22 at ALCHFL01 (Alachua Co): one polygon, OWN_NAME \"CSL FLORIDA SYSTEM LLC\", PHY_ADDR1 \"13715 W STATE RD 235\". No acreage field (Shape__Area only), so acreage comes from the geometry. A county-level entry, if registered, wins."
+   }
   }
  },
  "counties": {

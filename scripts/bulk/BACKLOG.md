@@ -34,6 +34,28 @@ Last reviewed 2026-09-21.
 | `metro` | Census TIGERweb 2020 Urban Areas | Census TIGER/Line urban-area shapefile + gazetteer (local) |
 | `datacenter` | PeeringDB KMZ in `Reference/` (registered colo/IX only) | PeeringDB API (free, rate-limited) for a fresh export; Baxtel export (manual) for hyperscale/enterprise |
 
+## Parcel registry coverage (reviewed 2026-09-22)
+
+Statewide: **OH** (Ohio Statewide Parcels, 6.3M), **FL** (FDOR Cadastral 2025, 10.8M, edited 2026-09-16,
+carries OWN_NAME), **VA** (VGIN). Counties: 12. Together these resolve 54 of the Windstream 200.
+
+Unresolved, by state — what each needs:
+
+| State | Sites | Counties | Status |
+|---|---|---|---|
+| IA | 40 | 29 | **No current statewide source found.** Checked 2026-09-22: AGOL has only `Iowa_Parcels_2017` (a 2017 snapshot on a university account — rejected as a copy of unknown age); Iowa DOT's REST `Cadastre` and `Boundaries` folders enumerate zero services; the Iowa AGOL org (8lRhdTsQyJpO52F1, 264 services) has no parcel service. Next: ask a person to check geodata.iowa.gov (an ArcGIS Hub, not a REST root) or the Iowa Land Records / county auditors. 29 counties otherwise. |
+| GA | 35 | 28 | county-by-county; 5 already registered from the Aug 2026 work |
+| KY | 27 | 21 | county-by-county |
+| TX | 20 | 19 | county-by-county (Dallas Co registered) |
+| OK | 14 | 8 | county-by-county |
+| AR | 8 | 6 | county-by-county |
+| AL | 2 | 2 | county-by-county |
+
+**Economics.** At 1–2 sites per county, discovery + human review is poor value for a broker batch.
+Treat `parcel` as a **survivor-only** step: run it after the flags cut a batch to ~20 sites, and
+register only the counties those survivors are in. A statewide service, where one exists, is worth
+finding first — Ohio and Florida each took minutes and covered 43 sites between them.
+
 ## Cross-cutting
 
 - **Census batch geocoder** (`geocoding.geo.census.gov`, free, no key, 10k rows/request): the standard route for any address-only dataset (CMS hospitals, county assessor lists, client CSVs with addresses but no coordinates). **Built** as `scripts/bulk/geocode.py` (2026-09-21).

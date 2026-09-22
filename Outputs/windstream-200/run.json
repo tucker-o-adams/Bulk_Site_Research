@@ -1,6 +1,6 @@
 {
- "run_at": "2026-09-22T13:21:33+00:00",
- "elapsed_s": 7.9,
+ "run_at": "2026-09-22T13:47:25+00:00",
+ "elapsed_s": 0.1,
  "input": {
   "path": "E:\\Claude\\Projects\\TBDI Modeling\\Mireye\\scripts\\bulk\\fixtures\\windstream_200.csv",
   "sha256": "221d226bfd053d1567f5bb78718bbb7ccc46428aa352fd520ed99924948e5f5d"
@@ -28,13 +28,13 @@
     "parcel_status"
    ],
    "status_counts": {
-    "ok": 930,
-    "absent": 1670
+    "ok": 986,
+    "absent": 1614
    }
   }
  },
  "cache": {
-  "hits": 200,
-  "misses": 46
+  "hits": 254,
+  "misses": 0
  }
 }

@@ -2,9 +2,9 @@
 ABRDNCXA,35.13471956,-79.4267825499999,WNS1899,211 North Poplar Street,,,NC,,Interesting,,Building,Aberdeen,Owned,Central Office,27,Moore County,37125,county,Accela_taxparcels,857013243207,,2101 RIVERFRONT DR  #A,1.3422,0.0,,,7,ok
 ADELGAXA,31.13789183,-83.4224465199999,WNS1464,106 North Parrish Avenue,,,GA,,Other,,Building,Adel,Owned,Central Office,27,Cook County,13075,,,,,,,,,,,unresolved: no registered service
 ANWOIAXO,41.2891466499999,-91.5551446799999,WNS0433,240 5th Street,,,IA,,Other,,Building,Ainsworth,Owned,Central Office,8,Washington County,19183,,,,,,,,,,,unresolved: no registered service
-ALCHFL01,29.80235134,-82.49220798,WNS1425,13715 West County Road 235,,,FL,,Other,,Building,Alachua,Owned,Central Office,4,Alachua County,12001,,,,,,,,,,,unresolved: no registered service
-ALCHFLAJ,29.78938708,-82.4958955799999,,14600 Main Street,,,FL,,Other,,Building,Alachua,Owned,Central Office,#N/A,Alachua County,12001,,,,,,,,,,,unresolved: no registered service
-ALCHFLXA,29.7894,-82.4962,WNS1426,14600 Main St,,,FL,,Other,,Building,Alachua,Owned,Central Office,32,Alachua County,12001,,,,,,,,,,,unresolved: no registered service
+ALCHFL01,29.80235134,-82.49220798,WNS1425,13715 West County Road 235,,,FL,,Other,,Building,Alachua,Owned,Central Office,4,Alachua County,12001,statewide,FDOR Cadastral 2025 (Florida Statewide Parcels),03129-004-000,CSL FLORIDA SYSTEM LLC,13715 W STATE RD 235,5.3387,,,,17,ok
+ALCHFLAJ,29.78938708,-82.4958955799999,,14600 Main Street,,,FL,,Other,,Building,Alachua,Owned,Central Office,#N/A,Alachua County,12001,statewide,FDOR Cadastral 2025 (Florida Statewide Parcels),03677-000-000,CSL FLORIDA SYSTEM LLC,14600  MAIN ST,0.6052,,,,5,ok
+ALCHFLXA,29.7894,-82.4962,WNS1426,14600 Main St,,,FL,,Other,,Building,Alachua,Owned,Central Office,32,Alachua County,12001,statewide,FDOR Cadastral 2025 (Florida Statewide Parcels),03677-000-000,CSL FLORIDA SYSTEM LLC,14600  MAIN ST,0.6052,,,,5,ok
 ALBYKYXA,36.6930220799999,-85.13449812,WNS1699,400 N Washington,,,KY,,Other,,Building,Albany,Owned,Central Office,38,Clinton County,21053,,,,,,,,,,,unresolved: no registered service
 ALBMNCXA,35.3540421499999,-80.19909173,WNS1901,250 North 1st Street,,,NC,,Interesting,,Building,Albemarle,Owned,Central Office,55,Stanly County,37167,county,Parcels,654801255808,4005 NORTH RODNEY PARHAM RD,,0.8423,0.0,,,38,ok
 ALBIIAXO,41.0259585599999,-92.80564617,WNS0435,202 Washington Avenue E,,,IA,,Other,,Building,Albia,Owned,Central Office,13,Monroe County,19135,,,,,,,,,,,unresolved: no registered service
@@ -21,7 +21,7 @@ BEREKYXA,37.57334353,-84.2857390799999,WNS1709,310 Center Street,,,KY,,Other,,Bu
 SHBGKYAB,38.2426062099999,-83.87447858,,160 Old Highway 11,,,KY,,Other,,Building,BETHEL,Owned,Central Office,3,Bath County,21011,,,,,,,,,,,unresolved: no registered service
 BLVIGABW,34.8640250999999,-83.9848088499999,WNS3282,40 River Road Connector,,,GA,,Interesting,,Building,Blairsville,Owned,Central Office,2,Union County,13291,,,,,,,,,,,unresolved: no registered service
 BLKLGAXA,31.3825399999999,-84.957519,WNS0261,15166 River St,,,GA,,Other,,Building,Blakely,Owned,Central Office,35,Early County,13099,,,,,,,,,,,unresolved: no registered service
-BRFRFLXA,29.96008262,-82.9279976299999,,108 Drane St Nw| Branford| FL| 32008,,,FL,,Other,,Building,Branford,Owned,Central Office,20,Suwannee County,12121,,,,,,,,,,,unresolved: no registered service
+BRFRFLXA,29.96008262,-82.9279976299999,,108 Drane St Nw| Branford| FL| 32008,,,FL,,Other,,Building,Branford,Owned,Central Office,20,Suwannee County,12121,statewide,FDOR Cadastral 2025 (Florida Statewide Parcels),1706S14E04083280080,CITY OF BRANFORD JAIL,108 EXPRESS ST NW,0.2633,,,,7,ok
 BRHDKYXA,37.3416834599999,-84.44990833,,4297 Highway 70,,,KY,,Other,,Building,BRODHEAD,Owned,Central Office,14,Rockcastle County,21203,,,,,,,,,,,unresolved: no registered service
 BRAROKXA,36.0526137,-95.7918259599999,WNS2324,114 West Broadway,,,OK,,Other,,Building,Broken Arrow,Owned,Central Office,150,Tulsa County,40143,,,,,,,,,,,unresolved: no registered service
 BRAROKXC,35.99867768,-95.7968520799999,WNS2325,5301 South Elm Place W,,,OK,,Other,,Building,Broken Arrow,Owned,Central Office,109,Tulsa County,40143,,,,,,,,,,,unresolved: no registered service
@@ -31,7 +31,7 @@ BKVLKYXA,38.6825019999999,-84.067487,WNS1712,202 Madison St,,,KY,,Other,,Buildin
 BWFDTXXA,33.1772204099999,-102.274424499999,,101 East Tate,,,TX,,Other,,Building,Brownfield,Owned,Central Office,93,Terry County,48445,,,,,,,,,,,unresolved: no registered service
 BRSDKYXA,36.98978863,-84.5993733199999,WNS1715,53 E French Ave 03,,,KY,,Other,,Building,BURNSIDE,Owned,Central Office,41,Pulaski County,21199,,,,,,,,,,,unresolved: no registered service
 CAIRGAXA,30.8785318,-84.2089730499999,WNS1480,48 2nd Avenue,,,GA,,Other,,Building,Cairo,Owned,Central Office,37,Grady County,13131,,,,,,,,,,,unresolved: no registered service
-CLHNFLXA,30.56435631,-81.8314212899999,WNS1430,45403 Green Avenue,,,FL,,Other,,Building,Callahan,Owned,Central Office,44,Nassau County,12089,,,,,,,,,,,unresolved: no registered service
+CLHNFLXA,30.56435631,-81.8314212899999,WNS1430,45403 Green Avenue,,,FL,,Other,,Building,Callahan,Owned,Central Office,44,Nassau County,12089,statewide,FDOR Cadastral 2025 (Florida Statewide Parcels),292N25312000140000,CSL FLORIDA SYSTEM LLC,45403 GREEN AVE,0.2864,,,,6,ok
 CMVLKYXA,37.342599,-85.3439159999999,WNS1718,303 E Broadway,,,KY,,Other,,Building,Campbellsville,Owned,Central Office,85,Taylor County,21217,,,,,,,,,,,unresolved: no registered service
 CNTNGAXA,34.23610953,-84.4906549899999,WNS1482,190 South Church Street,,,GA,,Interesting,,Building,Canton,Owned,Central Office,81,Cherokee County,13057,county,Property_Value_TY2024,14-0166-0003,CSL GEORGIA SYSTEM LLC,10802 EXECUTIVE CENTER DR,0.1743,1.0,,,4,ok
 CECLOHXA,41.2181456499999,-84.6021258899999,WNS2243,105 North Main Street,,,OH,,Other,,Building,CECIL,Owned,Central Office,5,Paulding County,39125,statewide,Ohio Statewide Parcels,15-05S-001-00,,105  MAIN ST N   ,0.1613,,,,5,ok
@@ -88,7 +88,7 @@ GRNLIAXC,41.74516982,-92.72541513,WNS1631,1010 Main Street,,,IA,,Other,,Building
 HRSNARXA,36.214283,-93.079052,,202 Graham Street,,,AR,,Other,,Building,Harrison,Owned,Central Office,81,Boone County,05009,,,,,,,,,,,unresolved: no registered service
 HZRDKYXA,37.24986502,-83.1939202399999,WNS1739,101 Winterberry Drive,,,KY,,Other,,Building,Hazard,Owned,Central Office,133,Perry County,21193,,,,,,,,,,,unresolved: no registered service
 HWSSGAXA,34.95173821,-83.7583057399999,WNS1525,228 North Main Street,,,GA,,Interesting,,Building,Hiawassee,Owned,Central Office,19,Towns County,13281,,,,,,,,,,,unresolved: no registered service
-HLRDFLXA,30.68973301,-81.9186614599999,WNS1438,3745 Pecan Street,,,FL,,Other,,Building,Hilliard,Owned,Central Office,30,Nassau County,12089,,,,,,,,,,,unresolved: no registered service
+HLRDFLXA,30.68973301,-81.9186614599999,WNS1438,3745 Pecan Street,,,FL,,Other,,Building,Hilliard,Owned,Central Office,30,Nassau County,12089,statewide,FDOR Cadastral 2025 (Florida Statewide Parcels),083N24238100040000,CSL FLORIDA SYSTEM LLC,3745 PECAN ST,0.7684,,,,13,ok
 HIRMOHXA,41.31000644,-81.14604119,WNS2272,11677 Hayden Street Rear,,,OH,,Other,,Building,Hiram,Owned,Central Office,14,Portage County,39133,statewide,Ohio Statewide Parcels,22-023-10-00-129-001,,WAKEFIELD RD  HIRAM 44234,0.0817,,,,9,ok
 HLCRIAXP,42.5992163399999,-90.9921891999999,WNS1638,5778 MAPLE RD,,,IA,,Other,,Building,Holy Cross,Owned,Central Office,6,Dubuque County,19061,,,,,,,,,,,unresolved: no registered service
 HDSNOHXB,41.21706309,-81.4425081699999,WNS1063,1300 Terex Road,,,OH,,Other,,Building,Hudson,Owned,Central Office,20,Summit County,39153,statewide,Ohio Statewide Parcels,3003811,,,0.8055,,,,7,ok
@@ -112,13 +112,13 @@ LEDSALXA,33.54372706,-86.54439521,WNS1345,8372 1St Avenue Southeast,,,AL,,Other,
 LTFDKYXA,37.48445892,-86.2939511299999,WNS1752,399 N Cannon Dr BLDG A,,,KY,,Other,,Building,Leitchfield,Owned,Central Office,35,Grayson County,21085,,,,,,,,,,,unresolved: no registered service
 LVLDTXXA,33.58805583,-102.379543499999,WNS2638,506 Avenue I,,,TX,,Other,,Building,Levelland,Owned,Central Office,75,Hockley County,48219,,,,,,,,,,,unresolved: no registered service
 LTFDTXXA,33.9210429999999,-102.329773,WNS2640,600 East 5th Street,,,TX,,Other,,Building,Littlefield,Owned,Central Office,39,Lamb County,48279,,,,,,,,,,,unresolved: no registered service
-LVOKFLXA,30.29397346,-82.98207915,WNS1448,206 White Avenue SE,,,FL,,Other,,Building,Live Oak,Owned,Central Office,123,Suwannee County,12121,,,,,,,,,,,unresolved: no registered service
+LVOKFLXA,30.29397346,-82.98207915,WNS1448,206 White Avenue SE,,,FL,,Other,,Building,Live Oak,Owned,Central Office,123,Suwannee County,12121,statewide,FDOR Cadastral 2025 (Florida Statewide Parcels),2302S13E06789620000,CSL FLORIDA SYSTEM LLC,206 WHITE AVE,1.7924,,,,5,ok
 MDSNOHXA,41.8002742199999,-81.0489853899999,WNS2282,2740 Hubbard Road,,,OH,,Interesting,,Building,MADISON,Owned,Central Office,28,Lake County,39085,statewide,Ohio Statewide Parcels,01B8880006000,,2745  HUBBARD RD  MADISON 44057,0.6524,,,,8,ok
 MNCHIAXO,42.48472283,-91.45717681,WNS1646,107 East Fayette Street,,,IA,,Other,,Building,Manchester,Owned,Central Office,30,Delaware County,19055,,,,,,,,,,,unresolved: no registered service
 MNCHIAWH,42.45587333,-91.4783707299999,WNS1645,1614 230Th Street,,,IA,,Other,,Building,Manchester,Owned,Central Office,2,Delaware County,19055,,,,,,,,,,,unresolved: no registered service
 MNCHGAXA,32.85132378,-84.61593315,WNS1542,212 2nd Street,,,GA,,Other,,Building,Manchester,Owned,Central Office,31,Meriwether County,13199,,,,,,,,,,,unresolved: no registered service
 MRNGIAXO,41.7988809399999,-92.06939307,WNS1648,151 East Hilton,,,IA,,Other,,Building,Marengo,Owned,Central Office,15,Iowa County,19095,,,,,,,,,,,unresolved: no registered service
-MAYOFLXA,30.05422767,-83.1762577599999,WNS1450,153 Northwest Crawford Street,,,FL,,Other,,Building,Mayo,Owned,Central Office,20,Lafayette County,12067,,,,,,,,,,,unresolved: no registered service
+MAYOFLXA,30.05422767,-83.1762577599999,WNS1450,153 Northwest Crawford Street,,,FL,,Other,,Building,Mayo,Owned,Central Office,20,Lafayette County,12067,statewide,FDOR Cadastral 2025 (Florida Statewide Parcels),1305110011042000010,CSL FLORIDA SYSTEM LLC,153 NW CRAWFORD ST,0.2419,,,,8,ok
 MCRAGAXA,32.0667820099999,-82.89752257,WNS1545,8 East Oak Street,,,GA,,Other,,Building,McRae,Owned,Central Office,23,Telfair County,13271,,,,,,,,,,,unresolved: no registered service
 MLRSIAXO,40.97544741,-93.0481071399999,,105 TRINITY AVE,,,IA,,Other,,Building,Melrose,Owned,Central Office,7,Monroe County,19135,,,,,,,,,,,unresolved: no registered service
 MMPHTXXA,34.72450811,-100.5393755,WNS2654,721 West Noel Street,,,TX,,Other,,Building,Memphis,Owned,Central Office,48,Hall County,48191,,,,,,,,,,,unresolved: no registered service
