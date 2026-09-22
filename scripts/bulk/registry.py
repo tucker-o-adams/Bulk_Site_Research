@@ -20,6 +20,12 @@ design this follows deliberately):
                           "acres": "GIS_ACRES", "address": "SITUS"},   # county field names
                "notes": "..."}
 
+    Optional service keys: "protocol" ("query" default, "identify", "wms" - see
+    producers/parcel.py), "data_vintage", a "vintage" role in "fields" naming a
+    per-parcel date column, "exclude" {geoid: {"county", "reason"}} for counties a
+    statewide layer carries but we may not use, and "check_point" [lat, lng] for
+    check_sources.py where the service cannot count its records (WMS).
+
 A county entry wins over the statewide one: the county is the authority and
 everyone else is a copy of unknown age.
 

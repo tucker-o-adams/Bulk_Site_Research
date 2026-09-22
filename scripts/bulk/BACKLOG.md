@@ -37,7 +37,10 @@ Last reviewed 2026-09-21.
 ## Parcel registry coverage (reviewed 2026-09-22)
 
 Statewide: **OH** (Ohio Statewide Parcels, 6.3M), **FL** (FDOR Cadastral 2025, 10.8M, edited 2026-09-16,
-carries OWN_NAME), **VA** (VGIN). Counties: 12. Together these resolve 54 of the Windstream 200.
+carries OWN_NAME), **VA** (VGIN), **IA** (2017 snapshot), and since 2026-09-22 **TX** (TxGIO StratMap, 21
+licensed counties excluded), **AR** (state GIS office), **OK** (OKMaps WMS). Counties: 13.
+**Windstream 200: 130 resolve** (was 98) — see "Built 2026-09-22" under the prior-art research below.
+The table that follows is the 2026-09-22 morning state, kept as the record of the sweep.
 
 Unresolved, by state — what each needs:
 
@@ -257,6 +260,65 @@ Northwest, CSRA, Southwest and Atlanta RC publish none. The Georgia GIS Clearing
 Recommended order: **A, B, E** first (they turn most of the remaining 102 into reviewable
 proposals for a few hours' work); **C** after the Schneider terms call; **F** as a parallel
 email; **G** only for survivors.
+
+### Built 2026-09-22: A, B and E (Tucker approved all three)
+
+**A — TX, AR, OK statewide registered.** `parcel.py` gained a `protocol` per service: `query` (default),
+`identify` (TxGIO disables `/query`; Esri rings are converted to GeoJSON, and computed acreage matches
+StratMap's own `GIS_AREA` to 0.001 ac), and `wms` (OKMaps `GetFeatureInfo`, one request per site). A
+`vintage` field role gives each parcel its county's own date (TX `DATE_ACQ`, AR `camadate`, OK
+`dataupdate`) instead of one statewide date. `check_sources.py` checks a WMS service at a stored
+`check_point`, and now matches field names case-insensitively (TxGIO names them `prop_id`, identify
+returns `PROP_ID` — it had reported "fields gone").
+
+**TxGIO licence exclusion.** TxGIO's own item lists 21 counties as "licensed land parcel datasets available
+to Texas governmental entities by special request" (Castro, Chambers, Cottle, Crockett, Crosby, Dawson,
+Donley, Frio, Gonzales, Houston, Jack, Kerr, Knox, Mason, Menard, Oldham, Roberts, Shelby, Ward, Wichita,
+Wilbarger). `identify` still returns them. The registry entry carries them under `exclude`, and a site
+there comes back `unresolved: county excluded from the statewide layer` with the reason. Three Windstream
+sites (Castro, Dawson, Kerr). Their appraisal districts' own BIS-hosted services (`<County>CADWebService`,
+~138 CADs; Castro's is open) are the route if they matter.
+
+**B — discovery starts from prior art.** `discover_parcel_service.py` now reads the county's OpenAddresses
+source file (matched by the Census GEOID in its `coverage`, name first, full scan only as fallback) and
+the state's `statewide.json`, probes their parcel URLs, uses OA's curated `pid` field as the APN guess, and
+enumerates the host of every OA URL even when it is dead. It writes the county's **NSGIC 2025** row
+(`PRCLACCS`, steward, view/download/API URLs) into the proposal and probes an API URL if there is one.
+Berrien GA: the OA candidate ranks first (105) with `PARCEL_NO`. **Fixed a discovery bug found on the way:**
+AGOL lists every hosted layer twice, as FeatureServer and MapServer, and the hosted MapServer answers
+`/query` with "Invalid URL" — host enumeration was probing that copy and scoring real parcel layers as
+broken (the "TVA clip query fails" and Charlton results above were this). Enumeration now keeps the
+FeatureServer.
+
+**E — `parcel_owner_check`.** `run.py --expected-owner REGEX` (or an `expected_owner` column) — see the
+README. Windstream 200 with the Windstream pattern: **78 expected owner, 43 not checkable** (Ohio has no
+owner field), **9 for review**:
+
+| Site | County | Owner of record | What it probably means |
+|---|---|---|---|
+| BRFRFLXA | Suwannee FL | CITY OF BRANFORD JAIL | pin on the neighbouring parcel |
+| DLRKARXA | Dallas AR | BULLOCK GREGGORY R & DIANNE | pin on the neighbouring parcel |
+| HLCRIAXP | Dubuque IA | HEIDERSCHEIT ED | 2017 owner, or neighbouring parcel |
+| KNVLIAXD | Marion IA | Feagins Dixie | 2017 owner, or neighbouring parcel |
+| MORVIAIC | Appanoose IA | Spencer Elaine Ann & | 2017 owner, or neighbouring parcel |
+| DUMSTXXA | Moore TX | (blank; PROP_ID 0) | StratMap has no attributes for Moore |
+| DNSNIAXO, MRNGIAXO, WLBGIAXO | Lee, Iowa IA | (blank) | Iowa 2017 layer has no owner there |
+
+It also caught a **registry error**: Stanly County NC (37167) mapped `owner` to `TaxPayerAddr1`, the
+mailing address (Windstream's Little Rock HQ); corrected to `Name1` (`KINETIC ABS NC LLC`).
+
+**Found after the first write-up** (not registered; none holds a Windstream site):
+Alabama GeoHub `services7.arcgis.com/jF2q3LPxL7PETdYk/.../PARCELS_072026_1231_WFL1` (Montgomery, Elmore,
+Autauga; one analyst's working copy, churns); H-GAC `gis.h-gac.com/.../RLUIS_24_v2_Current_Land_Use`
+(8 Houston-area counties, 2024, no owner); an unofficial 2024 StratMap copy on a university AGOL account
+(`Texas_Land_Parcels`, supports `/query`, 235/254 counties) — a fallback if TxGIO's identify goes away.
+
+**Still open from the 102:** GA 16 sites (qPublic-only counties), KY 23, TX 4 (3 licensed + Waterwood),
+AR 2 (Crossett — pin in the street, needs D; Fordyce), AL 2 (Jefferson and St. Clair county services
+proven but not yet registered), plus the GA counties proven in `remaining-probe.csv` but not yet
+registered (they need the per-county review). **Next:** register the proven GA/KY/AL county services
+from `remaining-probe.csv` after review (Schneider-hosted ones wait on the terms call — C); D for
+Crossett; F (Kentucky DOR email).
 
 ## Cross-cutting
 

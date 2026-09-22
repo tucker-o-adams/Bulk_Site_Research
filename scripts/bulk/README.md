@@ -32,6 +32,21 @@ Rejected rows are listed with a reason in the console and in `run.json`, never d
 `status` is one of `ok`, `absent` (source confirmed nothing there — an answer, not an error),
 `failed` (source unreachable; value null), `manual` (supplied by a person).
 
+## Portfolio owner check
+
+For a batch that is one operator's portfolio, pass the owner of record the parcels should carry:
+
+```
+.venv_fema/Scripts/python.exe scripts/bulk/run.py --sites <in.csv> --out Outputs/<batch>/ \n    --expected-owner "windstream|kinetic|csl|valor tele|telephone|telecom|alltel|allied tele|arcco|public utility|-PU$"
+```
+
+(That is the Windstream pattern: its CSL, Kinetic, Valor, Alltel and Iowa Telecom entities, and the
+public-utility parcel numbering some counties use.) `parcel_owner_check` is then `expected owner`,
+`different owner - review` (the pin may be on a neighbouring parcel), `no owner in source - review`, or
+`not checkable: source has no owner field` (Ohio's statewide layer omits owners). An `expected_owner`
+column in the input CSV overrides the flag per site. The pattern is recorded in `run.json`. Filter the
+workbook on `review` before anyone relies on an acreage.
+
 ## Workbook
 
 ```
@@ -69,7 +84,7 @@ Windstream 200: 4.5 MB, 6,307 placemarks; folder C matches `Combined_3` on all 1
 | `wetlands` | `nwi_mapping_status, nwi_image_year, nwi_project, nwi_at_point, nwi_type_at_point, nwi_code_at_point, nwi_nearest_m, nwi_nearest_type, nwi_nearest_code, nwi_nearest_acres, nwi_count_within_500m, nwi_polygon_acres_within_500m` | USFWS National Wetlands Inventory: Wetlands, Wetlands_Status, Data_Source. Photointerpreted, not jurisdictional; acres are whole NWI polygons, not clipped. Unmapped areas carry a note on every zero. | in use; no independent known answer yet |
 | `metro` | `metro_urban_area_at_point, metro_urban_area_at_point_pop, metro_250k_nearest_name/m/pop, metro_1m_nearest_name/m/pop` | Census TIGERweb 2020 Urban Areas with POP100. Straight-line to the urban-area boundary (0 inside), not driving time; urban areas are built-up footprints, not MSAs. 300 km search. | geographic sanity checks (Sugar Land inside Houston 0 km, Baldwin GA 41 km to Atlanta, Riverside TX rural) |
 | `datacenter` | `dc_nearest_m/name/city/state/networks/peeringdb_url, dc_hub_nearest_m/name/city/networks, dc_count_within_25km/50km, dc_max_networks_within_50km` | PeeringDB facility list (`Reference/peeringdb.kmz`, 1,353 US facilities), local, no network. Registered colo/IX facilities only — hyperscale and enterprise data centers are not listed. Hub = >= 20 networks (114 facilities). | geographic sanity checks |
-| `parcel` | `parcel_county, parcel_county_geoid, parcel_source_scope, parcel_service_name, parcel_apn, parcel_owner, parcel_address, parcel_acres_gis, parcel_acres_stated_by_county, parcel_acres_input, parcel_apn_matches_input, parcel_vertices, parcel_status` | Census TIGERweb county at the point, then the county (or statewide) parcel service from `data/reference/parcel-services.json`. There is no national parcel layer: an unregistered county returns `unresolved` naming the county, and `reference/discover_parcel_service.py` writes a reviewable proposal. Logic ported from tbdi-pasa `pasa_geo.core.parcel_at_point` / `pasa_geo.county`. | **29/29 acreages match** the Aug 2026 county-GIS results |
+| `parcel` | `parcel_county, parcel_county_geoid, parcel_source_scope, parcel_service_name, parcel_apn, parcel_owner, parcel_address, parcel_acres_gis, parcel_acres_stated_by_county, parcel_acres_input, parcel_apn_matches_input, parcel_owner_check, parcel_vertices, parcel_status` | Census TIGERweb county at the point, then the county (or statewide) parcel service from `data/reference/parcel-services.json`: statewide OH, FL, VA, IA (2017), TX (TxGIO StratMap, via `identify`), AR, OK (OKMaps WMS), plus reviewed counties. There is no national parcel layer: an unregistered county returns `unresolved` naming the county, and `reference/discover_parcel_service.py` writes a reviewable proposal (OpenAddresses and NSGIC first, then searches). `parcel_owner_check` compares the owner of record with `--expected-owner`. Logic ported from tbdi-pasa `pasa_geo.core.parcel_at_point` / `pasa_geo.county`. | **29/29 acreages match** the Aug 2026 county-GIS results; Windstream 200: 130 resolved, 78 with the expected owner |
 | `housing` | `hu_block_at_point, pop_block_at_point, block_at_point_acres, hu_within_0_5mi, pop_within_0_5mi, hu_within_1mi, pop_within_1mi, blocks_within_1mi` | Census TIGERweb 2020 Blocks (HU100, POP100). Blocks counted whole when their Census internal point is within the radius; rural blocks are large, so rural sums are coarse. Raw counts only — no density class until thresholds are agreed. | sanity checks |
 | `schools` | `school_nearest_m/name/type/city, schools_within_0_5mi/1mi, public_schools_within_1mi, private_schools_within_1mi` | NCES EDGE public 2024-25 + private 2023-24 school points (K-12 only). 5 km search. | sanity checks (Nordonia Middle 122 m from NRFDOHXA) |
 | `worship` | `worship_nearest_m/name/city, worship_within_0_5mi/1mi` | HIFLD All Places of Worship, third-party ArcGIS mirror (fragile), geocoded from IRS filings — may be a mailing address. 5 km search. | sanity checks |

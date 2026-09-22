@@ -17,7 +17,19 @@ guessing, and the guess would arrive wearing a citation. A wrong parcel
 silently poisons buildable acres, the flood and wetland clips, and the map
 outline. Cheap to review, expensive to get wrong.
 
-Two ways in, because AGOL indexes only what a publisher registered there and a
+Prior art first (added 2026-09-22, see BACKLOG "Parcel prior-art research"):
+
+  0. **OpenAddresses** — its `sources/us/<st>/<county>.json` files carry a person-
+     curated `parcels` layer URL for 1,140 US sources (GA 94, AL 38, TX 24, ...),
+     keyed by Census GEOID. Checked before any search. The URLs rot (7 of 17
+     checked in GA were dead), so each is probed, and its host is enumerated
+     either way — a renamed service usually still sits on the same org.
+  0a. **NSGIC Parcel Portal** (2025) — one row per county: whether parcels are
+     public (`PRCLACCS` Y/I/N), the steward, and view/download/API URLs. Its
+     status is written into the proposal for the reviewer; an API URL becomes a
+     candidate.
+
+Then the searches, because AGOL indexes only what a publisher registered there and a
 county that self-hosts and never registered is invisible to a search:
 
   1. **AGOL search** for items whose title names parcels.
@@ -188,7 +200,113 @@ def enumerate_services(root):
         if fj.get('__error__'):
             continue
         out += [(e['name'], e.get('type')) for e in fj.get('services', [])]
-    return [(n, k) for n, k in out if k in ('FeatureServer', 'MapServer')], None
+    # ArcGIS Online lists a hosted layer twice, as FeatureServer and as MapServer; the hosted
+    # MapServer answers /query with "Invalid URL", which scored real parcel layers as broken
+    # (the Charlton GA and UT-Chattanooga layers, 2026-09-22). Keep the FeatureServer.
+    feature = {n for n, k in out if k == 'FeatureServer'}
+    return [(n, k) for n, k in out if k == 'FeatureServer' or (k == 'MapServer' and n not in feature)], None
+
+
+OA_DIR = 'https://api.github.com/repos/openaddresses/openaddresses/contents/sources/us/{st}'
+OA_RAW = 'https://raw.githubusercontent.com/openaddresses/openaddresses/master/sources/us/{st}/{name}'
+NSGIC = 'https://services5.arcgis.com/fmKivMCp6fwbWbeE/arcgis/rest/services/2025_NSGIC_Parcel_Portal/FeatureServer/0'
+USPS = {'01': 'al', '02': 'ak', '04': 'az', '05': 'ar', '06': 'ca', '08': 'co', '09': 'ct', '10': 'de', '11': 'dc',
+        '12': 'fl', '13': 'ga', '15': 'hi', '16': 'id', '17': 'il', '18': 'in', '19': 'ia', '20': 'ks', '21': 'ky',
+        '22': 'la', '23': 'me', '24': 'md', '25': 'ma', '26': 'mi', '27': 'mn', '28': 'ms', '29': 'mo', '30': 'mt',
+        '31': 'ne', '32': 'nv', '33': 'nh', '34': 'nj', '35': 'nm', '36': 'ny', '37': 'nc', '38': 'nd', '39': 'oh',
+        '40': 'ok', '41': 'or', '42': 'pa', '44': 'ri', '45': 'sc', '46': 'sd', '47': 'tn', '48': 'tx', '49': 'ut',
+        '50': 'vt', '51': 'va', '53': 'wa', '54': 'wv', '55': 'wi', '56': 'wy'}
+
+
+def letters(s):
+    return re.sub(r'[^a-z]', '', (s or '').lower().replace(' county', '').replace(' parish', ''))
+
+
+def layer_candidate(url, probe, score, why, title, owner, typ, item=None):
+    """Probe one layer URL (…/FeatureServer/3) and wrap it as a scored candidate, or None if dead."""
+    base, lid = url.rstrip('/').rsplit('/', 1)
+    if not lid.isdigit():
+        base, lid = url.rstrip('/'), 0
+    meta = g(f'{base}/{lid}?f=json')
+    if meta.get('__error__') or meta.get('error'):
+        print(f'    dead: {url[:90]} ({meta.get("__error__") or str(meta.get("error"))[:60]})')
+        return None
+    pl = probe_layer(base, int(lid), probe)
+    pts, pwhy = layer_points(pl)
+    return {'score': score + pts, 'why': why + pwhy, 'title': title, 'owner': owner, 'type': typ,
+            'url': base, 'modified': None, 'item': item,
+            'layers': [{'layer': int(lid), 'layer_name': pl.get('name'), 'points': pts, **pl}]}
+
+
+def from_openaddresses(geoid, probe):
+    """Candidates from OpenAddresses' person-curated parcel sources for this county (and the
+    state's statewide file). Returns (candidates, urls_seen) — dead URLs still name a host
+    worth enumerating."""
+    st = USPS.get(str(geoid)[:2])
+    if not st:
+        return [], []
+    listing = g(OA_DIR.format(st=st))
+    names = [x['name'] for x in listing] if isinstance(listing, list) else []
+    if not names:
+        print(f'  openaddresses: directory listing unavailable ({str(listing)[:80]})')
+        return [], []
+    # The county file is usually named for the county ('ben_hill.json', 'lasalle.json'); its
+    # coverage GEOID is what decides. Scan every file only when no name matches.
+    src0 = g(f'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query'
+             f'?f=json&where=GEOID%3D%27{geoid}%27&outFields=BASENAME&returnGeometry=false')
+    base = letters(((src0.get('features') or [{}])[0].get('attributes') or {}).get('BASENAME'))
+    named = [n for n in names if letters(n[:-5]) == base]
+    order = [n for n in names if n == 'statewide.json'] + (named or [n for n in names if n.endswith('.json')
+                                                                   and not n.startswith('city_of_') and n != 'statewide.json'])
+    cands, seen, found_county = [], [], False
+    for name in order:
+        if found_county and name != 'statewide.json':
+            break
+        src = g(OA_RAW.format(st=st, name=name))
+        if name == 'statewide.json':
+            scope = 'statewide'
+        elif ((src.get('coverage') or {}).get('US Census') or {}).get('geoid') != str(geoid):
+            continue
+        else:
+            scope, found_county = 'county', True
+        for lyr in ((src or {}).get('layers') or {}).get('parcels') or []:
+            u = lyr.get('data')
+            if not u or lyr.get('protocol') != 'ESRI':
+                continue
+            seen.append(u)
+            print(f'  openaddresses {st}/{name} parcels: {u}')
+            c = layer_candidate(u, probe, 55, [f'listed as parcels in OpenAddresses sources/us/{st}/{name} '
+                                                f'({scope}; person-curated)'],
+                                f'OA {st}/{name} {lyr.get("name", "")}', u.split('/')[2], f'from openaddresses ({scope})',
+                                item=f'https://github.com/openaddresses/openaddresses/blob/master/sources/us/{st}/{name}')
+            if c:
+                pid = (lyr.get('conform') or {}).get('pid')
+                l0 = c['layers'][0]
+                if isinstance(pid, str) and pid in l0['fields']:
+                    l0['field_guess']['apn'] = pid       # OA's curated mapping beats our name heuristics
+                cands.append(c)
+    print(f'  openaddresses candidates: {len(cands)} (from {len(seen)} listed URLs)')
+    return cands, seen
+
+
+def nsgic_status(geoid, probe):
+    """The county's row in the NSGIC 2025 Parcel Portal, and a candidate for its API URL if any."""
+    r = g(f'{NSGIC}/query?f=json&where=GEOID%3D%27{geoid}%27&outFields=*&returnGeometry=false')
+    feats = r.get('features') or []
+    if not feats:
+        print(f'  nsgic: no row for {geoid} ({r.get("__error__") or r.get("error") or "not found"})')
+        return None, []
+    a = feats[0]['attributes']
+    status = {k: a.get(k) for k in ('PRCLACCS', 'PROGRAM', 'STEWARD', 'VIEWURL', 'DLDURL', 'APIURL', 'UPDATEFREQ')}
+    print(f"  nsgic: access={a.get('PRCLACCS')} steward={a.get('STEWARD')!r} api={a.get('APIURL')!r}")
+    api = a.get('APIURL') or ''
+    cands = []
+    if '/rest/services' in api:
+        c = layer_candidate(api, probe, 50, [f"NSGIC 2025 Parcel Portal API URL (steward {a.get('STEWARD')!r})"],
+                            'NSGIC API URL', api.split('/')[2], 'from nsgic')
+        if c:
+            cands.append(c)
+    return status, cands
 
 
 HUB = 'https://hub.arcgis.com/api/v3/datasets'
@@ -352,6 +470,12 @@ def main():
               f'?f=json&where=GEOID%3D%27{a.geoid}%27&outFields=NAME,STATE,BASENAME&returnGeometry=false')
         at = (r.get('features') or [{}])[0].get('attributes', {})
         county = at.get('NAME') or at.get('BASENAME')
+    state = state or (USPS.get(a.geoid[:2]) or '').upper() or None
+
+    # ---- prior art first: OpenAddresses' curated parcel sources, and NSGIC's county status
+    oa_cands, oa_urls = from_openaddresses(a.geoid, probe)
+    nsgic, ns_cands = nsgic_status(a.geoid, probe)
+
     q = urllib.parse.quote(f'{county} {state or ""} parcels type:("Feature Service" OR "Map Service")')
     res = g(f'{AGOL}?f=json&num=40&sortField=numviews&sortOrder=desc&q={q}')
     if res.get('__error__') or res.get('error'):
@@ -377,6 +501,8 @@ def main():
             if pl.get('probe', {}).get('features') == 1:
                 c['score'] += 15
             c['layers'].append({'layer': lid, 'layer_name': lname, **pl})
+    cands += oa_cands + ns_cands
+
     # ---- ArcGIS Hub index
     cands += from_hub(county, state, probe)
 
@@ -384,8 +510,9 @@ def main():
     cands += from_webmaps(county, state, probe)
 
     # ---- host enumeration: the AGOL hits' own roots, plus anything --server named
+    # OpenAddresses URLs come first even when dead: a renamed service usually sits on the same host.
     roots = []
-    for u in a.server + [c.get('url') for c in cands if c.get('url')]:
+    for u in a.server + oa_urls + [c.get('url') for c in cands if c.get('url')]:
         r = org_root(u)
         if r and r not in roots:
             roots.append(r)
@@ -399,6 +526,8 @@ def main():
         json.dump({'geoid': a.geoid, 'county': county, 'state': state, 'probe': a.probe,
                    'note': 'PROPOSAL ONLY - a person reviews this and moves the chosen service into parcel-services.json. '
                            'Nothing here is used by a run.',
+                   'nsgic_2025': nsgic,
+                   'openaddresses_urls': oa_urls,
                    'candidates': cands[:10]}, f, indent=1)
     print(f'wrote {out}')
     for c in cands[:5]:

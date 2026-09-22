@@ -3,33 +3,22 @@
  "updated": "2026-09-22",
  "note": "Parcel services per county, and statewide where one exists. A county entry wins over the statewide one. Seeded from tbdi-pasa county-services.json (reviewed entries only). Nothing is auto-registered: discover_parcel_service.py writes a proposal, a person reviews it and adds it here. fields maps our roles to that service's column names.",
  "statewide": {
-  "51": {
-   "state": "VA",
-   "reviewed": "2026-09-09",
-   "service": {
-    "base": "https://vginmaps.vdem.virginia.gov/arcgis/rest/services/VA_Base_Layers/VA_Parcels/MapServer",
-    "layer": 0,
-    "name": "Virginia Statewide Parcels (VGIN / VDEM)",
-    "owner": "Virginia Geographic Information Network",
-    "fields": {
-     "apn": "PARCELID"
-    },
-    "notes": "Covers all 133 Virginia localities from one service, which is why it is statewide rather than per-county. Carries no address field: an address-to-parcel match is one geocode landing in one polygon and must be confirmed against the assessor. A county-level entry, if one is ever registered, wins over this."
-   }
-  },
-  "39": {
-   "state": "OH",
+  "05": {
+   "state": "AR",
    "reviewed": "2026-09-22",
    "service": {
-    "base": "https://services2.arcgis.com/MlJ0G8iWUyC7jAmu/arcgis/rest/services/OhioStatewidePacels_full_view/FeatureServer",
-    "layer": 0,
-    "name": "Ohio Statewide Parcels",
-    "owner": "Ohio (OGRIP statewide parcel aggregation)",
+    "base": "https://gis.arkansas.gov/arcgis/rest/services/FEATURESERVICES/Planning_Cadastre/FeatureServer",
+    "layer": 6,
+    "name": "Arkansas Parcel Polygons (CAMP)",
+    "owner": "Arkansas GIS Office (Arkansas Cadastral Mapping Program)",
+    "data_vintage": "2026-04-01",
     "fields": {
-     "apn": "LocalParcelID",
-     "address": "SitusAddressAll"
+     "apn": "parcelid",
+     "owner": "ownername",
+     "address": "adrlabel",
+     "vintage": "camadate"
     },
-    "notes": "6,313,610 records covering all Ohio counties from one service. Used and verified by the Aug 2026 Windstream parcel work (19 sites across 8 counties); re-probed 2026-09-22, 12/12 Ohio Windstream sites returned exactly one polygon. LocalParcelID is the county parcel number (StateParcelID also present). NO owner field - Ohio's aggregation omits owner names; use the county auditor link in CAMADataSite. LandArea is empty across the service (0 non-zero in a 400-row sample), so acreage comes from the geometry. SitusAddressAll is sparse. A county-level entry, if one is ever registered, wins over this."
+    "notes": "Reviewed 2026-09-22 on the evidence in data/reference/parcel-proposals/remaining-probe.csv (prior-art research, scripts/bulk/BACKLOG.md \"Parcel prior-art research\"); registration approved by Tucker 2026-09-22 (approach A). All 75 counties, 2,117,780 parcels, published 2026-04-01 (pubdate). Hosted on the state's own server, not AGOL - which is why the statewide sweep missed it. Probe: 6 of 8 unresolved Windstream AR sites returned a polygon, 5 with an operator owner (KINETIC ABS AR, APW ARCCO WS, WHITE RIVER TELEPHONE). Crossett: the pin is in the street; the CSL Arkansas parcel at the site address is ~60 m away. Dalark returned a private owner and Fordyce nothing - both need a person. Vintage per parcel is camadate (the county CAMA extract date). No acreage field; acreage comes from the geometry. A county entry, if registered, wins."
    }
   },
   "12": {
@@ -63,6 +52,162 @@
      "address": "COUNTYNAME"
     },
     "notes": "2,450,589 parcels, layer named Parcels_20171102 - a 2017 snapshot, re-hosted on a university account; the service itself was last edited 2024-05-10 but the DATA is 2017. The only statewide Iowa parcel layer that exists: confirmed 2026-09-22 by three independent searches (AGOL item search, ArcGIS Hub dataset index, Iowa DOT and Iowa AGOL org enumeration). Registered deliberately with data_vintage 2017-11-02, which every value carries. BOUNDARIES: fine for screening - parcels rarely move, and a split since 2017 would show as an over-large acreage, not a wrong location. DEEDHOLDER: nine years stale and known wrong for this portfolio - the Windstream/Kinetic parcels transferred through CSL entities in late 2025 (Aug 2026 county-record work). Treat owner from this layer as a 2017 fact, never as current ownership. PARCELCLAS carries the use class (COMMERCIAL / EXEMPT / ...). No acreage field; acreage comes from the geometry."
+   }
+  },
+  "39": {
+   "state": "OH",
+   "reviewed": "2026-09-22",
+   "service": {
+    "base": "https://services2.arcgis.com/MlJ0G8iWUyC7jAmu/arcgis/rest/services/OhioStatewidePacels_full_view/FeatureServer",
+    "layer": 0,
+    "name": "Ohio Statewide Parcels",
+    "owner": "Ohio (OGRIP statewide parcel aggregation)",
+    "fields": {
+     "apn": "LocalParcelID",
+     "address": "SitusAddressAll"
+    },
+    "notes": "6,313,610 records covering all Ohio counties from one service. Used and verified by the Aug 2026 Windstream parcel work (19 sites across 8 counties); re-probed 2026-09-22, 12/12 Ohio Windstream sites returned exactly one polygon. LocalParcelID is the county parcel number (StateParcelID also present). NO owner field - Ohio's aggregation omits owner names; use the county auditor link in CAMADataSite. LandArea is empty across the service (0 non-zero in a 400-row sample), so acreage comes from the geometry. SitusAddressAll is sparse. A county-level entry, if one is ever registered, wins over this."
+   }
+  },
+  "40": {
+   "state": "OK",
+   "reviewed": "2026-09-22",
+   "service": {
+    "base": "https://okmaps.org/geoserver/wms",
+    "layer": "ogi_wms:Statewide_Parcels",
+    "protocol": "wms",
+    "check_point": [
+     35.0113368399999,
+     -97.36365886
+    ],
+    "name": "OKMaps Statewide Parcels (Oklahoma Office of Geographic Information)",
+    "owner": "Oklahoma OGI / OKMaps; compiled by Property Records Preservation, LLC from county assessor rolls",
+    "data_vintage": "2026-02-01",
+    "fields": {
+     "apn": "parcelid",
+     "owner": "owner",
+     "vintage": "dataupdate"
+    },
+    "notes": "Reviewed 2026-09-22 on the evidence in data/reference/parcel-proposals/remaining-probe.csv (prior-art research, scripts/bulk/BACKLOG.md \"Parcel prior-art research\"); registration approved by Tucker 2026-09-22 (approach A). All 77 counties. Published as a GeoServer WMS only: metadata says \"view only or through OGC WMS... not available for download\". The producer makes one GetFeatureInfo request per site (JSON, EPSG:4326, street-level bbox) and caches it - never a harvest. Probe: 10 of 10 unresolved Windstream OK sites returned a MultiPolygon with an operator owner (CSL OKLAHOMA SYSTEM, KINETIC ABS OK, OKLAHOMA ALLIED TELEPHONE). Vintage per parcel is dataupdate (county roll date, Feb-Aug 2026 for most; Tulsa 2024-07). acres is null throughout; acreage comes from the geometry. Tulsa County (40143, INCOG) keeps its county entry, which wins over this. The same server lists ogi_secure:* layers - not used."
+   }
+  },
+  "48": {
+   "state": "TX",
+   "reviewed": "2026-09-22",
+   "service": {
+    "base": "https://feature.geographic.texas.gov/arcgis/rest/services/Parcels/stratmap_land_parcels_48_most_recent/MapServer",
+    "layer": 0,
+    "protocol": "identify",
+    "name": "TxGIO StratMap Land Parcels (most recent)",
+    "owner": "Texas Geographic Information Office (TxGIO, formerly TNRIS)",
+    "data_vintage": "2025",
+    "fields": {
+     "apn": "PROP_ID",
+     "owner": "OWNER_NAME",
+     "address": "SITUS_ADDR",
+     "vintage": "DATE_ACQ"
+    },
+    "notes": "Reviewed 2026-09-22 on the evidence in data/reference/parcel-proposals/remaining-probe.csv (prior-art research, scripts/bulk/BACKLOG.md \"Parcel prior-art research\"); registration approved by Tucker 2026-09-22 (approach A). Statewide compilation of appraisal-district parcels, 253 of 254 counties in the 2025 collection, CC0. /query is disabled on this MapServer (\"operation not supported\"), so the producer uses /identify. Probe: 19 of 20 unresolved Windstream TX sites returned a polygon, 17 with OWNER_NAME CSL TEXAS SYSTEM / VALOR TELECOMMUNICATIONS. Moore County polygons carry no attributes (PROP_ID 0); Waterwood (Huntsville) returned nothing. Vintage per parcel is DATE_ACQ (the date TxGIO acquired that county's data). LEGAL_AREA is not mapped to acres because its unit (LGL_AREA_UNIT) varies by county; acreage comes from the geometry. Per-county CAD downloads and earlier years are on the TxGIO DataHub (api.tnris.org). A county entry, if registered, wins. 21 counties are excluded (see exclude): TxGIO releases them only to Texas government entities, so a site there stays unresolved until the county CAD's own service is registered. That affects 3 Windstream sites today (Castro, Dawson, Kerr). Donley is also absent from the service.",
+    "exclude": {
+     "48069": {
+      "county": "Castro",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48071": {
+      "county": "Chambers",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48101": {
+      "county": "Cottle",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48105": {
+      "county": "Crockett",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48107": {
+      "county": "Crosby",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48115": {
+      "county": "Dawson",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48129": {
+      "county": "Donley",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48163": {
+      "county": "Frio",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48177": {
+      "county": "Gonzales",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48225": {
+      "county": "Houston",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48237": {
+      "county": "Jack",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48265": {
+      "county": "Kerr",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48275": {
+      "county": "Knox",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48319": {
+      "county": "Mason",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48327": {
+      "county": "Menard",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48359": {
+      "county": "Oldham",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48393": {
+      "county": "Roberts",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48419": {
+      "county": "Shelby",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48475": {
+      "county": "Ward",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48485": {
+      "county": "Wichita",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     },
+     "48487": {
+      "county": "Wilbarger",
+      "reason": "TxGIO lists this county among the \"licensed land parcel datasets\" available only to Texas governmental entities by special request (StratMap Most Recent Land Parcels portal item, read 2026-09-22). identify still returns its parcels, but the licence does not extend to us: register the county appraisal district's own service instead (many BIS-hosted CADs publish an open <County>CADWebService, e.g. Castro)."
+     }
+    }
+   }
+  },
+  "51": {
+   "state": "VA",
+   "reviewed": "2026-09-09",
+   "service": {
+    "base": "https://vginmaps.vdem.virginia.gov/arcgis/rest/services/VA_Base_Layers/VA_Parcels/MapServer",
+    "layer": 0,
+    "name": "Virginia Statewide Parcels (VGIN / VDEM)",
+    "owner": "Virginia Geographic Information Network",
+    "fields": {
+     "apn": "PARCELID"
+    },
+    "notes": "Covers all 133 Virginia localities from one service, which is why it is statewide rather than per-county. Carries no address field: an address-to-parcel match is one geocode landing in one polygon and must be confirmed against the assessor. A county-level entry, if one is ever registered, wins over this."
    }
   }
  },
@@ -160,7 +305,7 @@
    "state": "NC",
    "publisher": "Parcels",
    "reviewed": "2026-09-22",
-   "review_notes": "Service used and verified by the Aug 2026 Windstream parcel work (2 site(s), e.g. ALBMNCXA -> APN 6.54801E+11); re-probed 2026-09-22, one polygon at the point.",
+   "review_notes": "Service used and verified by the Aug 2026 Windstream parcel work (2 site(s), e.g. ALBMNCXA -> APN 6.54801E+11); re-probed 2026-09-22, one polygon at the point. Corrected 2026-09-22: owner was mapped to TaxPayerAddr1, which is the taxpayer mailing address (Windstream HQ, 4005 N Rodney Parham Rd); the owner is Name1 (KINETIC ABS NC LLC at ALBMNCXA). Caught by parcel_owner_check. Site address is PhyStreetAddr.",
    "service": {
     "base": "https://services6.arcgis.com/w1igg0Q14weqYXUh/arcgis/rest/services/parcel_records_base_2/FeatureServer",
     "layer": 3,
@@ -168,8 +313,9 @@
     "owner": "Parcels",
     "fields": {
      "apn": "PIN",
-     "owner": "TaxPayerAddr1",
-     "acres": "DeedAcres"
+     "owner": "Name1",
+     "acres": "DeedAcres",
+     "address": "PhyStreetAddr"
     },
     "notes": "Seeded from WS_Sites_Parcel_Sizes_FINAL.csv source column."
    }

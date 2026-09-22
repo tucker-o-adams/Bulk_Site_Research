@@ -25,8 +25,25 @@ Three honest limits, carried on every row:
     this acreage is a floor.
   * County services are unstable — two vanished mid-project in Sep 2026 — so a
     vintage and the service URL travel with every value.
+
+Three ways to ask a service for the polygon at a point (`service.protocol`):
+  * `query`    (default) ArcGIS layer `/query`, returned as GeoJSON.
+  * `identify` ArcGIS MapServer `/identify`, for a service that disables `/query`
+               (TxGIO StratMap). Esri rings are converted to GeoJSON here.
+  * `wms`      OGC WMS `GetFeatureInfo` as JSON, for a GeoServer that publishes
+               parcels "view only or through OGC WMS" (OKMaps). One request per
+               site, never a harvest.
+A service may name a `vintage` field: statewide layers are compiled from counties
+refreshed at different times, so the county's own date beats the layer's.
+
+`parcel_owner_check` compares the owner (and parcel id, so a public-utility
+numbering convention like Houston GA's `-PU` counts) against the expected owner
+given by `run.py --expected-owner` or an `expected_owner` input column. For a
+portfolio batch the owner of record is the cheapest evidence that the pin landed
+on the right parcel; anything else is flagged for a person to look at.
 """
-import math
+import math, re, urllib.parse
+from datetime import datetime, timezone
 from cache import coord_key
 from geom import arcgis_query, ring_contains
 from provenance import Value, absent, failed, now_iso
@@ -44,7 +61,64 @@ NOTE = ('one point landing in one polygon - confirm the APN against the assessor
 
 FIELDS = ['parcel_county', 'parcel_county_geoid', 'parcel_source_scope', 'parcel_service_name',
           'parcel_apn', 'parcel_owner', 'parcel_address', 'parcel_acres_gis', 'parcel_acres_stated_by_county',
-          'parcel_acres_input', 'parcel_apn_matches_input', 'parcel_vertices', 'parcel_status']
+          'parcel_acres_input', 'parcel_apn_matches_input', 'parcel_owner_check', 'parcel_vertices', 'parcel_status']
+
+# Regex for the owner a portfolio's parcels should carry; set by run.py --expected-owner.
+# An `expected_owner` column in the input CSV overrides it per site.
+EXPECTED_OWNER = None
+
+
+def request_url(svc, la, ln):
+    """The URL that asks a registered service for the polygon at one point, by its protocol."""
+    proto = svc.get('protocol', 'query')
+    if proto == 'identify':
+        d = 0.001
+        return (f"{svc['base']}/identify?f=json&geometryType=esriGeometryPoint&sr=4326&tolerance=0"
+                f"&layers=all:{svc['layer']}&returnGeometry=true&geometry={ln},{la}"
+                f"&mapExtent={ln - d},{la - d},{ln + d},{la + d}&imageDisplay=400,400,96")
+    if proto == 'wms':
+        d = 0.0005                     # GeoServer answers only at a street-level scale
+        lyr = urllib.parse.quote(str(svc['layer']))
+        return (f"{svc['base']}?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo&SRS=EPSG:4326"
+                f"&BBOX={ln - d},{la - d},{ln + d},{la + d}&WIDTH=101&HEIGHT=101&X=50&Y=50"
+                f"&LAYERS={lyr}&QUERY_LAYERS={lyr}&STYLES=&INFO_FORMAT=application/json&FEATURE_COUNT=5")
+    return arcgis_query(f"{svc['base']}/{svc['layer']}", la, ln, '*', geometry=True, fmt='geojson', precision=7)
+
+
+def esri_polygon(g):
+    """Esri JSON rings -> GeoJSON Polygon/MultiPolygon. Esri outer rings run clockwise, holes counter-clockwise."""
+    polys = []
+    for r in (g or {}).get('rings') or []:
+        r = [(p[0], p[1]) for p in r]
+        signed = sum(x1 * y2 - x2 * y1 for (x1, y1), (x2, y2) in zip(r, r[1:]))
+        if signed <= 0 or not polys:
+            polys.append([r])
+        else:
+            polys[-1].append(r)
+    if not polys:
+        return {}
+    return {'type': 'Polygon', 'coordinates': polys[0]} if len(polys) == 1 else {'type': 'MultiPolygon', 'coordinates': polys}
+
+
+def features(resp, svc):
+    """GeoJSON-style features from any protocol's response."""
+    if svc.get('protocol') == 'identify':
+        return [{'geometry': esri_polygon(r.get('geometry')), 'properties': r.get('attributes') or {}}
+                for r in (resp or {}).get('results') or [] if r.get('layerId') == svc['layer']]
+    return (resp or {}).get('features') or []
+
+
+def as_date(v):
+    """A source's date value (epoch ms, '20250201', ISO timestamp, or a year) as an ISO date string."""
+    if v in (None, '', 'Null'):
+        return None
+    if isinstance(v, (int, float)) and v > 1e11:
+        return datetime.fromtimestamp(v / 1000, tz=timezone.utc).date().isoformat()
+    s = str(v).strip()
+    if re.fullmatch(r'\d{8}', s):
+        return f'{s[:4]}-{s[4:6]}-{s[6:]}'
+    m = re.match(r'\d{4}-\d{2}-\d{2}', s)
+    return m.group(0) if m else s
 
 
 def ring_area_m2(ring):
@@ -90,6 +164,23 @@ def vertices(g):
     return sum(len(r) - 1 for rings in polys for r in rings)
 
 
+def owner_check(site, svc, owner, apn, mk):
+    """'expected owner' / 'different owner - review' / 'no owner in source - review' /
+    'not checkable: source has no owner field' (Ohio's aggregation omits owners by design)."""
+    pat = (site.extra or {}).get('expected_owner') or EXPECTED_OWNER
+    if not pat:
+        return absent('parcel_owner_check', 'input CSV', '', METHOD,
+                      note='no expected owner given (run.py --expected-owner, or an expected_owner column)')
+    why = f'owner and parcel id checked against /{pat}/'
+    if re.search(pat, f"{owner or ''} {apn or ''}", re.I):
+        return mk('expected owner', why)
+    if not registry.field(svc, 'owner'):
+        return mk('not checkable: source has no owner field', why + '; confirm the APN with the assessor instead')
+    if not str(owner or '').strip():
+        return mk('no owner in source - review', why + '; the service carries no owner for this parcel')
+    return mk('different owner - review', why + '; the pin may be on a neighbouring parcel')
+
+
 def run(site, cache):
     la, ln = site.lat, site.lng
     fetched = now_iso()
@@ -116,30 +207,38 @@ def run(site, cache):
     if not svc:
         why = (f'no parcel service registered for {cname} County ({geoid}); run '
                f'scripts/bulk/reference/discover_parcel_service.py --geoid {geoid} and review the proposal')
-        return out + [absent(f, SOURCE, LYR, METHOD, note=why, vintage='2025') for f in FIELDS[2:12]] + \
+        return out + [absent(f, SOURCE, LYR, METHOD, note=why, vintage='2025') for f in FIELDS[2:-1]] + \
             [mk('parcel_status', 'unresolved: no registered service', SOURCE, LYR, '2025', why)]
 
-    url = f"{svc['base']}/{svc['layer']}"
+    # A statewide layer can carry counties we may not use (TxGIO's licensed CAD datasets).
+    excl = (svc.get('exclude') or {}).get(str(geoid)) if scope == 'statewide' else None
+    if excl:
+        why = f"{svc.get('name')} excludes {cname} County ({geoid}): {excl.get('reason')}"
+        return out + [absent(f, SOURCE, LYR, METHOD, note=why, vintage='2025') for f in FIELDS[2:-1]] + \
+            [mk('parcel_status', 'unresolved: county excluded from the statewide layer', SOURCE, LYR, '2025', why)]
+
+    url = svc['base'] if svc.get('protocol') == 'wms' else f"{svc['base']}/{svc['layer']}"
     # The vintage on a value is the data's, not the day a person reviewed the service: an
     # Iowa 2017 snapshot reviewed in 2026 must not carry a 2026 vintage.
     vint = svc.get('data_vintage') or entry.get('reviewed') or svc.get('reviewed')
     src = f"{svc.get('name')} ({svc.get('owner')})"
-    resp, f2, e2 = cache.get_json(NAME, coord_key(la, ln, f"parcel_{scope}"),
-                                  arcgis_query(url, la, ln, '*', geometry=True, fmt='geojson', precision=7))
+    resp, f2, e2 = cache.get_json(NAME, coord_key(la, ln, f"parcel_{scope}"), request_url(svc, la, ln))
     if e2:
         return out + [failed(f, src, url, METHOD, e2) for f in FIELDS[2:]]
     fetched = f2 or fetched
-    hits = [f for f in (resp or {}).get('features') or [] if contains(f.get('geometry') or {}, ln, la)] or \
-           [(resp or {}).get('features') or []][0][:1]
+    feats = features(resp, svc)
+    hits = [f for f in feats if contains(f.get('geometry') or {}, ln, la)] or feats[:1]
     if not hits:
         why = f'{svc.get("name")} returned no parcel polygon containing the point'
-        return out + [absent(f, src, url, METHOD, note=why, vintage=vint) for f in FIELDS[2:12]] + \
+        return out + [absent(f, src, url, METHOD, note=why, vintage=vint) for f in FIELDS[2:-1]] + \
             [mk('parcel_status', 'unresolved: no polygon at the point', src, url, vint, why)]
 
     f = hits[0]
     g = f.get('geometry') or {}
     p = f.get('properties') or {}
+    vint = as_date(registry.pick(p, svc, 'vintage')) or vint
     apn = registry.pick(p, svc, 'apn')
+    owner = registry.pick(p, svc, 'owner')
     acres_gis = geometry_area_m2(g) / 4046.8564224
     stated = registry.pick(p, svc, 'acres')
     try:
@@ -151,7 +250,7 @@ def run(site, cache):
     out += [mk('parcel_source_scope', scope, src, url, vint, note),
             mk('parcel_service_name', svc.get('name'), src, url, vint, note),
             mk('parcel_apn', apn, src, url, vint, note),
-            mk('parcel_owner', registry.pick(p, svc, 'owner'), src, url, vint, note),
+            mk('parcel_owner', owner, src, url, vint, note),
             mk('parcel_address', registry.pick(p, svc, 'address'), src, url, vint, note),
             mk('parcel_acres_gis', round(acres_gis, 4), src, url, vint, note)]
     out.append(mk('parcel_acres_stated_by_county', round(stated, 4), src, url, vint, note) if stated is not None
@@ -168,6 +267,7 @@ def run(site, cache):
                       'the assessor is the authority; a mismatch means the pin may be on the wrong parcel'))
     else:
         out.append(absent('parcel_apn_matches_input', 'input CSV', '', METHOD, note='no apn in the input CSV to check against'))
+    out.append(owner_check(site, svc, owner, apn, lambda val, why: mk('parcel_owner_check', val, src, url, vint, why)))
     out += [mk('parcel_vertices', vertices(g), src, url, vint, note),
             mk('parcel_status', 'ok', src, url, vint, note)]
     return out

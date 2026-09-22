@@ -55,10 +55,33 @@ def check_layer(url, want_fields=()):
         vint = datetime.fromtimestamp(ei['dataLastEditDate'] / 1000, tz=timezone.utc).date().isoformat()
     c = g(url + '/query?where=1%3D1&returnCountOnly=true&f=json')
     fields = [f['name'] for f in m.get('fields', [])]
-    missing = [f for f in want_fields if f and f not in fields]
+    # Case-insensitive, like registry.pick: TxGIO names its fields 'prop_id' but identify returns 'PROP_ID'.
+    have = {f.lower() for f in fields} | {(f.get('alias') or '').lower() for f in m.get('fields', [])}
+    missing = [f for f in want_fields if f and f.lower() not in have]
     return {'ok': True, 'name': m.get('name'), 'vintage': vint,
             'records': c.get('count') if isinstance(c, dict) else None,
             'fields_missing': missing, 'field_count': len(fields)}
+
+
+def check_wms(base, layer, point, want_fields=()):
+    """A WMS parcel layer (OKMaps): no record count or edit date to read, so ask for the
+    feature at a known point and check it still comes back with the fields we read."""
+    if not point:
+        return {'ok': False, 'error': 'no check_point registered for this WMS service'}
+    la, ln = point
+    d = 0.0005
+    u = (f'{base}?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo&SRS=EPSG:4326'
+         f'&BBOX={ln - d},{la - d},{ln + d},{la + d}&WIDTH=101&HEIGHT=101&X=50&Y=50&LAYERS={layer}'
+         f'&QUERY_LAYERS={layer}&STYLES=&INFO_FORMAT=application/json&FEATURE_COUNT=1')
+    r = g(u)
+    if r.get('__error__'):
+        return {'ok': False, 'error': r['__error__']}
+    feats = r.get('features') or []
+    if not feats:
+        return {'ok': False, 'error': f'no feature at the check point {la},{ln}'}
+    props = feats[0].get('properties') or {}
+    return {'ok': True, 'name': layer, 'vintage': None, 'records': None,
+            'fields_missing': [f for f in want_fields if f and f not in props], 'field_count': len(props)}
 
 
 def targets():
@@ -83,9 +106,11 @@ def targets():
     reg = registry.load()
     for st, e in (reg.get('statewide') or {}).items():
         s = e['service']
-        out.append({'key': f'parcel:statewide:{e.get("state", st)}', 'url': f"{s['base']}/{s['layer']}",
+        wms = s.get('protocol') == 'wms'
+        out.append({'key': f'parcel:statewide:{e.get("state", st)}', 'url': s['base'] if wms else f"{s['base']}/{s['layer']}",
                     'source': s.get('name'), 'claimed_vintage': e.get('reviewed'),
-                    'want_fields': [v for v in (s.get('fields') or {}).values()]})
+                    'want_fields': [v for v in (s.get('fields') or {}).values()],
+                    'wms': (s['layer'], s.get('check_point')) if wms else None})
     for geoid, e in (reg.get('counties') or {}).items():
         s = e['service']
         out.append({'key': f'parcel:county:{geoid} {e.get("county", "")}', 'url': f"{s['base']}/{s['layer']}",
@@ -105,7 +130,8 @@ def main():
         k = t['key']
         if t.get('error'):
             drift.append((k, t['error'])); print(f'  FAIL {k}: {t["error"]}'); continue
-        r = check_layer(t['url'], t.get('want_fields') or ())
+        r = check_wms(t['url'], *t['wms'], t.get('want_fields') or ()) if t.get('wms') else \
+            check_layer(t['url'], t.get('want_fields') or ())
         now[k] = {**r, 'url': t['url'], 'checked_at': datetime.now(timezone.utc).isoformat(timespec='seconds')}
         b = base.get(k) or {}
         flags = []

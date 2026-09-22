@@ -4,6 +4,7 @@
     .venv_fema/Scripts/python.exe scripts/bulk/run.py --sites <in.csv> --out Outputs/<batch>/
         [--producers transmission,...]   default: all
         [--only SITE_ID,SITE_ID]         subset, for spot checks
+        [--expected-owner REGEX]         owner a portfolio's parcels should carry (parcel_owner_check)
 
 Writes into --out:
     sites.csv        one row per site: input columns + every producer field
@@ -11,7 +12,7 @@ Writes into --out:
     run.json         inputs, counts, rejected rows, per-producer status tallies, cache hit/miss
     (raw service responses go to <repo>/data/cache/, shared across batches; rerun = offline)
 """
-import argparse, csv, hashlib, importlib, json, os, sys, time
+import argparse, csv, hashlib, importlib, json, os, re, sys, time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 
@@ -32,7 +33,15 @@ def main():
     ap.add_argument('--producers', default=','.join(ALL_PRODUCERS))
     ap.add_argument('--only', default='')
     ap.add_argument('--workers', type=int, default=6, help='sites processed concurrently (I/O bound)')
+    ap.add_argument('--expected-owner', default='',
+                    help='regex for the owner of record a portfolio batch should show, e.g. '
+                         '"windstream|kinetic|\\bcsl\\b"; an expected_owner input column overrides it per site')
     a = ap.parse_args()
+    if a.expected_owner:
+        try:
+            re.compile(a.expected_owner)
+        except re.error as e:
+            raise SystemExit(f'--expected-owner is not a valid regex: {e}')
 
     t0 = time.time()
     os.makedirs(a.out, exist_ok=True)
@@ -41,6 +50,9 @@ def main():
         keep = set(x.strip() for x in a.only.split(','))
         sites = [s for s in sites if s.site_id in keep]
     producers = [importlib.import_module(f'producers.{n.strip()}') for n in a.producers.split(',') if n.strip()]
+    for p in producers:
+        if hasattr(p, 'EXPECTED_OWNER') and a.expected_owner:
+            p.EXPECTED_OWNER = a.expected_owner
     cache = Cache(os.path.join(os.path.dirname(os.path.dirname(HERE)), 'data', 'cache'))   # shared across batches
     print(f'sites: {len(sites)} accepted, {len(rejected)} rejected | producers: {[p.NAME for p in producers]}')
     for n, sid, why in rejected:
@@ -91,6 +103,7 @@ def main():
         'input': {'path': os.path.abspath(a.sites),
                   'sha256': hashlib.sha256(open(a.sites, 'rb').read()).hexdigest()},
         'sites_accepted': len(sites), 'sites_rejected': [list(r) for r in rejected],
+        'expected_owner': a.expected_owner or None,
         'producers': {p.NAME: {'source': p.SOURCE, 'url': p.LYR if hasattr(p, 'LYR') else None,
                                'vintage': getattr(p, 'VINTAGE', None), 'fields': list(p.FIELDS),
                                'status_counts': dict(tally[p.NAME])} for p in producers},
