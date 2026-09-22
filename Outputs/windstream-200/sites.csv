@@ -1,201 +1,201 @@
-﻿site_id,lat,lng,name,address,apn,acres_stated,state,county,group,notes,asset_type,city,land_ownership,primary_use,rack_count,nwi_mapping_status,nwi_image_year,nwi_project,nwi_at_point,nwi_type_at_point,nwi_code_at_point,nwi_nearest_m,nwi_nearest_type,nwi_nearest_code,nwi_nearest_acres,nwi_count_within_500m,nwi_polygon_acres_within_500m
-ABRDNCXA,35.13471956,-79.4267825499999,WNS1899,211 North Poplar Street,,,NC,,Interesting,,Building,Aberdeen,Owned,Central Office,27,Digital,1983,Southern Pines,False,,,27.4,Riverine,R5UBH,1.252,13,47.296
-ADELGAXA,31.13789183,-83.4224465199999,WNS1464,106 North Parrish Avenue,,,GA,,Other,,Building,Adel,Owned,Central Office,27,Digital,1983,Adel,False,,,276.8,Freshwater Pond,PUBHx,0.285,1,0.285
-ANWOIAXO,41.2891466499999,-91.5551446799999,WNS0433,240 5th Street,,,IA,,Other,,Building,Ainsworth,Owned,Central Office,8,Digital,2005,SW SE Iowa,False,,,139.8,Riverine,R4SBC,2.001,6,15.263
-ALCHFL01,29.80235134,-82.49220798,WNS1425,13715 West County Road 235,,,FL,,Other,,Building,Alachua,Owned,Central Office,4,Digital,1984,Alachua,False,,,166.5,Freshwater Emergent Wetland,PEM1C,0.566,2,2.257
-ALCHFLAJ,29.78938708,-82.4958955799999,,14600 Main Street,,,FL,,Other,,Building,Alachua,Owned,Central Office,#N/A,Digital,1984,Alachua,False,,,350.6,Freshwater Pond,PUBHx,0.399,2,0.973
-ALCHFLXA,29.7894,-82.4962,WNS1426,14600 Main St,,,FL,,Other,,Building,Alachua,Owned,Central Office,32,Digital,1984,Alachua,False,,,380.1,Freshwater Pond,PUBHx,0.399,2,0.973
-ALBYKYXA,36.6930220799999,-85.13449812,WNS1699,400 N Washington,,,KY,,Other,,Building,Albany,Owned,Central Office,38,Digital,1981,Albany,False,,,,,,,0,0
-ALBMNCXA,35.3540421499999,-80.19909173,WNS1901,250 North 1st Street,,,NC,,Interesting,,Building,Albemarle,Owned,Central Office,55,Digital,1983,Albemarle,False,,,455.2,Riverine,R2UBHx,9.548,1,9.548
-ALBIIAXO,41.0259585599999,-92.80564617,WNS0435,202 Washington Avenue E,,,IA,,Other,,Building,Albia,Owned,Central Office,13,Digital,2002,Iowa_07_A,False,,,,,,,0,0
-ANDRTXXA,32.31761412,-102.5477171,WNS2514,112 Southwest 1st,,,TX,,Other,,Building,Andrews,Owned,Central Office,46,Digital,2008,Playa_Lakes_11,False,,,,,,,0,0
-ASLDKYXA,38.4758,-82.64385,WNS1701,619 15th Street,,,KY,,Interesting,,Building,Ashland,Owned,Central Office,232,Digital,1983,Ashland,False,,,,,,,0,0
-MEDSKYXA,38.4096499699999,-82.71303235,WNS1703,9216 Highway 60,,,KY,,Interesting,,Building,Ashland,Owned,Central Office,76,Digital,1983,Ashland,False,,,148.7,Riverine,R5UBH,57.6,2,57.864
-ADBNIAXO,41.72127167,-94.9293833299999,WNS1601,620 LEROY,,,IA,,Other,,Building,Audubon,Owned,Central Office,30,Digital,2002,Iowa_2008_DNR_update,False,,,,,,,0,0
-AURROHXA,41.31715803,-81.3465993899999,WNS2239,27 East  Garfield Road,,,OH,,Other,,Building,Aurora,Owned,Central Office,70,Digital,2007,Ohio_DU_updates,False,,,112.8,Freshwater Pond,PUBG,0.222,4,2.554
-BNBGOHXA,41.3856989499999,-81.34062923,WNS1052,8425 Baindridge Road,,,OH,,Interesting,,Building,Bainbridge,Owned,Central Office,64,Digital,2007,Ohio_DU_updates,False,,,103.5,Riverine,R4SBC,0.739,10,16.193
-CRNLGA01,34.4972084699999,-83.54997767,WNS0048,2000 Communications Boulevard,,,GA,,Interesting,,Building,Baldwin,Owned,Central Office,11,Digital,1982,Baldwin,False,,,121.2,Riverine,R4SBC,2.265,6,4.927
-BBVLKYXA,36.86533403,-83.88827335,WNS1705,207 South Main Street,,,KY,,Other,,Building,Barbourville,Owned,Central Office,28,Digital,1984,Barbourville,False,,,195.2,Riverine,R2UBH,937.182,2,938.344
-FRVWOHXA,40.0594973999999,-81.22041851,WNS2241,32699 Old National Road,,,OH,,Interesting,,Building,Barnesville,Owned,Central Office,28,Digital,2007,Ohio_DU_updates,False,,,251.4,Freshwater Pond,PUBGx,0.488,8,7.955
-BEREKYXA,37.57334353,-84.2857390799999,WNS1709,310 Center Street,,,KY,,Other,,Building,Berea,Owned,Central Office,90,Digital,1984,Berea,False,,,467.7,Riverine,R4SBC,1.352,2,1.849
-SHBGKYAB,38.2426062099999,-83.87447858,,160 Old Highway 11,,,KY,,Other,,Building,BETHEL,Owned,Central Office,3,Digital,1985,Owingsville,False,,,131.7,Freshwater Pond,PUBHh,0.088,6,54.814
-BLVIGABW,34.8640250999999,-83.9848088499999,WNS3282,40 River Road Connector,,,GA,,Interesting,,Building,Blairsville,Owned,Central Office,2,Digital,1982,Coosa Bald,False,,,391.4,Riverine,R3UBH,260.588,7,3773.36
-BLKLGAXA,31.3825399999999,-84.957519,WNS0261,15166 River St,,,GA,,Other,,Building,Blakely,Owned,Central Office,35,Digital,1983,Blakely North,False,,,278.6,Freshwater Forested/Shrub Wetland,PSS1Ch,1.279,7,15.083
-BRFRFLXA,29.96008262,-82.9279976299999,,108 Drane St Nw| Branford| FL| 32008,,,FL,,Other,,Building,Branford,Owned,Central Office,20,Digital,1984,Branford,False,,,328.6,Freshwater Forested/Shrub Wetland,PFO6F,101.831,2,6957.687
-BRHDKYXA,37.3416834599999,-84.44990833,,4297 Highway 70,,,KY,,Other,,Building,BRODHEAD,Owned,Central Office,14,Digital,1985,Maretburg,False,,,255.1,Freshwater Pond,PUBHh,0.228,4,3.365
-BRAROKXA,36.0526137,-95.7918259599999,WNS2324,114 West Broadway,,,OK,,Other,,Building,Broken Arrow,Owned,Central Office,150,Digital,1980,Broken Arrow,False,,,,,,,0,0
-BRAROKXC,35.99867768,-95.7968520799999,WNS2325,5301 South Elm Place W,,,OK,,Other,,Building,Broken Arrow,Owned,Central Office,109,Digital,1980,Leonard,False,,,219.9,Riverine,R4SBC,3.51,5,6.776
-BRAROKXD,36.0896024099999,-95.7905582,WNS2327,201 East Omaha Street,,,OK,,Other,,Building,Broken Arrow,Owned,Central Office,106,Digital,1980,Broken Arrow,False,,,166.2,Riverine,R4SBC,0.937,10,11.541
-BRAROKXE,36.0615241599999,-95.68429788,WNS2326,1025 North 84th Street,,,OK,,Other,,Building,Broken Arrow,Owned,Central Office,38,Digital,1980,Oneta,False,,,80.9,Freshwater Pond,PUBHh,0.582,12,6.724
-BKVLKYXA,38.6825019999999,-84.067487,WNS1712,202 Madison St,,,KY,,Other,,Building,Brooksville,Owned,Central Office,16,Digital,1984,Brooksville,False,,,309.1,Riverine,R4SBC,5.273,2,6.743
-BWFDTXXA,33.1772204099999,-102.274424499999,,101 East Tate,,,TX,,Other,,Building,Brownfield,Owned,Central Office,93,Digital,2004,08_Texas_Playa,False,,,,,,,0,0
-BRSDKYXA,36.98978863,-84.5993733199999,WNS1715,53 E French Ave 03,,,KY,,Other,,Building,BURNSIDE,Owned,Central Office,41,Digital,1981,Burnside,False,,,358.3,Freshwater Emergent Wetland,PEM1C,0.442,2,0.701
-CAIRGAXA,30.8785318,-84.2089730499999,WNS1480,48 2nd Avenue,,,GA,,Other,,Building,Cairo,Owned,Central Office,37,Digital,1984,Cairo North,False,,,,,,,0,0
-CLHNFLXA,30.56435631,-81.8314212899999,WNS1430,45403 Green Avenue,,,FL,,Other,,Building,Callahan,Owned,Central Office,44,Digital,1983,Callahan,False,,,107.1,Freshwater Forested/Shrub Wetland,PFO4Ax,11.951,8,1600.879
-CMVLKYXA,37.342599,-85.3439159999999,WNS1718,303 E Broadway,,,KY,,Other,,Building,Campbellsville,Owned,Central Office,85,Digital,1985,Campbellsville,False,,,346.6,Riverine,R5UBH,65.822,1,65.822
-CNTNGAXA,34.23610953,-84.4906549899999,WNS1482,190 South Church Street,,,GA,,Interesting,,Building,Canton,Owned,Central Office,81,Digital,1981,Canton,False,,,429.4,Lake,L1UBHh,9445.015,1,9445.015
-CECLOHXA,41.2181456499999,-84.6021258899999,WNS2243,105 North Main Street,,,OH,,Other,,Building,CECIL,Owned,Central Office,5,Digital,2007,Ohio_DU_updates,False,,,102.7,Freshwater Pond,PUBGx,0.268,9,3.296
-CNVLIAXO,40.7322668999999,-92.8761186699999,WNS0461,236 West Maple Street,,,IA,,Other,,Building,Centerville,Owned,Central Office,19,Digital,2002,IA_DNR_Centerville,False,,,239.9,Riverine,R4SBA,1.247,1,1.247
-CNVLGAXA,32.6234985899999,-83.6879990999999,WNS1487,109 Gunn Road,,,GA,,Other,,Building,Centerville,Owned,Central Office,23,Digital,1981,Warner Robins SW,False,,,,,,,0,0
-CHRDOHXA,41.5812845399999,-81.2021328499999,WNS2244,205 South Hambden Street,,,OH,,Interesting,,Building,Chardon,Owned,Central Office,100,Digital,2007,Ohio_DU_updates,False,,,350.2,Freshwater Pond,PUBGx,0.163,2,0.26
-CHRTIAXC,41.0162491099999,-93.30642589,WNS1606,220 North Grand Chariton,,,IA,,Other,,Building,Chariton,Owned,Central Office,32,Digital,2002,IA_Indianola,False,,,,,,,0,0
-CHWOGAXA,34.76833751,-84.76820927,WNS1488,220 North 2nd Avenue,,,GA,,Interesting,,Building,Chatsworth,Owned,Central Office,40,Digital,1981,Chatsworth,False,,,127.1,Riverine,R4SBC,3.864,8,67.883
-CHTHOKXD,35.47096122,-95.52363062,,115 Northwest 1st Street,,,OK,,Other,,Building,Checotah,Owned,Central Office,21,Digital,1980,Checotah,False,,,343.9,Freshwater Pond,PUBHx,0.056,2,1.884
-CHGVNCXA,35.55692203,-80.59588229,WNS1906,1525 South Main Street,,,NC,,Interesting,,Building,China Grove,Owned,Central Office,38,Digital,1983,China Grove,False,,,232.1,Riverine,R4SBC,1.207,1,1.207
-CLRDIAXT,40.7405471699999,-95.03873151,WNS1607,115 West Chestnut Street,,,IA,,Other,,Building,Clarinda,Owned,Central Office,24,Digital,2005,SW SE Iowa,False,,,488.3,Riverine,R4SBC,1.464,1,1.464
-CLVLGAXA,34.61483837,-83.52435581,WNS1489,390 Jefferson Street,,,GA,,Interesting,,Building,Clarkesville,Owned,Central Office,25,Digital,1982,Clarkesville,False,,,277.0,Freshwater Forested/Shrub Wetland,PFO1A,1.502,4,8.196
-CLEVGAXA,34.59702662,-83.7661271599999,WNS1491,158 West Kytle Street,,,GA,,Interesting,,Building,Cleveland,Owned,Central Office,124,Digital,1981,Cleveland,False,,,276.9,Riverine,R5UBH,2.656,2,5.029
-CLSTOHXA,41.3129062399999,-81.9161510299999,WNS2248,25038 Royalton Road,,,OH,,Other,,Building,Columbia Station,Owned,Central Office,24,Digital,2007,Ohio_DU_updates,False,,,130.6,Riverine,R4SBC,0.957,22,111.403
-CLJTIAWH,41.28189291,-91.38120865,WNS3288,326 Hilltop Drive,,,IA,,Other,,Building,Columbus Junction,Owned,Central Office,2,Digital,2005,SW SE Iowa,False,,,255.8,Freshwater Forested/Shrub Wetland,PFO1A,0.001,15,39.302
-CMRCGAXA,34.2039764199999,-83.4594712199999,WNS1495,45 Georgia Avenue,,,GA,,Interesting,,Building,Commerce,Owned,Central Office,128,Digital,1981,Commerce,False,,,242.6,Riverine,R4SBC,4.368,2,5.095
-CLDGTXXA,31.75403928,-96.64933392,WNS2557,102 S Second,,,TX,,Other,,Building,Coolidge,Owned,Central Office,23,Digital,1982,Coolidge,False,,,221.6,Freshwater Pond,PUBHx,0.434,7,9.974
-CRNLGAXA,34.5145162099999,-83.52818003,WNS3179,350 North Main Street,,,GA,,Interesting,,Building,Cornelia,Owned,Central Office,77,Digital,1982,Clarkesville,False,,,442.4,Freshwater Forested/Shrub Wetland,PFO1C,1.705,3,9.254
-COWTOKXB,35.95075827,-95.6516158099999,WNS2335,124 West Sycamore Street,,,OK,,Other,,Building,Coweta,Owned,Central Office,49,Digital,1980,Coweta,False,,,447.5,Freshwater Forested/Shrub Wetland,PFO1A,1.018,3,3.844
-CRESIAXO,43.37396074,-92.1173488499999,WNS1610,118 2nd Avenue W,,,IA,,Other,,Building,Cresco,Owned,Central Office,20,Digital,2002,Iowa_07_A,False,,,,,,,0,0
-CETNIAXC,41.0581730099999,-94.36359446,WNS0057,117 North Elm Street,,,IA,,Other,,Building,Creston,Owned,Central Office,24,Digital,2002,Creston IA DNR Update,False,,,,,,,0,0
-CRSTARXA,33.1282574299999,-91.96229117,WNS1356,104 West 6th Avenue,,,AR,,Other,,Building,Crossett,Owned,Central Office,36,Digital,1974,Crossett North,False,,,280.8,Riverine,R5UBH,3.607,2,7.884
-CMLDKYXA,36.9772090299999,-82.99018402,WNS1724,309 Main Street,,,KY,,Other,,Building,Cumberland,Owned,Central Office,26,Digital,2001,Va_Southwest,False,,,87.9,Riverine,R2UBH,1858.484,2,1861.295
-DHLNGAXA,34.53542378,-83.98251372,WNS1498,200 Boyd Circle,,,GA,,Interesting,,Building,Dahlonega,Owned,Central Office,50,Digital,1982,Dahlonega,False,,,320.5,Riverine,R5UBH,3.074,1,3.074
-DLRKARXA,34.03811246,-92.88737906,WNS1358,13 Dallas 311,,,AR,,Other,,Building,Dalark,Leased/Easement,Central Office,6,Digital,1983,Dalark,False,,,269.5,Freshwater Forested/Shrub Wetland,PFO1C,1.012,7,6.553
-DLHRTXXA,36.0601455099999,-102.5215033,WNS2567,601 Denver Avenue,,,TX,,Other,,Building,Dalhart,Owned,Central Office,20,Digital,2005,Playa Lakes,False,,,,,,,0,0
-DLTNGAXD,34.6750547199999,-84.9663878399999,WNS1500,350 Cross Plains Blvd,,,GA,,Interesting,,Building,Dalton,Owned,Central Office,18,Digital,1981,Dalton South,False,,,163.1,Freshwater Forested/Shrub Wetland,PFO1C,0.67,8,39.683
-DWSNGAXA,31.7742450299999,-84.4456435299999,WNS1504,163 Stonewall Street NE,,,GA,,Other,,Building,Dawson,Owned,Central Office,35,Digital,1983,Dawson,False,,,,,,,0,0
-DELTOHXA,41.5749082299999,-84.0076585099999,WNS2259,201 Monroe Street,,,OH,,Other,,Building,Delta,Owned,Central Office,26,Digital,2021,Ohio GLRI Watersheds,False,,,216.2,Freshwater Emergent Wetland,PEM1A,3.877,5,64.678
-DMMTTXXA,34.5517060099999,-102.311284299999,WNS2575,113 Northeast 2nd Street,,,TX,,Other,,Building,Dimmitt,Owned,Central Office,28,Digital,2005,Playa_Lakes_II_New,False,,,,,,,0,0
-DNVLGAXA,31.0413469699999,-84.8845435,WNS1509,202 Knox Street,,,GA,,Other,,Building,Donalsonville,Owned,Central Office,30,Digital,1983,Donalsonville West,False,,,456.7,Riverine,R4SBCx,14.475,1,14.475
-DNSNIAXO,40.6428221999999,-91.56532493,WNS0481,517 Elm Street,,,IA,,Other,,Building,Donnellson,Owned,Central Office,21,Digital,2002,07_Iowa_DNR_update_2,False,,,432.3,Riverine,R4SBA,1.039,2,15.775
-DUMSTXXA,35.85904172,-101.974124399999,WNS2579,116 West 7th Street,,,TX,,Other,,Building,Dumas,Owned,Central Office,74,Digital,2005,Playa Lakes,False,,,,,,,0,0
-DYVLIAXO,42.4840607399999,-91.1230571899999,WNS1624,116 2nd Street,,,IA,,Other,,Building,Dyersville,Owned,Central Office,26,Digital,2002,Iowa_2007_Anamosa,False,,,56.3,Riverine,R2UBG,313.868,6,314.051
-EDWDIAXO,42.6451855999999,-91.40056771,,105 E MAIN,,,IA,,Other,,Building,Edgewood,Owned,Central Office,4,Digital,2002,07_Iowa_DNR_update,False,,,480.9,Riverine,R4SBC,0.459,1,0.459
-ELYROHXA,41.36574092,-82.1099927799999,WNS2262,363 3rd Street,,,OH,,Interesting,,Building,Elyria,Owned,Central Office,159,Digital,2007,Ohio_DU_updates,False,,,164.8,Riverine,R5UBH,55.834,1,55.834
-ELYROHXB,41.3846400899999,-82.07799558,WNS2263,400 Abbe Norht Road,,,OH,,Other,,Building,Elyria,Owned,Central Office,52,Digital,2007,Ohio_DU_updates,False,,,,,,,0,0
-ELYROHXE,41.3999024199999,-82.1325053799999,WNS2264,41786 Griswald Road,,,OH,,Other,,Building,Elyria,Owned,Central Office,33,Digital,2007,Ohio_DU_updates,False,,,332.6,Freshwater Pond,PABG,0.143,1,0.143
-EMBGIAXP,43.11080562,-94.6673863299999,WNS3292,1301 10th Street,,,IA,,Other,,Building,Emmetsburg,Owned,Central Office,23,Digital,2002,Iowa_07_A,False,,,,,,,0,0
-EVRSKYXA,36.8618690699999,-83.1824016099999,WNS1728,159 E. Main St,,,KY,,Other,,Building,EVARTS,Owned,Central Office,42,Digital,2001,Va_Southwest,True,Riverine,R4SBC,0.0,Riverine,R4SBC,3.867,4,1864.903
-FRFDIAXC,41.00742291,-91.9658781199999,WNS1627,204 West Broadway,,,IA,,Other,,Building,Fairfield,Owned,Central Office,40,Digital,2005,SW SE Iowa,False,,,,,,,0,0
-FTZGGAXA,31.71514352,-83.2537944099999,WNS1514,110 East Central,,,GA,,Other,,Building,Fitzgerald,Owned,Central Office,92,Digital,1983,Fitzgerald West,False,,,,,,,0,0
-RSSLKYXB,38.51718043,-82.7220606199999,WNS1730,2400 Argillite Road,,,KY,,Other,,Building,FLATWOODS,Owned,Central Office,73,Digital,1983,Ironton,False,,,467.5,Riverine,R4SBC,6.285,1,6.285
-FMBGKYXA,38.4249156799999,-83.73666597,WNS1732,226 West Water Street,,,KY,,Other,,Building,FLEMINGSBURG,Owned,Central Office,69,Digital,1984,Flemingsburg,False,,,91.9,Riverine,R5UBH,141.29,4,154.261
-FLTNGAXA,30.8294520799999,-82.00521745,WNS1515,201 East Martin Street,,,GA,,Other,,Building,Folkston,Owned,Central Office,25,Digital,1984,Folkston,False,,,,,,,0,0
-FRDYARXA,33.81287436,-92.4135129099999,WNS1367,308 North Oak Street,,,AR,,Other,,Building,Fordyce,Owned,Central Office,36,Digital,,AR_Scalable,False,,,415.5,Riverine,R4SBC,4.983,1,4.983
-FRCYIAXO,43.2657654699999,-93.63893779,WNS0504,145 West L Street,,,IA,,Other,,Building,Forest City,Owned,Central Office,15,Digital,2002,Iowa_07_A,False,,,444.8,Riverine,R2UBH,273.942,5,274.411
-GENVOHXA,41.80531692,-80.94567163,WNS2267,37 South Forest Street,,,OH,,Interesting,,Building,Geneva,Owned,Central Office,25,Digital,2007,Ohio_DU_updates,False,,,102.4,Riverine,R5UBH,22.833,2,24.001
-GRVIOHXA,40.06756012,-82.5189784699999,WNS2268,131 East Broadway,,,OH,,Interesting,,Building,Granville,Owned,Central Office,24,Digital,2007,Ohio_DU_updates,False,,,477.3,Freshwater Forested/Shrub Wetland,PSS1C,1.42,1,1.42
-GNBRARXA,35.2326627699999,-92.38835084,WNS1370,9 South Broadview Street,,,AR,,Other,,Building,Greenbrier,Owned,Central Office,64,Digital,,AR_Scalable,False,,,295.4,Freshwater Pond,PUBF,1.667,4,31.752
-GNFDIAAJ,41.2948208099999,-94.46017161,WNS3295,South Townline Road,,,IA,,Other,,Building,Greenfield,Owned,Central Office,0,Digital,2002,Creston IA DNR Update,False,,,242.2,Riverine,R4SBA,1.139,9,9.815
-GNUPKYXA,38.5734244699999,-82.83962673,WNS1737,304 Laurel St.,,,KY,,Interesting,,Building,Greenup,Owned,Central Office,52,Digital,1983,Greenup,False,,,277.0,Freshwater Forested/Shrub Wetland,PFO1A,1.936,8,225688.312
-GRNLIAXC,41.74516982,-92.72541513,WNS1631,1010 Main Street,,,IA,,Other,,Building,Grinnell,Owned,Central Office,84,Digital,2002,Marshalltown_Grinnell_Leon,False,,,,,,,0,0
-HRSNARXA,36.214283,-93.079052,,202 Graham Street,,,AR,,Other,,Building,Harrison,Owned,Central Office,81,Digital,1984,Harrison,False,,,150.8,Freshwater Pond,PUBHh,0.171,4,37.113
-HZRDKYXA,37.24986502,-83.1939202399999,WNS1739,101 Winterberry Drive,,,KY,,Other,,Building,Hazard,Owned,Central Office,133,Digital,1983,Hazard South,False,,,220.6,Lake,L1UBHh,21.998,3,1846.892
-HWSSGAXA,34.95173821,-83.7583057399999,WNS1525,228 North Main Street,,,GA,,Interesting,,Building,Hiawassee,Owned,Central Office,19,Digital,1981,Hiawassee,False,,,181.5,Freshwater Pond,PUBHh,0.794,2,2991.925
-HLRDFLXA,30.68973301,-81.9186614599999,WNS1438,3745 Pecan Street,,,FL,,Other,,Building,Hilliard,Owned,Central Office,30,Digital,1984,Hilliard,False,,,367.4,Freshwater Forested/Shrub Wetland,PFO1C,15.701,7,285.284
-HIRMOHXA,41.31000644,-81.14604119,WNS2272,11677 Hayden Street Rear,,,OH,,Other,,Building,Hiram,Owned,Central Office,14,Digital,2007,Ohio_DU_updates,False,,,207.6,Freshwater Pond,PUBG,0.439,5,5.024
-HLCRIAXP,42.5992163399999,-90.9921891999999,WNS1638,5778 MAPLE RD,,,IA,,Other,,Building,Holy Cross,Owned,Central Office,6,Digital,2002,07_Iowa_DNR_update,False,,,,,,,0,0
-HDSNOHXB,41.21706309,-81.4425081699999,WNS1063,1300 Terex Road,,,OH,,Other,,Building,Hudson,Owned,Central Office,20,Digital,2007,Ohio_DU_updates,False,,,47.0,Freshwater Pond,PUBGx,1.636,10,12.865
-HDSNOHXA,41.24341435,-81.4400342499999,WNS2275,245 North Main Street,,,OH,,Other,,Building,Hudson,Owned,Central Office,170,Digital,2007,Ohio_DU_updates,False,,,328.7,Riverine,R4SBC,1.661,3,7.321
-WTWDTXXA,30.81159231,-95.2597377099999,WNS2619,24500 Waterwood Parkway,,,TX,,Other,,Building,Huntsville,Owned,Central Office,9,Digital,1982,Staley,False,,,240.7,Riverine,R4SBC,12.137,2,13.554
-IRTNGAXA,32.8202546099999,-83.1678256299999,WNS1529,113 Wriley Road,,,GA,,Other,,Building,Irwinton,Owned,Central Office,26,Digital,1981,Irwinton,False,,,440.9,Freshwater Forested/Shrub Wetland,PFO1C,0.686,1,0.686
-JSPRGAXA,34.46817879,-84.43144501,WNS1532,69 Stegall Drive,,,GA,,Interesting,,Building,Jasper,Owned,Central Office,22,Digital,1981,Jasper,False,,,371.2,Freshwater Pond,PUBHh,0.264,2,1.957
-JLLYIAXE,42.47842132,-94.7184655599999,,Alley East Of 129 Maston St,,,IA,,Other,,Building,Jolley,Owned,Central Office,3,Digital,2002,Iowa_07_B,False,,,,,,,0,0
-KNTNOHXA,40.6478963699999,-83.6102986599999,WNS2278,225 West Columbus Street,,,OH,,Interesting,,Building,Kenton,Owned,Central Office,30,Digital,2007,Ohio_DU_updates,False,,,389.6,Riverine,R2UBH,912.858,1,912.858
-KRVLTXXA,30.0453475899999,-99.13997664,WNS2631,812 Water Street,,,TX,,Other,,Building,Kerrville,Owned,Central Office,144,Digital,1983,Kerrville,False,,,98.9,Riverine,R2UBH,11.464,8,63.713
-KGVLOHXA,41.88940328,-80.67476628,WNS2279,3124 Main Street,,,OH,,Other,,Building,KINGSVILLE,Owned,Central Office,23,Digital,2007,Ohio_DU_updates,False,,,101.2,Freshwater Pond,PUBG,1.789,8,7.001
-KNVLIAXD,41.34934878,-93.0255881399999,,1690 Kennedy,,,IA,,Other,,Building,Knoxviile,Owned,Central Office,5,Digital,2002,IA_Indianola,False,,,233.6,Freshwater Pond,PUBFh,0.309,7,13845.77
-KNVLIAWH,41.3202682,-93.06150375,WNS3298,606 North Godfrey Lane,,,IA,,Other,,Building,Knoxville,Owned,Central Office,5,Digital,2002,IA_Indianola,False,,,412.7,Riverine,R4SBC,0.624,3,11.017
-KNVLIAXC,41.3195514299999,-93.0983319999999,WNS0529,108 East Marion Street,,,IA,,Other,,Building,Knoxville,Owned,Central Office,79,Digital,2002,IA_Indianola,False,,,,,,,0,0
-LFYTGAXA,34.70665255,-85.2827404899999,WNS1536,105 Cherokee Street,,,GA,,Interesting,,Building,Lafayette,Owned,Central Office,37,Digital,1981,Estelle,False,,,288.0,Riverine,R4SBC,1.444,3,41.808
-ELYROHXD,41.3125910199999,-82.1173181099999,WNS1065,12045 State Route 301,,,OH,,Other,,Building,LaGrange,Owned,Central Office,16,Digital,2007,Ohio_DU_updates,False,,,219.3,Riverine,R4SBC,1.945,5,12.297
-LKCYIAXO,42.26849988,-94.73361558,WNS0532,106 East Washington,,,IA,,Other,,Building,Lake City,Owned,Central Office,9,Digital,2002,Iowa_07_B,False,,,397.2,Freshwater Emergent Wetland,PEM1A,0.722,1,0.722
-LAMSTXXA,32.73209717,-101.9508835,WNS2635,313 South 1st Street,,,TX,,Other,,Building,Lamesa,Owned,Central Office,20,Digital,2008,Playa_Lakes_11,False,,,,,,,0,0
-LAVNGAXA,34.43593356,-83.1044045799999,WNS1538,5801 Vickery Street,,,GA,,Other,,Building,Lavonia,Owned,Central Office,42,Digital,1982,Lavonia,False,,,454.8,Riverine,R5UBH,1.733,1,1.733
-LEDSALXA,33.54372706,-86.54439521,WNS1345,8372 1St Avenue Southeast,,,AL,,Other,,Building,Leeds,Owned,Central Office,27,Digital,1981,Leeds,False,,,169.3,Freshwater Pond,PUBHx,1.153,2,22.769
-LTFDKYXA,37.48445892,-86.2939511299999,WNS1752,399 N Cannon Dr BLDG A,,,KY,,Other,,Building,Leitchfield,Owned,Central Office,35,Digital,1982,Leitchfield,False,,,394.3,Riverine,R4SBC,2.159,1,2.159
-LVLDTXXA,33.58805583,-102.379543499999,WNS2638,506 Avenue I,,,TX,,Other,,Building,Levelland,Owned,Central Office,75,Digital,2005,Playa_Lakes_II_New,False,,,,,,,0,0
-LTFDTXXA,33.9210429999999,-102.329773,WNS2640,600 East 5th Street,,,TX,,Other,,Building,Littlefield,Owned,Central Office,39,Digital,2005,Playa_Lakes_II_New,False,,,,,,,0,0
-LVOKFLXA,30.29397346,-82.98207915,WNS1448,206 White Avenue SE,,,FL,,Other,,Building,Live Oak,Owned,Central Office,123,Digital,1983,Live Oak East,False,,,283.2,Freshwater Pond,PUBHx,1.255,1,1.255
-MDSNOHXA,41.8002742199999,-81.0489853899999,WNS2282,2740 Hubbard Road,,,OH,,Interesting,,Building,MADISON,Owned,Central Office,28,Digital,2007,Ohio_DU_updates,False,,,40.5,Riverine,R5UBH,0.412,6,23.313
-MNCHIAXO,42.48472283,-91.45717681,WNS1646,107 East Fayette Street,,,IA,,Other,,Building,Manchester,Owned,Central Office,30,Digital,2002,Iowa_2007_Anamosa,False,,,237.5,Riverine,R2UBH,154.716,4,159.487
-MNCHIAWH,42.45587333,-91.4783707299999,WNS1645,1614 230Th Street,,,IA,,Other,,Building,Manchester,Owned,Central Office,2,Digital,2002,Iowa_2007_Anamosa,False,,,220.1,Riverine,R4SBC,2.627,2,22.734
-MNCHGAXA,32.85132378,-84.61593315,WNS1542,212 2nd Street,,,GA,,Other,,Building,Manchester,Owned,Central Office,31,Digital,1981,Manchester,False,,,215.5,Riverine,R4SBCx,1.752,1,1.752
-MRNGIAXO,41.7988809399999,-92.06939307,WNS1648,151 East Hilton,,,IA,,Other,,Building,Marengo,Owned,Central Office,15,Digital,2002,Marshalltown_Grinnell_Leon,False,,,,,,,0,0
-MAYOFLXA,30.05422767,-83.1762577599999,WNS1450,153 Northwest Crawford Street,,,FL,,Other,,Building,Mayo,Owned,Central Office,20,Digital,1983,Mayo,False,,,388.9,Freshwater Pond,PUBHx,0.749,1,0.749
-MCRAGAXA,32.0667820099999,-82.89752257,WNS1545,8 East Oak Street,,,GA,,Other,,Building,McRae,Owned,Central Office,23,Digital,1982,McRae,False,,,446.8,Freshwater Forested/Shrub Wetland,PFO1/4B,15.489,1,15.489
-MLRSIAXO,40.97544741,-93.0481071399999,,105 TRINITY AVE,,,IA,,Other,,Building,Melrose,Owned,Central Office,7,Digital,2002,Marshalltown_Grinnell_Leon,False,,,92.4,Freshwater Emergent Wetland,PEM1A,0.618,27,96.62
-MMPHTXXA,34.72450811,-100.5393755,WNS2654,721 West Noel Street,,,TX,,Other,,Building,Memphis,Owned,Central Office,48,Digital,1977,Memphis,False,,,,,,,0,0
-MDVLGAXA,33.0908148099999,-83.2284728199999,WNS1550,750 North Jefferson Street,,,GA,,Other,,Building,Milledgeville,Owned,Central Office,93,Digital,1980,Milledgeville,False,,,336.5,Freshwater Forested/Shrub Wetland,PSS1C,0.367,4,8.495
-MONRGAXB,33.8904380199999,-83.71992317,WNS0397,3375 GA-11,,,GA,,Interesting,,Building,Monroe,Owned,Central Office,3,Digital,1981,Winder South,False,,,433.7,Riverine,R4SBC,0.98,2,2.188
-MONRGAXA,33.7964565799999,-83.71253894,WNS1551,129 East Highland Avenue,,,GA,,Interesting,,Building,Monroe,Owned,Central Office,36,Digital,1981,Monroe,False,,,458.4,Riverine,R4SBC,1.441,1,1.441
-MTZMGAXA,32.3017480299999,-84.03082915,WNS1552,111 Drayton Street,,,GA,,Other,,Building,Montezuma,Owned,Central Office,25,Digital,1981,Montezuma,False,,,412.9,Freshwater Forested/Shrub Wetland,PFO1C,52.249,3,168.257
-MNTIKYXA,36.83127068,-84.85042624,WNS1775,45 Huffaker Street,,,KY,,Other,,Building,Monticello,Owned,Central Office,42,Digital,1982,Monticello,False,,,326.6,Riverine,R3UBH,15.304,1,15.304
-LEDSALXB,33.5934139599999,-86.49852364,WNS1346,920 Park Avenue,,,AL,,Other,,Building,Moody,Owned,Central Office,52,Digital,1981,Cooks Springs,False,,,432.0,Freshwater Emergent Wetland,PEM1Fh,0.162,5,9.386
-MORVIAIC,40.8920549899999,-92.9835000199999,,10435 160th Ave,,,IA,,Other,,Building,Moravia,Leased/Easement,Central Office,5,Digital,2002,IA_DNR_Centerville,False,,,77.8,Riverine,R4SBA,0.758,19,22.604
-MRHDKYXA,38.18366375,-83.43477901,WNS1776,154 East 2nd Street,,,KY,,Other,,Building,Morehead,Owned,Central Office,160,Digital,1985,Morehead,False,,,390.9,Freshwater Emergent Wetland,PEM1A,1.331,7,26.785
-MLTRGAXA,31.1774829199999,-83.78371355,WNS1556,216 4th Street SE,,,GA,,Other,,Building,Moultrie,Owned,Central Office,89,Digital,1983,Moultrie,False,,,,,,,0,0
-MLTRGA05,31.17919025,-83.74876131,WNS0398,282 Industrial Drive,,,GA,,Other,,Building,Moultrie,Owned,Central Office,4,Digital,1983,Pineboro,False,,,370.8,Freshwater Pond,PUBHh,17.331,7,44.78
-MTAYIAXC,40.71260431,-94.2373037699999,WNS0579,300 South Taylor,,,IA,,Other,,Building,Mount Ayr,Owned,Central Office,9,Digital,2005,SW SE Iowa,False,,,398.7,Riverine,R5UBH,7.076,1,7.076
-MNPLIAXC,40.96786585,-91.5533856899999,WNS1653,101 West Madison,,,IA,,Other,,Building,Mount Pleasant,Owned,Central Office,48,Digital,2002,07_Iowa_DNR_update_2,False,,,,,,,0,0
-MTVRKYXA,37.3542603599999,-84.3415178999999,WNS1780,80 West Main St,,,KY,,Other,,Building,Mount Vernon,Owned,Central Office,20,Digital,1985,Mount Vernon,False,,,373.9,Riverine,R4SBC,3.222,1,3.222
-NSVLGAXA,31.2060928299999,-83.2513356599999,WNS1558,203 South Bartow Street,,,GA,,Other,,Building,Nashville,Owned,Central Office,32,Digital,1983,Nashville West,False,,,442.7,Freshwater Forested/Shrub Wetland,PSS1/3Bd,4.214,5,75.519
-NEVDIAXC,42.02086028,-93.4511339099999,WNS1654,635 J Avenue,,,IA,,Other,,Building,Nevada,Owned,Central Office,24,Digital,2002,Iowa_07_B,False,,,,,,,0,0
-NHTNIAWH,43.0661261999999,-92.3077757899999,WNS3303,627 North Pleasant Hill Avenue,,,IA,,Other,,Building,New Hampton,Owned,Central Office,1,Digital,2002,Iowa_07_A,False,,,348.6,Freshwater Emergent Wetland,PEM1Cd,3.508,4,5.518
-NHTNIAXC,43.05909211,-92.31272332,WNS1655,201 East Main,,,IA,,Other,,Building,New Hampton,Owned,Central Office,32,Digital,2002,Iowa_07_A,False,,,272.9,Freshwater Emergent Wetland,PEM1Cd,0.588,8,4.299
-NWRKOHXA,40.0594485299999,-82.40487305,WNS2289,66 North 4th Street,,,OH,,Interesting,,Building,Newark,Owned,Central Office,145,Digital,2007,Ohio_DU_updates,False,,,,,,,0,0
-NWRKOHXC,40.0575081,-82.4271879399999,WNS2294,214 Neal Avenue,,,OH,,Interesting,,Building,Newark,Owned,Central Office,21,Digital,2007,Ohio_DU_updates,False,,,160.9,Riverine,R2USC,1.349,9,1231.749
-NWRKOHXD,40.01356485,-82.4046177299999,WNS2291,7322 Dorsey Mill Road Southeast,,,OH,,Interesting,,Building,Newark,Owned,Central Office,24,Digital,2007,Ohio_DU_updates,False,,,166.2,Riverine,R4SBC,9.83,2,11.083
-NWRKOHXB,40.08689351,-82.42710726,WNS2290,320 Deo Drive,,,OH,,Interesting,,Building,Newark,Owned,Central Office,25,Digital,2007,Ohio_DU_updates,False,,,,,,,0,0
-HETHOHXA,40.0413168899999,-82.44171796,WNS2292,1046 Harris Avenue,,,OH,,Interesting,,Building,Newark,Owned,Central Office,27,Digital,2007,Ohio_DU_updates,False,,,,,,,0,0
-NWTNIAXC,41.6983315,-93.05448565,WNS1656,115 S Second Ave W,,,IA,,Other,,Building,Newton,Owned,Central Office,60,Digital,2002,Iowa3_DesMoines_etc...,False,,,,,,,0,0
-NCVLKYXA,37.8806709099999,-84.57236611,WNS1784,105 North York Street,,,KY,,Other,,Building,Nicholasville,Owned,Central Office,121,Digital,1983,Nicholasville,False,,,44.6,Riverine,R4SBC,13.778,1,13.778
-NCNATXXA,33.78899947,-97.7264983099999,WNS2673,117 East Oak Street,,,TX,,Other,,Building,Nocona,Owned,Central Office,21,Digital,1981,Nocona,False,,,,,,,0,0
-NRVLOHXA,41.39099066,-82.01914082,WNS1068,6874 Avon Belden Road,,,OH,,Other,,Building,North Ridgeville,Owned,Central Office,57,Digital,2007,Ohio_DU_updates,False,,,141.7,Riverine,R5UBH,10.268,4,19.415
-NRFDOHXA,41.31474448,-81.53703932,WNS2297,54 Leonard Avenue,,,OH,,Interesting,,Building,Northfield,Owned,Central Office,93,Digital,2007,Ohio_DU_updates,False,,,288.4,Freshwater Pond,PUBG,10.467,2,12.974
-NRWDNCXA,35.22668599,-80.12266339,WNS1925,238 North Main Street,,,NC,,Interesting,,Building,Norwood,Owned,Central Office,15,Digital,1983,Mount Gilead West,False,,,245.2,Riverine,R4SBC,1.216,1,1.216
-OLHLKYXA,38.30218139,-83.1702961099999,WNS1785,133 Mills Street,,,KY,,Other,,Building,Olive Hill,Owned,Central Office,42,Digital,1982,Olive Hill,False,,,64.9,Riverine,R4SBC,4.359,2,161.139
-OWVLKYXA,38.1410863699999,-83.76592121,WNS1787,148 Treadway Street,,,KY,,Other,,Building,OWINGSVILLE,Owned,Central Office,50,Digital,1985,Owingsville,False,,,162.6,Riverine,R4SBC,2.973,1,2.973
-PLNGOHXA,41.1360556599999,-84.58159009,WNS2300,117 West Harrison Street,,,OH,,Other,,Building,Paulding,Owned,Central Office,30,Digital,2007,Ohio_DU_updates,False,,,220.6,Freshwater Forested/Shrub Wetland,PFO1C,66.348,8,68.766
-PECSTXXB,31.40444183,-103.5034902,WNS2681,924 West Daggett Street,,,TX,,Interesting,,Building,Pecos,Owned,Central Office,35,Digital,1984,Pecos West,False,,,341.0,Riverine,R5UBFx,2.974,2,8.505
-PNSLOHXA,41.2412452,-81.54544115,WNS2301,1515 State Route 303,,,OH,,Other,,Building,Peninsula,Owned,Central Office,15,Digital,2007,Ohio_DU_updates,False,,,342.0,Riverine,R2UBF,5.393,4,1002.983
-PRRYGAAI,32.4358179099999,-83.7608892599999,WNS3437,2031 US HWY 41 S,,,GA,,Other,,Building,Perry,Owned,Central Office,4,Digital,1981,Perry West,False,,,411.8,Freshwater Emergent Wetland,PEM1C,5.036,3,31.364
-PRRYGAXA,32.4573819499999,-83.73262665,WNS1566,910 Main Street,,,GA,,Other,,Building,Perry,Owned,Central Office,95,Digital,1981,Perry East,False,,,492.2,Freshwater Emergent Wetland,PEM1C,6.245,1,6.245
-PRRYOHXA,41.75907565,-81.1385295,WNS2302,4165 Main Street,,,OH,,Other,,Building,PERRY,Owned,Central Office,20,Digital,2007,Ohio_DU_updates,False,,,259.7,Riverine,R5UBH,6.939,3,32.945
-PYTNTXXA,36.39730102,-100.803753299999,WNS2683,301 South Amherst Street,,,TX,,Other,,Building,Perryton,Owned,Central Office,36,Digital,2005,Playa_Lakes_II_Update,False,,,,,,,0,0
-PERSIAXP,41.58003601,-95.56854909,,Alley Behind 103 Main Street,,,IA,,Other,,Building,Persia,Leased/Easement,Central Office,4,Digital,2002,Iowa_2008_DNR_update,False,,,260.5,Riverine,R2UBGx,52.892,4,56.958
-PITSGAXA,31.94497002,-83.5413853299999,WNS1568,108 7Th Ave W,,,GA,,Other,,Building,Pitts,Owned,Central Office,9,Digital,1983,Pitts,False,,,285.5,Freshwater Forested/Shrub Wetland,PFO1A,14.214,11,44.234
-POTEOKAY,35.0207959299999,-94.65992454,WNS1096,201 Kerr Ave,,,OK,,Other,,Building,Poteau,Owned,Central Office,1,Digital,1980,Poteau West,False,,,152.7,Riverine,R5UBFx,2.425,4,4.483
-POTEOKXA,35.0521843699999,-94.6202629499999,WNS2358,310 Clayton Avenue,,,OK,,Other,,Building,Poteau,Owned,Central Office,37,Digital,1980,Poteau East,False,,,390.0,Riverine,R4SBC,3.72,2,7.87
-PWPNOHXA,39.8659507599999,-80.79901046,WNS2305,101 Ben Avenue,,,OH,,Interesting,,Building,Powhatan Point,Owned,Central Office,18,Digital,2014,Ohio River NWR,False,,,459.1,Riverine,R2UBH,225680.456,1,225680.456
-PRCLOKXA,35.0113368399999,-97.36365886,WNS2360,319 West Apache,,,OK,,Other,,Building,Purcell,Owned,Central Office,55,Digital,2021,Arkansas and Canadian River,False,,,,,,,0,0
-QKCYOHXA,39.97051805,-81.29860963,WNS2306,181 Broadway Street,,,OH,,Other,,Building,Quaker City,Owned,Central Office,18,Digital,2007,Ohio_DU_updates,False,,,221.5,Riverine,R5UBH,16.304,2,24.935
-RCFDOHXA,41.23925717,-81.6557576,,4676 West Streetsboro Road,,,OH,,Interesting,,Building,Richfield,Owned,Central Office,27,Digital,2007,Ohio_DU_updates,False,,,377.3,Riverine,R4SBC,0.297,6,3.106
-TRNYTXXH,30.85154,-95.40012,WNS1293,75 FRONT ST @ F.M. 980 Riverside TX 77367 US,,,TX,,Other,,Building,Riverside,Owned,Central Office,10,Digital,1983,Riverside,False,,,18.7,Riverine,R4SBC,4.167,12,13.529
-GRQYNCXA,35.5720107499999,-80.4178416,WNS1932,8145 Highway 52,,,NC,,Interesting,,Building,Rockwell,Owned,Central Office,30,Digital,1983,Rockwell,False,,,159.5,Freshwater Pond,PUBHh,1.316,8,6.932
-SYMRTXXA,33.59135941,-99.2600727699999,WNS2709,400 North Main Street,,,TX,,Other,,Building,Seymour,Owned,Central Office,54,Digital,1983,Seymour West,False,,,454.9,Freshwater Forested/Shrub Wetland,PFO1A,7.945,1,7.945
-SHPVKYXA,37.99026484,-85.7157907099999,WNS1795,144 South Buckman Street,,,KY,,Other,,Building,Sheperdsville,Owned,Central Office,44,Digital,1983,Shepherdsville,False,,,,,,,0,0
-SHRDARXA,34.3065086399999,-92.398274,WNS1404,209 East Center,,,AR,,Other,,Building,Sheridan,Owned,Central Office,33,Digital,1983,Sheridan,False,,,443.6,Riverine,R5UBH,4.231,1,4.231
-SHDNKYXA,37.5251636699999,-85.89526014,WNS1801,21 1st Street,,,KY,,Other,,Building,SONORA,Owned,Central Office,22,Digital,1983,Sonora,False,,,133.1,Freshwater Pond,PUSC,0.185,8,24.983
-STWLOKXA,35.81283854,-94.6278948,WNS2368,116 South 1st Street,,,OK,,Other,,Building,Stilwell,Owned,Central Office,28,Digital,1980,Stilwell West,False,,,305.9,Freshwater Forested/Shrub Wetland,PFO1A,7.709,3,12.984
-SGLDTXXE,29.63625224,-95.5981813199999,WNS2726,12626 Dairy Ashford Road,,,TX,,Other,,Building,Sugar Land,Owned,Central Office,159,Digital,1992,Alief,False,,,9.7,Freshwater Emergent Wetland,PEM1Cx,2.268,4,5.839
-SGLDTXXD,29.5860816699999,-95.62071487,WNS2722,1850 Austin Parkway,,,TX,,Other,,Building,Sugar Land,Owned,Central Office,64,Digital,1992,Missouri City,False,,,65.9,Freshwater Emergent Wetland,PEM1Fx,2.057,3,11.977
-SUVLGAXA,34.4815202899999,-85.34870994,WNS1584,66 West Washington Street,,,GA,,Interesting,,Building,Summerville,Owned,Central Office,33,Digital,1981,Summerville,False,,,107.8,Riverine,R5UBH,16.752,1,16.752
-SWNYTXXA,29.03860427,-95.6995736899999,WNS2733,202 Pecan Street,,,TX,,Other,,Building,Sweeny,Owned,Central Office,29,Digital,1992,Sweeny,False,,,9.0,Riverine,R4SBC,1.342,10,12.594
-SYVNGAXA,32.7517568299999,-81.6332240899999,WNS1585,303 East Ogeechee Street,,,GA,,Other,,Building,Sylvania,Owned,Central Office,12,Digital,1981,Sylvania North,False,,,331.5,Freshwater Forested/Shrub Wetland,PFO1A,42.601,1,42.601
-TCMSOKXB,35.25843195,-96.9359090699999,WNS2370,112 East Park Street,,,OK,,Other,,Building,Tecumseh,Owned,Central Office,33,Digital,1980,Shawnee,False,,,267.4,Riverine,R4SBC,2.021,1,2.021
-THTNGAXA,32.8869667499999,-84.3254854999999,WNS3198,118 East Gordon Street,,,GA,,Other,,Building,Thomaston,Owned,Central Office,53,Digital,1981,Thomaston,False,,,,,,,0,0
-THTNGAXB,32.9334372699999,-84.3334017899999,WNS3284,1444 Highway 19 N,,,GA,,Other,,Building,Thomaston,Owned,Central Office,15,Digital,1981,Thomaston,False,,,294.6,Riverine,R4SBC,0.443,3,2.189
-TPTNIAXO,41.77051661,-91.12666418,WNS1668,506 Meridian,,,IA,,Other,,Building,Tipton,Owned,Central Office,25,Digital,2002,Iowa_2007_Anamosa,False,,,,,,,0,0
-TOLDIAXO,41.98152657,-92.5812656199999,WNS1669,1201 South County Road,,,IA,,Other,,Building,Toledo,Owned,Central Office,23,Digital,2002,Marshalltown_Grinnell_Leon,False,,,321.3,Riverine,R4SBC,0.88,2,2.812
-TRARIAXO,42.19143728,-92.46705144,WNS1670,505 3rd Street,,,IA,,Other,,Building,Traer,Owned,Central Office,10,Digital,2002,Marshalltown_Grinnell_Leon,False,,,440.5,Freshwater Pond,PUBGx,0.768,5,10.649
-TRINGAXA,34.54083387,-85.31313762,WNS1588,207 Allgood Street,,,GA,,Other,,Building,Trion,Owned,Central Office,21,Digital,1981,Trion,False,,,244.3,Riverine,R4SBC,2.293,2,174.72
-BRAROKXB,36.0575717899999,-95.8690106199999,WNS2371,7200 S Mingo Rd,,,OK,,Other,,Building,Tulsa,Owned,Central Office,226,Digital,1980,Broken Arrow,False,,,80.4,Riverine,R4SBC,0.282,8,51.701
-TWBGOHIR,41.3112491199999,-81.4423444499999,,2684 East Aurora Road,,,OH,,Interesting,,Building,Twinsburg,Owned,Central Office,,Digital,2007,Ohio_DU_updates,False,,,304.7,Riverine,R5UBH,1.876,7,111.976
-TWBGOHXA,41.31113087,-81.44232343,,2684 Route 82,,,OH,,Interesting,,Building,Twinsburg,TBD,Central Office,99,Digital,2007,Ohio_DU_updates,False,,,291.7,Riverine,R5UBH,1.876,7,111.976
-VNBGKYXA,38.5941079999999,-83.321195,WNS1806,403 Fairlane Dr.,,,KY,,Other,,Building,Vanceburg,Owned,Central Office,44,Digital,1982,Vanceburg,False,,,254.2,Freshwater Forested/Shrub Wetland,PFO1Ah,1.155,6,225695.521
-VIANOK05,35.49846823,-94.9714586,,109 Blackstone St,,,OK,,Other,,Building,Vian,Owned,Central Office,13,Digital,1980,Vian,False,,,366.1,Freshwater Forested/Shrub Wetland,PFO1F,0.446,2,3.856
-VILNARXA,35.0831462599999,-92.2113457699999,,1078 Main Street,,,AR,,Other,,Building,Vilonia,Owned,Central Office,2,Digital,,AR_Scalable,False,,,150.3,Riverine,R4SBC,52.631,3,52.912
-WGNROKXD,35.9589769999999,-95.3675769999999,WNS2375,Rear Of 812 E. Cherokee,,,OK,,Other,,Building,Wagoner,Owned,Central Office,38,Digital,1981,Wagoner East,False,,,490.5,Riverine,R5UBF,0.082,1,0.082
-WASHIAXO,41.3001165299999,-91.6896805899999,WNS1674,217 East 2nd Street,,,IA,,Other,,Building,Washington,Owned,Central Office,33,Digital,2005,SW SE Iowa,False,,,,,,,0,0
-WFRKARXA,35.9236825699999,-94.1893365899999,WNS1411,265 Wheeler Street,,,AR,,Other,,Building,West Fork,Owned,Central Office,19,Digital,1980,West Fork,False,,,107.2,Riverine,R4SBC,2.226,4,5.147
-WLBGIAXO,41.66044645,-92.00825998,WNS1676,105 West Welsh,,,IA,,Other,,Building,Williamsburg,Owned,Central Office,28,Digital,2002,Marshalltown_Grinnell_Leon,False,,,468.2,Freshwater Pond,PUBFh,0.835,2,1.669
-WNDRGAXA,33.99464785,-83.72118785,WNS1594,74 Woodlawn Avenue,,,GA,,Interesting,,Building,Winder,Owned,Central Office,119,Digital,1981,Winder South,False,,,,,,,0,0
-ASHTOHXA,41.86554916,-80.78344219,WNS2238,4616 Park Avenue,,,OH,,Interesting,,Building,WYMAN,Owned,Central Office,125,Digital,2007,Ohio_DU_updates,False,,,348.9,Riverine,R5UBH,6.949,2,32.807
-ZNTNKYXA,38.0672,-85.66875,WNS1811,135 Windy Hill Spur,,,KY,,Other,,Building,Zoneton,Owned,Central Office,54,Digital,1983,Brooks,False,,,156.8,Riverine,R4SBC,0.747,7,45.968
+﻿site_id,lat,lng,name,address,apn,acres_stated,state,county,group,notes,asset_type,city,land_ownership,primary_use,rack_count,parcel_county,parcel_county_geoid,parcel_source_scope,parcel_service_name,parcel_apn,parcel_owner,parcel_address,parcel_acres_gis,parcel_acres_stated_by_county,parcel_acres_input,parcel_apn_matches_input,parcel_vertices,parcel_status
+ABRDNCXA,35.13471956,-79.4267825499999,WNS1899,211 North Poplar Street,,,NC,,Interesting,,Building,Aberdeen,Owned,Central Office,27,Moore County,37125,county,Accela_taxparcels,857013243207,,2101 RIVERFRONT DR  #A,1.3422,0.0,,,7,ok
+ADELGAXA,31.13789183,-83.4224465199999,WNS1464,106 North Parrish Avenue,,,GA,,Other,,Building,Adel,Owned,Central Office,27,Cook County,13075,,,,,,,,,,,unresolved: no registered service
+ANWOIAXO,41.2891466499999,-91.5551446799999,WNS0433,240 5th Street,,,IA,,Other,,Building,Ainsworth,Owned,Central Office,8,Washington County,19183,,,,,,,,,,,unresolved: no registered service
+ALCHFL01,29.80235134,-82.49220798,WNS1425,13715 West County Road 235,,,FL,,Other,,Building,Alachua,Owned,Central Office,4,Alachua County,12001,,,,,,,,,,,unresolved: no registered service
+ALCHFLAJ,29.78938708,-82.4958955799999,,14600 Main Street,,,FL,,Other,,Building,Alachua,Owned,Central Office,#N/A,Alachua County,12001,,,,,,,,,,,unresolved: no registered service
+ALCHFLXA,29.7894,-82.4962,WNS1426,14600 Main St,,,FL,,Other,,Building,Alachua,Owned,Central Office,32,Alachua County,12001,,,,,,,,,,,unresolved: no registered service
+ALBYKYXA,36.6930220799999,-85.13449812,WNS1699,400 N Washington,,,KY,,Other,,Building,Albany,Owned,Central Office,38,Clinton County,21053,,,,,,,,,,,unresolved: no registered service
+ALBMNCXA,35.3540421499999,-80.19909173,WNS1901,250 North 1st Street,,,NC,,Interesting,,Building,Albemarle,Owned,Central Office,55,Stanly County,37167,county,Parcels,654801255808,4005 NORTH RODNEY PARHAM RD,,0.8423,0.0,,,38,ok
+ALBIIAXO,41.0259585599999,-92.80564617,WNS0435,202 Washington Avenue E,,,IA,,Other,,Building,Albia,Owned,Central Office,13,Monroe County,19135,,,,,,,,,,,unresolved: no registered service
+ANDRTXXA,32.31761412,-102.5477171,WNS2514,112 Southwest 1st,,,TX,,Other,,Building,Andrews,Owned,Central Office,46,Andrews County,48003,,,,,,,,,,,unresolved: no registered service
+ASLDKYXA,38.4758,-82.64385,WNS1701,619 15th Street,,,KY,,Interesting,,Building,Ashland,Owned,Central Office,232,Boyd County,21019,,,,,,,,,,,unresolved: no registered service
+MEDSKYXA,38.4096499699999,-82.71303235,WNS1703,9216 Highway 60,,,KY,,Interesting,,Building,Ashland,Owned,Central Office,76,Boyd County,21019,,,,,,,,,,,unresolved: no registered service
+ADBNIAXO,41.72127167,-94.9293833299999,WNS1601,620 LEROY,,,IA,,Other,,Building,Audubon,Owned,Central Office,30,Audubon County,19009,,,,,,,,,,,unresolved: no registered service
+AURROHXA,41.31715803,-81.3465993899999,WNS2239,27 East  Garfield Road,,,OH,,Other,,Building,Aurora,Owned,Central Office,70,Portage County,39133,statewide,Ohio Statewide Parcels,03-018-10-00-036-000,,ST RT 82   AURORA 44202,0.3032,,,,10,ok
+BNBGOHXA,41.3856989499999,-81.34062923,WNS1052,8425 Baindridge Road,,,OH,,Interesting,,Building,Bainbridge,Owned,Central Office,64,Geauga County,39055,statewide,Ohio Statewide Parcels,02-601000,,8425  BAINBRIDGE RD   ,0.3535,,,,4,ok
+CRNLGA01,34.4972084699999,-83.54997767,WNS0048,2000 Communications Boulevard,,,GA,,Interesting,,Building,Baldwin,Owned,Central Office,11,Habersham County,13137,,,,,,,,,,,unresolved: no registered service
+BBVLKYXA,36.86533403,-83.88827335,WNS1705,207 South Main Street,,,KY,,Other,,Building,Barbourville,Owned,Central Office,28,Knox County,21121,,,,,,,,,,,unresolved: no registered service
+FRVWOHXA,40.0594973999999,-81.22041851,WNS2241,32699 Old National Road,,,OH,,Interesting,,Building,Barnesville,Owned,Central Office,28,Belmont County,39013,statewide,Ohio Statewide Parcels,12-90007.000,,32699 OLD NATIONAL RD  ,0.9683,,,,4,ok
+BEREKYXA,37.57334353,-84.2857390799999,WNS1709,310 Center Street,,,KY,,Other,,Building,Berea,Owned,Central Office,90,Madison County,21151,,,,,,,,,,,unresolved: no registered service
+SHBGKYAB,38.2426062099999,-83.87447858,,160 Old Highway 11,,,KY,,Other,,Building,BETHEL,Owned,Central Office,3,Bath County,21011,,,,,,,,,,,unresolved: no registered service
+BLVIGABW,34.8640250999999,-83.9848088499999,WNS3282,40 River Road Connector,,,GA,,Interesting,,Building,Blairsville,Owned,Central Office,2,Union County,13291,,,,,,,,,,,unresolved: no registered service
+BLKLGAXA,31.3825399999999,-84.957519,WNS0261,15166 River St,,,GA,,Other,,Building,Blakely,Owned,Central Office,35,Early County,13099,,,,,,,,,,,unresolved: no registered service
+BRFRFLXA,29.96008262,-82.9279976299999,,108 Drane St Nw| Branford| FL| 32008,,,FL,,Other,,Building,Branford,Owned,Central Office,20,Suwannee County,12121,,,,,,,,,,,unresolved: no registered service
+BRHDKYXA,37.3416834599999,-84.44990833,,4297 Highway 70,,,KY,,Other,,Building,BRODHEAD,Owned,Central Office,14,Rockcastle County,21203,,,,,,,,,,,unresolved: no registered service
+BRAROKXA,36.0526137,-95.7918259599999,WNS2324,114 West Broadway,,,OK,,Other,,Building,Broken Arrow,Owned,Central Office,150,Tulsa County,40143,,,,,,,,,,,unresolved: no registered service
+BRAROKXC,35.99867768,-95.7968520799999,WNS2325,5301 South Elm Place W,,,OK,,Other,,Building,Broken Arrow,Owned,Central Office,109,Tulsa County,40143,,,,,,,,,,,unresolved: no registered service
+BRAROKXD,36.0896024099999,-95.7905582,WNS2327,201 East Omaha Street,,,OK,,Other,,Building,Broken Arrow,Owned,Central Office,106,Tulsa County,40143,,,,,,,,,,,unresolved: no registered service
+BRAROKXE,36.0615241599999,-95.68429788,WNS2326,1025 North 84th Street,,,OK,,Other,,Building,Broken Arrow,Owned,Central Office,38,Wagoner County,40145,,,,,,,,,,,unresolved: no registered service
+BKVLKYXA,38.6825019999999,-84.067487,WNS1712,202 Madison St,,,KY,,Other,,Building,Brooksville,Owned,Central Office,16,Bracken County,21023,,,,,,,,,,,unresolved: no registered service
+BWFDTXXA,33.1772204099999,-102.274424499999,,101 East Tate,,,TX,,Other,,Building,Brownfield,Owned,Central Office,93,Terry County,48445,,,,,,,,,,,unresolved: no registered service
+BRSDKYXA,36.98978863,-84.5993733199999,WNS1715,53 E French Ave 03,,,KY,,Other,,Building,BURNSIDE,Owned,Central Office,41,Pulaski County,21199,,,,,,,,,,,unresolved: no registered service
+CAIRGAXA,30.8785318,-84.2089730499999,WNS1480,48 2nd Avenue,,,GA,,Other,,Building,Cairo,Owned,Central Office,37,Grady County,13131,,,,,,,,,,,unresolved: no registered service
+CLHNFLXA,30.56435631,-81.8314212899999,WNS1430,45403 Green Avenue,,,FL,,Other,,Building,Callahan,Owned,Central Office,44,Nassau County,12089,,,,,,,,,,,unresolved: no registered service
+CMVLKYXA,37.342599,-85.3439159999999,WNS1718,303 E Broadway,,,KY,,Other,,Building,Campbellsville,Owned,Central Office,85,Taylor County,21217,,,,,,,,,,,unresolved: no registered service
+CNTNGAXA,34.23610953,-84.4906549899999,WNS1482,190 South Church Street,,,GA,,Interesting,,Building,Canton,Owned,Central Office,81,Cherokee County,13057,county,Property_Value_TY2024,14-0166-0003,CSL GEORGIA SYSTEM LLC,10802 EXECUTIVE CENTER DR,0.1743,1.0,,,4,ok
+CECLOHXA,41.2181456499999,-84.6021258899999,WNS2243,105 North Main Street,,,OH,,Other,,Building,CECIL,Owned,Central Office,5,Paulding County,39125,statewide,Ohio Statewide Parcels,15-05S-001-00,,105  MAIN ST N   ,0.1613,,,,5,ok
+CNVLIAXO,40.7322668999999,-92.8761186699999,WNS0461,236 West Maple Street,,,IA,,Other,,Building,Centerville,Owned,Central Office,19,Appanoose County,19007,,,,,,,,,,,unresolved: no registered service
+CNVLGAXA,32.6234985899999,-83.6879990999999,WNS1487,109 Gunn Road,,,GA,,Other,,Building,Centerville,Owned,Central Office,23,Houston County,13153,,,,,,,,,,,unresolved: no registered service
+CHRDOHXA,41.5812845399999,-81.2021328499999,WNS2244,205 South Hambden Street,,,OH,,Interesting,,Building,Chardon,Owned,Central Office,100,Geauga County,39055,statewide,Ohio Statewide Parcels,10-601300,,205 S HAMBDEN ST   ,0.1915,,,,4,ok
+CHRTIAXC,41.0162491099999,-93.30642589,WNS1606,220 North Grand Chariton,,,IA,,Other,,Building,Chariton,Owned,Central Office,32,Lucas County,19117,,,,,,,,,,,unresolved: no registered service
+CHWOGAXA,34.76833751,-84.76820927,WNS1488,220 North 2nd Avenue,,,GA,,Interesting,,Building,Chatsworth,Owned,Central Office,40,Murray County,13213,,,,,,,,,,,unresolved: no registered service
+CHTHOKXD,35.47096122,-95.52363062,,115 Northwest 1st Street,,,OK,,Other,,Building,Checotah,Owned,Central Office,21,McIntosh County,40091,,,,,,,,,,,unresolved: no registered service
+CHGVNCXA,35.55692203,-80.59588229,WNS1906,1525 South Main Street,,,NC,,Interesting,,Building,China Grove,Owned,Central Office,38,Rowan County,37159,county,Rowan Tax Parcels,163 012,,1525 S MAIN ST,0.4238,,,,17,ok
+CLRDIAXT,40.7405471699999,-95.03873151,WNS1607,115 West Chestnut Street,,,IA,,Other,,Building,Clarinda,Owned,Central Office,24,Page County,19145,,,,,,,,,,,unresolved: no registered service
+CLVLGAXA,34.61483837,-83.52435581,WNS1489,390 Jefferson Street,,,GA,,Interesting,,Building,Clarkesville,Owned,Central Office,25,Habersham County,13137,,,,,,,,,,,unresolved: no registered service
+CLEVGAXA,34.59702662,-83.7661271599999,WNS1491,158 West Kytle Street,,,GA,,Interesting,,Building,Cleveland,Owned,Central Office,124,White County,13311,,,,,,,,,,,unresolved: no registered service
+CLSTOHXA,41.3129062399999,-81.9161510299999,WNS2248,25038 Royalton Road,,,OH,,Other,,Building,Columbia Station,Owned,Central Office,24,Lorain County,39093,statewide,Ohio Statewide Parcels,1200045000043,,  ,0.2329,,,,4,ok
+CLJTIAWH,41.28189291,-91.38120865,WNS3288,326 Hilltop Drive,,,IA,,Other,,Building,Columbus Junction,Owned,Central Office,2,Louisa County,19115,,,,,,,,,,,unresolved: no registered service
+CMRCGAXA,34.2039764199999,-83.4594712199999,WNS1495,45 Georgia Avenue,,,GA,,Interesting,,Building,Commerce,Owned,Central Office,128,Jackson County,13157,county,Tax Parcels,C14    049,, ,0.3236,0.39,,,8,ok
+CLDGTXXA,31.75403928,-96.64933392,WNS2557,102 S Second,,,TX,,Other,,Building,Coolidge,Owned,Central Office,23,Limestone County,48293,,,,,,,,,,,unresolved: no registered service
+CRNLGAXA,34.5145162099999,-83.52818003,WNS3179,350 North Main Street,,,GA,,Interesting,,Building,Cornelia,Owned,Central Office,77,Habersham County,13137,,,,,,,,,,,unresolved: no registered service
+COWTOKXB,35.95075827,-95.6516158099999,WNS2335,124 West Sycamore Street,,,OK,,Other,,Building,Coweta,Owned,Central Office,49,Wagoner County,40145,,,,,,,,,,,unresolved: no registered service
+CRESIAXO,43.37396074,-92.1173488499999,WNS1610,118 2nd Avenue W,,,IA,,Other,,Building,Cresco,Owned,Central Office,20,Howard County,19089,,,,,,,,,,,unresolved: no registered service
+CETNIAXC,41.0581730099999,-94.36359446,WNS0057,117 North Elm Street,,,IA,,Other,,Building,Creston,Owned,Central Office,24,Union County,19175,,,,,,,,,,,unresolved: no registered service
+CRSTARXA,33.1282574299999,-91.96229117,WNS1356,104 West 6th Avenue,,,AR,,Other,,Building,Crossett,Owned,Central Office,36,Ashley County,05003,,,,,,,,,,,unresolved: no registered service
+CMLDKYXA,36.9772090299999,-82.99018402,WNS1724,309 Main Street,,,KY,,Other,,Building,Cumberland,Owned,Central Office,26,Harlan County,21095,,,,,,,,,,,unresolved: no registered service
+DHLNGAXA,34.53542378,-83.98251372,WNS1498,200 Boyd Circle,,,GA,,Interesting,,Building,Dahlonega,Owned,Central Office,50,Lumpkin County,13187,county,LD_2025parcels,D10    049,,P O BOX 400,1.4647,1.42,,,13,ok
+DLRKARXA,34.03811246,-92.88737906,WNS1358,13 Dallas 311,,,AR,,Other,,Building,Dalark,Leased/Easement,Central Office,6,Dallas County,05039,,,,,,,,,,,unresolved: no registered service
+DLHRTXXA,36.0601455099999,-102.5215033,WNS2567,601 Denver Avenue,,,TX,,Other,,Building,Dalhart,Owned,Central Office,20,Dallam County,48111,,,,,,,,,,,unresolved: no registered service
+DLTNGAXD,34.6750547199999,-84.9663878399999,WNS1500,350 Cross Plains Blvd,,,GA,,Interesting,,Building,Dalton,Owned,Central Office,18,Whitfield County,13313,,,,,,,,,,,unresolved: no registered service
+DWSNGAXA,31.7742450299999,-84.4456435299999,WNS1504,163 Stonewall Street NE,,,GA,,Other,,Building,Dawson,Owned,Central Office,35,Terrell County,13273,,,,,,,,,,,unresolved: no registered service
+DELTOHXA,41.5749082299999,-84.0076585099999,WNS2259,201 Monroe Street,,,OH,,Other,,Building,Delta,Owned,Central Office,26,Fulton County,39051,statewide,Ohio Statewide Parcels,31-103112-00.000,,201  MONROE ST  DELTA 43515,0.2743,,,,8,ok
+DMMTTXXA,34.5517060099999,-102.311284299999,WNS2575,113 Northeast 2nd Street,,,TX,,Other,,Building,Dimmitt,Owned,Central Office,28,Castro County,48069,,,,,,,,,,,unresolved: no registered service
+DNVLGAXA,31.0413469699999,-84.8845435,WNS1509,202 Knox Street,,,GA,,Other,,Building,Donalsonville,Owned,Central Office,30,Seminole County,13253,,,,,,,,,,,unresolved: no registered service
+DNSNIAXO,40.6428221999999,-91.56532493,WNS0481,517 Elm Street,,,IA,,Other,,Building,Donnellson,Owned,Central Office,21,Lee County,19111,,,,,,,,,,,unresolved: no registered service
+DUMSTXXA,35.85904172,-101.974124399999,WNS2579,116 West 7th Street,,,TX,,Other,,Building,Dumas,Owned,Central Office,74,Moore County,48341,,,,,,,,,,,unresolved: no registered service
+DYVLIAXO,42.4840607399999,-91.1230571899999,WNS1624,116 2nd Street,,,IA,,Other,,Building,Dyersville,Owned,Central Office,26,Dubuque County,19061,,,,,,,,,,,unresolved: no registered service
+EDWDIAXO,42.6451855999999,-91.40056771,,105 E MAIN,,,IA,,Other,,Building,Edgewood,Owned,Central Office,4,Clayton County,19043,,,,,,,,,,,unresolved: no registered service
+ELYROHXA,41.36574092,-82.1099927799999,WNS2262,363 3rd Street,,,OH,,Interesting,,Building,Elyria,Owned,Central Office,159,Lorain County,39093,statewide,Ohio Statewide Parcels,0626055000001,,  ,0.5011,,,,6,ok
+ELYROHXB,41.3846400899999,-82.07799558,WNS2263,400 Abbe Norht Road,,,OH,,Other,,Building,Elyria,Owned,Central Office,52,Lorain County,39093,statewide,Ohio Statewide Parcels,0625021102020,,  ,0.5057,,,,5,ok
+ELYROHXE,41.3999024199999,-82.1325053799999,WNS2264,41786 Griswald Road,,,OH,,Other,,Building,Elyria,Owned,Central Office,33,Lorain County,39093,statewide,Ohio Statewide Parcels,0624038102025,,  ,0.5139,,,,9,ok
+EMBGIAXP,43.11080562,-94.6673863299999,WNS3292,1301 10th Street,,,IA,,Other,,Building,Emmetsburg,Owned,Central Office,23,Palo Alto County,19147,,,,,,,,,,,unresolved: no registered service
+EVRSKYXA,36.8618690699999,-83.1824016099999,WNS1728,159 E. Main St,,,KY,,Other,,Building,EVARTS,Owned,Central Office,42,Harlan County,21095,,,,,,,,,,,unresolved: no registered service
+FRFDIAXC,41.00742291,-91.9658781199999,WNS1627,204 West Broadway,,,IA,,Other,,Building,Fairfield,Owned,Central Office,40,Jefferson County,19101,,,,,,,,,,,unresolved: no registered service
+FTZGGAXA,31.71514352,-83.2537944099999,WNS1514,110 East Central,,,GA,,Other,,Building,Fitzgerald,Owned,Central Office,92,Ben Hill County,13017,,,,,,,,,,,unresolved: no registered service
+RSSLKYXB,38.51718043,-82.7220606199999,WNS1730,2400 Argillite Road,,,KY,,Other,,Building,FLATWOODS,Owned,Central Office,73,Greenup County,21089,,,,,,,,,,,unresolved: no registered service
+FMBGKYXA,38.4249156799999,-83.73666597,WNS1732,226 West Water Street,,,KY,,Other,,Building,FLEMINGSBURG,Owned,Central Office,69,Fleming County,21069,,,,,,,,,,,unresolved: no registered service
+FLTNGAXA,30.8294520799999,-82.00521745,WNS1515,201 East Martin Street,,,GA,,Other,,Building,Folkston,Owned,Central Office,25,Charlton County,13049,,,,,,,,,,,unresolved: no registered service
+FRDYARXA,33.81287436,-92.4135129099999,WNS1367,308 North Oak Street,,,AR,,Other,,Building,Fordyce,Owned,Central Office,36,Dallas County,05039,,,,,,,,,,,unresolved: no registered service
+FRCYIAXO,43.2657654699999,-93.63893779,WNS0504,145 West L Street,,,IA,,Other,,Building,Forest City,Owned,Central Office,15,Winnebago County,19189,,,,,,,,,,,unresolved: no registered service
+GENVOHXA,41.80531692,-80.94567163,WNS2267,37 South Forest Street,,,OH,,Interesting,,Building,Geneva,Owned,Central Office,25,Ashtabula County,39007,statewide,Ohio Statewide Parcels,20-000-00-150-00,,37  FOREST ST   ,0.8339,,,,16,ok
+GRVIOHXA,40.06756012,-82.5189784699999,WNS2268,131 East Broadway,,,OH,,Interesting,,Building,Granville,Owned,Central Office,24,Licking County,39089,statewide,Ohio Statewide Parcels,02005675401000,,"131 E BROADWAY GRANVILLE, OH 43023 GRANVILLE 43023",0.1774,,,,4,ok
+GNBRARXA,35.2326627699999,-92.38835084,WNS1370,9 South Broadview Street,,,AR,,Other,,Building,Greenbrier,Owned,Central Office,64,Faulkner County,05045,,,,,,,,,,,unresolved: no registered service
+GNFDIAAJ,41.2948208099999,-94.46017161,WNS3295,South Townline Road,,,IA,,Other,,Building,Greenfield,Owned,Central Office,0,Adair County,19001,,,,,,,,,,,unresolved: no registered service
+GNUPKYXA,38.5734244699999,-82.83962673,WNS1737,304 Laurel St.,,,KY,,Interesting,,Building,Greenup,Owned,Central Office,52,Greenup County,21089,,,,,,,,,,,unresolved: no registered service
+GRNLIAXC,41.74516982,-92.72541513,WNS1631,1010 Main Street,,,IA,,Other,,Building,Grinnell,Owned,Central Office,84,Poweshiek County,19157,,,,,,,,,,,unresolved: no registered service
+HRSNARXA,36.214283,-93.079052,,202 Graham Street,,,AR,,Other,,Building,Harrison,Owned,Central Office,81,Boone County,05009,,,,,,,,,,,unresolved: no registered service
+HZRDKYXA,37.24986502,-83.1939202399999,WNS1739,101 Winterberry Drive,,,KY,,Other,,Building,Hazard,Owned,Central Office,133,Perry County,21193,,,,,,,,,,,unresolved: no registered service
+HWSSGAXA,34.95173821,-83.7583057399999,WNS1525,228 North Main Street,,,GA,,Interesting,,Building,Hiawassee,Owned,Central Office,19,Towns County,13281,,,,,,,,,,,unresolved: no registered service
+HLRDFLXA,30.68973301,-81.9186614599999,WNS1438,3745 Pecan Street,,,FL,,Other,,Building,Hilliard,Owned,Central Office,30,Nassau County,12089,,,,,,,,,,,unresolved: no registered service
+HIRMOHXA,41.31000644,-81.14604119,WNS2272,11677 Hayden Street Rear,,,OH,,Other,,Building,Hiram,Owned,Central Office,14,Portage County,39133,statewide,Ohio Statewide Parcels,22-023-10-00-129-001,,WAKEFIELD RD  HIRAM 44234,0.0817,,,,9,ok
+HLCRIAXP,42.5992163399999,-90.9921891999999,WNS1638,5778 MAPLE RD,,,IA,,Other,,Building,Holy Cross,Owned,Central Office,6,Dubuque County,19061,,,,,,,,,,,unresolved: no registered service
+HDSNOHXB,41.21706309,-81.4425081699999,WNS1063,1300 Terex Road,,,OH,,Other,,Building,Hudson,Owned,Central Office,20,Summit County,39153,statewide,Ohio Statewide Parcels,3003811,,,0.8055,,,,7,ok
+HDSNOHXA,41.24341435,-81.4400342499999,WNS2275,245 North Main Street,,,OH,,Other,,Building,Hudson,Owned,Central Office,170,Summit County,39153,statewide,Ohio Statewide Parcels,3202091,,,0.2027,,,,6,ok
+WTWDTXXA,30.81159231,-95.2597377099999,WNS2619,24500 Waterwood Parkway,,,TX,,Other,,Building,Huntsville,Owned,Central Office,9,San Jacinto County,48407,,,,,,,,,,,unresolved: no registered service
+IRTNGAXA,32.8202546099999,-83.1678256299999,WNS1529,113 Wriley Road,,,GA,,Other,,Building,Irwinton,Owned,Central Office,26,Wilkinson County,13319,,,,,,,,,,,unresolved: no registered service
+JSPRGAXA,34.46817879,-84.43144501,WNS1532,69 Stegall Drive,,,GA,,Interesting,,Building,Jasper,Owned,Central Office,22,Pickens County,13227,,,,,,,,,,,unresolved: no registered service
+JLLYIAXE,42.47842132,-94.7184655599999,,Alley East Of 129 Maston St,,,IA,,Other,,Building,Jolley,Owned,Central Office,3,Calhoun County,19025,,,,,,,,,,,unresolved: no registered service
+KNTNOHXA,40.6478963699999,-83.6102986599999,WNS2278,225 West Columbus Street,,,OH,,Interesting,,Building,Kenton,Owned,Central Office,30,Hardin County,39065,statewide,Ohio Statewide Parcels,360600010000,,  ,0.2028,,,,9,ok
+KRVLTXXA,30.0453475899999,-99.13997664,WNS2631,812 Water Street,,,TX,,Other,,Building,Kerrville,Owned,Central Office,144,Kerr County,48265,,,,,,,,,,,unresolved: no registered service
+KGVLOHXA,41.88940328,-80.67476628,WNS2279,3124 Main Street,,,OH,,Other,,Building,KINGSVILLE,Owned,Central Office,23,Ashtabula County,39007,statewide,Ohio Statewide Parcels,27-000-00-090-00,,0 E MAIN ST   ,0.5402,,,,14,ok
+KNVLIAXD,41.34934878,-93.0255881399999,,1690 Kennedy,,,IA,,Other,,Building,Knoxviile,Owned,Central Office,5,Marion County,19125,,,,,,,,,,,unresolved: no registered service
+KNVLIAWH,41.3202682,-93.06150375,WNS3298,606 North Godfrey Lane,,,IA,,Other,,Building,Knoxville,Owned,Central Office,5,Marion County,19125,,,,,,,,,,,unresolved: no registered service
+KNVLIAXC,41.3195514299999,-93.0983319999999,WNS0529,108 East Marion Street,,,IA,,Other,,Building,Knoxville,Owned,Central Office,79,Marion County,19125,,,,,,,,,,,unresolved: no registered service
+LFYTGAXA,34.70665255,-85.2827404899999,WNS1536,105 Cherokee Street,,,GA,,Interesting,,Building,Lafayette,Owned,Central Office,37,Walker County,13295,,,,,,,,,,,unresolved: no registered service
+ELYROHXD,41.3125910199999,-82.1173181099999,WNS1065,12045 State Route 301,,,OH,,Other,,Building,LaGrange,Owned,Central Office,16,Lorain County,39093,statewide,Ohio Statewide Parcels,1000013000172,,  ,1.001,,,,6,ok
+LKCYIAXO,42.26849988,-94.73361558,WNS0532,106 East Washington,,,IA,,Other,,Building,Lake City,Owned,Central Office,9,Calhoun County,19025,,,,,,,,,,,unresolved: no registered service
+LAMSTXXA,32.73209717,-101.9508835,WNS2635,313 South 1st Street,,,TX,,Other,,Building,Lamesa,Owned,Central Office,20,Dawson County,48115,,,,,,,,,,,unresolved: no registered service
+LAVNGAXA,34.43593356,-83.1044045799999,WNS1538,5801 Vickery Street,,,GA,,Other,,Building,Lavonia,Owned,Central Office,42,Franklin County,13119,,,,,,,,,,,unresolved: no registered service
+LEDSALXA,33.54372706,-86.54439521,WNS1345,8372 1St Avenue Southeast,,,AL,,Other,,Building,Leeds,Owned,Central Office,27,Jefferson County,01073,,,,,,,,,,,unresolved: no registered service
+LTFDKYXA,37.48445892,-86.2939511299999,WNS1752,399 N Cannon Dr BLDG A,,,KY,,Other,,Building,Leitchfield,Owned,Central Office,35,Grayson County,21085,,,,,,,,,,,unresolved: no registered service
+LVLDTXXA,33.58805583,-102.379543499999,WNS2638,506 Avenue I,,,TX,,Other,,Building,Levelland,Owned,Central Office,75,Hockley County,48219,,,,,,,,,,,unresolved: no registered service
+LTFDTXXA,33.9210429999999,-102.329773,WNS2640,600 East 5th Street,,,TX,,Other,,Building,Littlefield,Owned,Central Office,39,Lamb County,48279,,,,,,,,,,,unresolved: no registered service
+LVOKFLXA,30.29397346,-82.98207915,WNS1448,206 White Avenue SE,,,FL,,Other,,Building,Live Oak,Owned,Central Office,123,Suwannee County,12121,,,,,,,,,,,unresolved: no registered service
+MDSNOHXA,41.8002742199999,-81.0489853899999,WNS2282,2740 Hubbard Road,,,OH,,Interesting,,Building,MADISON,Owned,Central Office,28,Lake County,39085,statewide,Ohio Statewide Parcels,01B8880006000,,2745  HUBBARD RD  MADISON 44057,0.6524,,,,8,ok
+MNCHIAXO,42.48472283,-91.45717681,WNS1646,107 East Fayette Street,,,IA,,Other,,Building,Manchester,Owned,Central Office,30,Delaware County,19055,,,,,,,,,,,unresolved: no registered service
+MNCHIAWH,42.45587333,-91.4783707299999,WNS1645,1614 230Th Street,,,IA,,Other,,Building,Manchester,Owned,Central Office,2,Delaware County,19055,,,,,,,,,,,unresolved: no registered service
+MNCHGAXA,32.85132378,-84.61593315,WNS1542,212 2nd Street,,,GA,,Other,,Building,Manchester,Owned,Central Office,31,Meriwether County,13199,,,,,,,,,,,unresolved: no registered service
+MRNGIAXO,41.7988809399999,-92.06939307,WNS1648,151 East Hilton,,,IA,,Other,,Building,Marengo,Owned,Central Office,15,Iowa County,19095,,,,,,,,,,,unresolved: no registered service
+MAYOFLXA,30.05422767,-83.1762577599999,WNS1450,153 Northwest Crawford Street,,,FL,,Other,,Building,Mayo,Owned,Central Office,20,Lafayette County,12067,,,,,,,,,,,unresolved: no registered service
+MCRAGAXA,32.0667820099999,-82.89752257,WNS1545,8 East Oak Street,,,GA,,Other,,Building,McRae,Owned,Central Office,23,Telfair County,13271,,,,,,,,,,,unresolved: no registered service
+MLRSIAXO,40.97544741,-93.0481071399999,,105 TRINITY AVE,,,IA,,Other,,Building,Melrose,Owned,Central Office,7,Monroe County,19135,,,,,,,,,,,unresolved: no registered service
+MMPHTXXA,34.72450811,-100.5393755,WNS2654,721 West Noel Street,,,TX,,Other,,Building,Memphis,Owned,Central Office,48,Hall County,48191,,,,,,,,,,,unresolved: no registered service
+MDVLGAXA,33.0908148099999,-83.2284728199999,WNS1550,750 North Jefferson Street,,,GA,,Other,,Building,Milledgeville,Owned,Central Office,93,Baldwin County,13009,,,,,,,,,,,unresolved: no registered service
+MONRGAXB,33.8904380199999,-83.71992317,WNS0397,3375 GA-11,,,GA,,Interesting,,Building,Monroe,Owned,Central Office,3,Walton County,13297,,,,,,,,,,,unresolved: no registered service
+MONRGAXA,33.7964565799999,-83.71253894,WNS1551,129 East Highland Avenue,,,GA,,Interesting,,Building,Monroe,Owned,Central Office,36,Walton County,13297,,,,,,,,,,,unresolved: no registered service
+MTZMGAXA,32.3017480299999,-84.03082915,WNS1552,111 Drayton Street,,,GA,,Other,,Building,Montezuma,Owned,Central Office,25,Macon County,13193,,,,,,,,,,,unresolved: no registered service
+MNTIKYXA,36.83127068,-84.85042624,WNS1775,45 Huffaker Street,,,KY,,Other,,Building,Monticello,Owned,Central Office,42,Wayne County,21231,,,,,,,,,,,unresolved: no registered service
+LEDSALXB,33.5934139599999,-86.49852364,WNS1346,920 Park Avenue,,,AL,,Other,,Building,Moody,Owned,Central Office,52,St. Clair County,01115,,,,,,,,,,,unresolved: no registered service
+MORVIAIC,40.8920549899999,-92.9835000199999,,10435 160th Ave,,,IA,,Other,,Building,Moravia,Leased/Easement,Central Office,5,Appanoose County,19007,,,,,,,,,,,unresolved: no registered service
+MRHDKYXA,38.18366375,-83.43477901,WNS1776,154 East 2nd Street,,,KY,,Other,,Building,Morehead,Owned,Central Office,160,Rowan County,21205,,,,,,,,,,,unresolved: no registered service
+MLTRGAXA,31.1774829199999,-83.78371355,WNS1556,216 4th Street SE,,,GA,,Other,,Building,Moultrie,Owned,Central Office,89,Colquitt County,13071,,,,,,,,,,,unresolved: no registered service
+MLTRGA05,31.17919025,-83.74876131,WNS0398,282 Industrial Drive,,,GA,,Other,,Building,Moultrie,Owned,Central Office,4,Colquitt County,13071,,,,,,,,,,,unresolved: no registered service
+MTAYIAXC,40.71260431,-94.2373037699999,WNS0579,300 South Taylor,,,IA,,Other,,Building,Mount Ayr,Owned,Central Office,9,Ringgold County,19159,,,,,,,,,,,unresolved: no registered service
+MNPLIAXC,40.96786585,-91.5533856899999,WNS1653,101 West Madison,,,IA,,Other,,Building,Mount Pleasant,Owned,Central Office,48,Henry County,19087,,,,,,,,,,,unresolved: no registered service
+MTVRKYXA,37.3542603599999,-84.3415178999999,WNS1780,80 West Main St,,,KY,,Other,,Building,Mount Vernon,Owned,Central Office,20,Rockcastle County,21203,,,,,,,,,,,unresolved: no registered service
+NSVLGAXA,31.2060928299999,-83.2513356599999,WNS1558,203 South Bartow Street,,,GA,,Other,,Building,Nashville,Owned,Central Office,32,Berrien County,13019,,,,,,,,,,,unresolved: no registered service
+NEVDIAXC,42.02086028,-93.4511339099999,WNS1654,635 J Avenue,,,IA,,Other,,Building,Nevada,Owned,Central Office,24,Story County,19169,,,,,,,,,,,unresolved: no registered service
+NHTNIAWH,43.0661261999999,-92.3077757899999,WNS3303,627 North Pleasant Hill Avenue,,,IA,,Other,,Building,New Hampton,Owned,Central Office,1,Chickasaw County,19037,,,,,,,,,,,unresolved: no registered service
+NHTNIAXC,43.05909211,-92.31272332,WNS1655,201 East Main,,,IA,,Other,,Building,New Hampton,Owned,Central Office,32,Chickasaw County,19037,,,,,,,,,,,unresolved: no registered service
+NWRKOHXA,40.0594485299999,-82.40487305,WNS2289,66 North 4th Street,,,OH,,Interesting,,Building,Newark,Owned,Central Office,145,Licking County,39089,statewide,Ohio Statewide Parcels,05428208401000,,"66 N 4TH ST NEWARK, OH 43055 NEWARK 43055",0.2758,,,,4,ok
+NWRKOHXC,40.0575081,-82.4271879399999,WNS2294,214 Neal Avenue,,,OH,,Interesting,,Building,Newark,Owned,Central Office,21,Licking County,39089,statewide,Ohio Statewide Parcels,05428208406000,,"685 W CHURCH ST NEWARK, OH 43055 NEWARK 43055",0.1313,,,,4,ok
+NWRKOHXD,40.01356485,-82.4046177299999,WNS2291,7322 Dorsey Mill Road Southeast,,,OH,,Interesting,,Building,Newark,Owned,Central Office,24,Licking County,39089,statewide,Ohio Statewide Parcels,04113653601000,,  ,0.386,,,,6,ok
+NWRKOHXB,40.08689351,-82.42710726,WNS2290,320 Deo Drive,,,OH,,Interesting,,Building,Newark,Owned,Central Office,25,Licking County,39089,statewide,Ohio Statewide Parcels,09629514601000,,  ,0.3723,,,,4,ok
+HETHOHXA,40.0413168899999,-82.44171796,WNS2292,1046 Harris Avenue,,,OH,,Interesting,,Building,Newark,Owned,Central Office,27,Licking County,39089,statewide,Ohio Statewide Parcels,05428208405000,,"HARRIS AVE NEWARK, OH 43055 NEWARK 43055",0.1457,,,,4,ok
+NWTNIAXC,41.6983315,-93.05448565,WNS1656,115 S Second Ave W,,,IA,,Other,,Building,Newton,Owned,Central Office,60,Jasper County,19099,,,,,,,,,,,unresolved: no registered service
+NCVLKYXA,37.8806709099999,-84.57236611,WNS1784,105 North York Street,,,KY,,Other,,Building,Nicholasville,Owned,Central Office,121,Jessamine County,21113,,,,,,,,,,,unresolved: no registered service
+NCNATXXA,33.78899947,-97.7264983099999,WNS2673,117 East Oak Street,,,TX,,Other,,Building,Nocona,Owned,Central Office,21,Montague County,48337,,,,,,,,,,,unresolved: no registered service
+NRVLOHXA,41.39099066,-82.01914082,WNS1068,6874 Avon Belden Road,,,OH,,Other,,Building,North Ridgeville,Owned,Central Office,57,Lorain County,39093,statewide,Ohio Statewide Parcels,0700028102146,,  ,0.4359,,,,5,ok
+NRFDOHXA,41.31474448,-81.53703932,WNS2297,54 Leonard Avenue,,,OH,,Interesting,,Building,Northfield,Owned,Central Office,93,Summit County,39153,statewide,Ohio Statewide Parcels,4002461,,,0.1685,,,,6,ok
+NRWDNCXA,35.22668599,-80.12266339,WNS1925,238 North Main Street,,,NC,,Interesting,,Building,Norwood,Owned,Central Office,15,Stanly County,37167,county,Parcels,656301497322,4005 NORTH RODNEY PARHAM RD,,0.2279,0.0,,,6,ok
+OLHLKYXA,38.30218139,-83.1702961099999,WNS1785,133 Mills Street,,,KY,,Other,,Building,Olive Hill,Owned,Central Office,42,Carter County,21043,,,,,,,,,,,unresolved: no registered service
+OWVLKYXA,38.1410863699999,-83.76592121,WNS1787,148 Treadway Street,,,KY,,Other,,Building,OWINGSVILLE,Owned,Central Office,50,Bath County,21011,,,,,,,,,,,unresolved: no registered service
+PLNGOHXA,41.1360556599999,-84.58159009,WNS2300,117 West Harrison Street,,,OH,,Other,,Building,Paulding,Owned,Central Office,30,Paulding County,39125,statewide,Ohio Statewide Parcels,30-24S-076-00,,117  HARRISON ST W   ,0.4004,,,,6,ok
+PECSTXXB,31.40444183,-103.5034902,WNS2681,924 West Daggett Street,,,TX,,Interesting,,Building,Pecos,Owned,Central Office,35,Reeves County,48389,,,,,,,,,,,unresolved: no registered service
+PNSLOHXA,41.2412452,-81.54544115,WNS2301,1515 State Route 303,,,OH,,Other,,Building,Peninsula,Owned,Central Office,15,Summit County,39153,statewide,Ohio Statewide Parcels,1100510,,,0.0558,,,,6,ok
+PRRYGAAI,32.4358179099999,-83.7608892599999,WNS3437,2031 US HWY 41 S,,,GA,,Other,,Building,Perry,Owned,Central Office,4,Houston County,13153,,,,,,,,,,,unresolved: no registered service
+PRRYGAXA,32.4573819499999,-83.73262665,WNS1566,910 Main Street,,,GA,,Other,,Building,Perry,Owned,Central Office,95,Houston County,13153,,,,,,,,,,,unresolved: no registered service
+PRRYOHXA,41.75907565,-81.1385295,WNS2302,4165 Main Street,,,OH,,Other,,Building,PERRY,Owned,Central Office,20,Lake County,39085,statewide,Ohio Statewide Parcels,04A8880006000,,0  MAIN ST   ,0.3723,,,,13,ok
+PYTNTXXA,36.39730102,-100.803753299999,WNS2683,301 South Amherst Street,,,TX,,Other,,Building,Perryton,Owned,Central Office,36,Ochiltree County,48357,,,,,,,,,,,unresolved: no registered service
+PERSIAXP,41.58003601,-95.56854909,,Alley Behind 103 Main Street,,,IA,,Other,,Building,Persia,Leased/Easement,Central Office,4,Harrison County,19085,,,,,,,,,,,unresolved: no registered service
+PITSGAXA,31.94497002,-83.5413853299999,WNS1568,108 7Th Ave W,,,GA,,Other,,Building,Pitts,Owned,Central Office,9,Wilcox County,13315,,,,,,,,,,,unresolved: no registered service
+POTEOKAY,35.0207959299999,-94.65992454,WNS1096,201 Kerr Ave,,,OK,,Other,,Building,Poteau,Owned,Central Office,1,Le Flore County,40079,,,,,,,,,,,unresolved: no registered service
+POTEOKXA,35.0521843699999,-94.6202629499999,WNS2358,310 Clayton Avenue,,,OK,,Other,,Building,Poteau,Owned,Central Office,37,Le Flore County,40079,,,,,,,,,,,unresolved: no registered service
+PWPNOHXA,39.8659507599999,-80.79901046,WNS2305,101 Ben Avenue,,,OH,,Interesting,,Building,Powhatan Point,Owned,Central Office,18,Belmont County,39013,statewide,Ohio Statewide Parcels,53-90011.000,,BEN AVE  ,0.0747,,,,4,ok
+PRCLOKXA,35.0113368399999,-97.36365886,WNS2360,319 West Apache,,,OK,,Other,,Building,Purcell,Owned,Central Office,55,McClain County,40087,,,,,,,,,,,unresolved: no registered service
+QKCYOHXA,39.97051805,-81.29860963,WNS2306,181 Broadway Street,,,OH,,Other,,Building,Quaker City,Owned,Central Office,18,Guernsey County,39059,statewide,Ohio Statewide Parcels,240000506000,,181  BROADWAY ST  QUAKER CITY 43773,0.2702,,,,6,ok
+RCFDOHXA,41.23925717,-81.6557576,,4676 West Streetsboro Road,,,OH,,Interesting,,Building,Richfield,Owned,Central Office,27,Summit County,39153,statewide,Ohio Statewide Parcels,5001510,,,0.1615,,,,4,ok
+TRNYTXXH,30.85154,-95.40012,WNS1293,75 FRONT ST @ F.M. 980 Riverside TX 77367 US,,,TX,,Other,,Building,Riverside,Owned,Central Office,10,Walker County,48471,,,,,,,,,,,unresolved: no registered service
+GRQYNCXA,35.5720107499999,-80.4178416,WNS1932,8145 Highway 52,,,NC,,Interesting,,Building,Rockwell,Owned,Central Office,30,Rowan County,37159,county,Rowan Tax Parcels,357 085,,8145 US 52 HWY,1.2987,,,,17,ok
+SYMRTXXA,33.59135941,-99.2600727699999,WNS2709,400 North Main Street,,,TX,,Other,,Building,Seymour,Owned,Central Office,54,Baylor County,48023,,,,,,,,,,,unresolved: no registered service
+SHPVKYXA,37.99026484,-85.7157907099999,WNS1795,144 South Buckman Street,,,KY,,Other,,Building,Sheperdsville,Owned,Central Office,44,Bullitt County,21029,,,,,,,,,,,unresolved: no registered service
+SHRDARXA,34.3065086399999,-92.398274,WNS1404,209 East Center,,,AR,,Other,,Building,Sheridan,Owned,Central Office,33,Grant County,05053,,,,,,,,,,,unresolved: no registered service
+SHDNKYXA,37.5251636699999,-85.89526014,WNS1801,21 1st Street,,,KY,,Other,,Building,SONORA,Owned,Central Office,22,Hardin County,21093,,,,,,,,,,,unresolved: no registered service
+STWLOKXA,35.81283854,-94.6278948,WNS2368,116 South 1st Street,,,OK,,Other,,Building,Stilwell,Owned,Central Office,28,Adair County,40001,,,,,,,,,,,unresolved: no registered service
+SGLDTXXE,29.63625224,-95.5981813199999,WNS2726,12626 Dairy Ashford Road,,,TX,,Other,,Building,Sugar Land,Owned,Central Office,159,Fort Bend County,48157,,,,,,,,,,,unresolved: no registered service
+SGLDTXXD,29.5860816699999,-95.62071487,WNS2722,1850 Austin Parkway,,,TX,,Other,,Building,Sugar Land,Owned,Central Office,64,Fort Bend County,48157,,,,,,,,,,,unresolved: no registered service
+SUVLGAXA,34.4815202899999,-85.34870994,WNS1584,66 West Washington Street,,,GA,,Interesting,,Building,Summerville,Owned,Central Office,33,Chattooga County,13055,county,parcels,00S2700000009,,0 COX ST,0.521,0.5199,,,5,ok
+SWNYTXXA,29.03860427,-95.6995736899999,WNS2733,202 Pecan Street,,,TX,,Other,,Building,Sweeny,Owned,Central Office,29,Brazoria County,48039,,,,,,,,,,,unresolved: no registered service
+SYVNGAXA,32.7517568299999,-81.6332240899999,WNS1585,303 East Ogeechee Street,,,GA,,Other,,Building,Sylvania,Owned,Central Office,12,Screven County,13251,,,,,,,,,,,unresolved: no registered service
+TCMSOKXB,35.25843195,-96.9359090699999,WNS2370,112 East Park Street,,,OK,,Other,,Building,Tecumseh,Owned,Central Office,33,Pottawatomie County,40125,,,,,,,,,,,unresolved: no registered service
+THTNGAXA,32.8869667499999,-84.3254854999999,WNS3198,118 East Gordon Street,,,GA,,Other,,Building,Thomaston,Owned,Central Office,53,Upson County,13293,,,,,,,,,,,unresolved: no registered service
+THTNGAXB,32.9334372699999,-84.3334017899999,WNS3284,1444 Highway 19 N,,,GA,,Other,,Building,Thomaston,Owned,Central Office,15,Upson County,13293,,,,,,,,,,,unresolved: no registered service
+TPTNIAXO,41.77051661,-91.12666418,WNS1668,506 Meridian,,,IA,,Other,,Building,Tipton,Owned,Central Office,25,Cedar County,19031,,,,,,,,,,,unresolved: no registered service
+TOLDIAXO,41.98152657,-92.5812656199999,WNS1669,1201 South County Road,,,IA,,Other,,Building,Toledo,Owned,Central Office,23,Tama County,19171,,,,,,,,,,,unresolved: no registered service
+TRARIAXO,42.19143728,-92.46705144,WNS1670,505 3rd Street,,,IA,,Other,,Building,Traer,Owned,Central Office,10,Tama County,19171,,,,,,,,,,,unresolved: no registered service
+TRINGAXA,34.54083387,-85.31313762,WNS1588,207 Allgood Street,,,GA,,Other,,Building,Trion,Owned,Central Office,21,Chattooga County,13055,county,parcels,00T0700000041,,0 PARK AVE,0.4552,0.4541,,,7,ok
+BRAROKXB,36.0575717899999,-95.8690106199999,WNS2371,7200 S Mingo Rd,,,OK,,Other,,Building,Tulsa,Owned,Central Office,226,Tulsa County,40143,,,,,,,,,,,unresolved: no registered service
+TWBGOHIR,41.3112491199999,-81.4423444499999,,2684 East Aurora Road,,,OH,,Interesting,,Building,Twinsburg,Owned,Central Office,,Summit County,39153,statewide,Ohio Statewide Parcels,6406505,,,0.4985,,,,7,ok
+TWBGOHXA,41.31113087,-81.44232343,,2684 Route 82,,,OH,,Interesting,,Building,Twinsburg,TBD,Central Office,99,Summit County,39153,statewide,Ohio Statewide Parcels,6406505,,,0.4985,,,,7,ok
+VNBGKYXA,38.5941079999999,-83.321195,WNS1806,403 Fairlane Dr.,,,KY,,Other,,Building,Vanceburg,Owned,Central Office,44,Lewis County,21135,,,,,,,,,,,unresolved: no registered service
+VIANOK05,35.49846823,-94.9714586,,109 Blackstone St,,,OK,,Other,,Building,Vian,Owned,Central Office,13,Sequoyah County,40135,,,,,,,,,,,unresolved: no registered service
+VILNARXA,35.0831462599999,-92.2113457699999,,1078 Main Street,,,AR,,Other,,Building,Vilonia,Owned,Central Office,2,Faulkner County,05045,,,,,,,,,,,unresolved: no registered service
+WGNROKXD,35.9589769999999,-95.3675769999999,WNS2375,Rear Of 812 E. Cherokee,,,OK,,Other,,Building,Wagoner,Owned,Central Office,38,Wagoner County,40145,,,,,,,,,,,unresolved: no registered service
+WASHIAXO,41.3001165299999,-91.6896805899999,WNS1674,217 East 2nd Street,,,IA,,Other,,Building,Washington,Owned,Central Office,33,Washington County,19183,,,,,,,,,,,unresolved: no registered service
+WFRKARXA,35.9236825699999,-94.1893365899999,WNS1411,265 Wheeler Street,,,AR,,Other,,Building,West Fork,Owned,Central Office,19,Washington County,05143,,,,,,,,,,,unresolved: no registered service
+WLBGIAXO,41.66044645,-92.00825998,WNS1676,105 West Welsh,,,IA,,Other,,Building,Williamsburg,Owned,Central Office,28,Iowa County,19095,,,,,,,,,,,unresolved: no registered service
+WNDRGAXA,33.99464785,-83.72118785,WNS1594,74 Woodlawn Avenue,,,GA,,Interesting,,Building,Winder,Owned,Central Office,119,Barrow County,13013,county,BarrowParcelswOwner_Project,WN12   293,,10802 EXECUTIVE CENTER DR,0.6407,,,,56,ok
+ASHTOHXA,41.86554916,-80.78344219,WNS2238,4616 Park Avenue,,,OH,,Interesting,,Building,WYMAN,Owned,Central Office,125,Ashtabula County,39007,statewide,Ohio Statewide Parcels,05-000-00-403-00,,4616  PARK AVE   ,0.3375,,,,12,ok
+ZNTNKYXA,38.0672,-85.66875,WNS1811,135 Windy Hill Spur,,,KY,,Other,,Building,Zoneton,Owned,Central Office,54,Bullitt County,21029,,,,,,,,,,,unresolved: no registered service

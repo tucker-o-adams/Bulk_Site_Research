@@ -1,0 +1,4 @@
+﻿site_id,lat,lng,name,address,apn,acres_stated,state,county,group,notes,parcel_county,parcel_county_geoid,parcel_source_scope,parcel_service_name,parcel_apn,parcel_owner,parcel_address,parcel_acres_gis,parcel_acres_stated_by_county,parcel_acres_input,parcel_apn_matches_input,parcel_vertices,parcel_status
+Williamsburg_VA,37.2879,-76.7318,1637 Green Mount Pkwy,,,,VA,,parcel-test,,Williamsburg city,51830,statewide,Virginia Statewide Parcels (VGIN / VDEM),3308.328.220,,,0.3239,,,,13,ok
+Northfield_OH,41.31474448,-81.53703932,54 Leonard Ave,,4002466,,OH,,parcel-test,,Summit County,39153,,,,,,,,,,,unresolved: no registered service
+Adams_CO,39.8199842,-104.893607,TBDI Example Site,,,,CO,,parcel-test,,Adams County,08001,county,Adams County Parcels,182301100001,UNITED STATES OF AMERICA HQ BLDG C/O USFWS REFUGE MANAGER,,2532.0371,,,,985,ok

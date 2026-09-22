@@ -1,0 +1,353 @@
+{
+ "geoid": "39153",
+ "county": "Summit County",
+ "state": "OH",
+ "probe": "41.31474448,-81.53703932",
+ "note": "PROPOSAL ONLY - a person reviews this and moves the chosen service into parcel-services.json. Nothing here is used by a run.",
+ "candidates": [
+  {
+   "score": 65,
+   "why": [
+    "owner 'edugan_summitSOILWATER' looks official"
+   ],
+   "title": "VirginSoils_CE_WFL1",
+   "owner": "edugan_summitSOILWATER",
+   "type": "Feature Service",
+   "url": "https://services3.arcgis.com/3Ukh5HzAdI6WZ3KP/arcgis/rest/services/VirginSoils_CE_WFL1/FeatureServer",
+   "modified": 1757346712000,
+   "item": "https://www.arcgis.com/home/item.html?id=8baa79b8fc674ed9acb418ac8354384d",
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Summit_County_Tax_Parcels_ExportFeatures1",
+     "name": "Summit_County_Tax_Parcels_ExportFeatures1",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "OBJECTID_1",
+      "lowparceli",
+      "parcelid",
+      "building",
+      "unit",
+      "statedarea",
+      "lglstartdt",
+      "cvttxcd",
+      "cvttxdscrp",
+      "schltxcd",
+      "schldscrp",
+      "usecd",
+      "usedscrp",
+      "NGHBRHDCD",
+      "classcd",
+      "classdscrp",
+      "siteaddres",
+      "prprtydscr",
+      "cnvyname",
+      "ownernme1",
+      "ownernme2",
+      "pstladdres",
+      "pstlcity",
+      "pstlstate",
+      "pstlzip5",
+      "pstlzip4",
+      "floorcount",
+      "bldgarea",
+      "resflrarea",
+      "resyrblt",
+      "resstrtyp",
+      "resstrtypv",
+      "strclass",
+      "classmod",
+      "lndvalue",
+      "bldgvalue",
+      "cntmarval",
+      "prvassdval",
+      "cntassdval",
+      "assdvalyrc",
+      "assdpcntcg",
+      "prvtxblval",
+      "cnttxblval",
+      "txblvalyrc",
+      "txblpcntch",
+      "prvwnttxod",
+      "prvsmrtxod",
+      "totprvttxt",
+      "cntwnttxod",
+      "cntsmrtxod",
+      "totcnttxod",
+      "txodyrchg",
+      "txodpcntch",
+      "waterserv",
+      "sewerserv",
+      "altid",
+      "oldtaxmap",
+      "Shape_Leng",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "parcelid",
+      "owner": "ownernme1",
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 65,
+   "why": [
+    "owner 'myersd_gis_cc' looks official"
+   ],
+   "title": "SNC Underground",
+   "owner": "myersd_gis_cc",
+   "type": "Feature Service",
+   "url": "https://services.arcgis.com/WJrhXAhQBQVHUcIJ/arcgis/rest/services/SNC_Underground/FeatureServer",
+   "modified": 1771281372000,
+   "item": "https://www.arcgis.com/home/item.html?id=6b32692950e34249a23324ac615058d9",
+   "layers": [
+    {
+     "layer": 41,
+     "layer_name": "Tuolumne County Parcels",
+     "name": "Tuolumne County Parcels",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "APN",
+      "PREFIX",
+      "ZONING",
+      "REF2",
+      "Ordinances",
+      "OrdinanceL",
+      "FeeParcel",
+      "Asmt",
+      "APN_Format",
+      "TRA",
+      "LandUse1",
+      "DwellingUn",
+      "Neighborho",
+      "Acres",
+      "SitusStree",
+      "SitusStr_1",
+      "SitusStr_2",
+      "SitusStr_3",
+      "SitusSpace",
+      "SitusStr_4",
+      "SitusStr_5",
+      "SitusConca",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "APN",
+      "owner": null,
+      "acres": "Acres",
+      "address": "SitusStree"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 65,
+   "why": [
+    "owner 'myersd_gis_cc' looks official"
+   ],
+   "title": "SNC Trench Option 2",
+   "owner": "myersd_gis_cc",
+   "type": "Feature Service",
+   "url": "https://services.arcgis.com/WJrhXAhQBQVHUcIJ/arcgis/rest/services/SNC_Trench_Option_2/FeatureServer",
+   "modified": 1771261639000,
+   "item": "https://www.arcgis.com/home/item.html?id=6ab5b8aee9814c6a85907694c14ee4ac",
+   "layers": [
+    {
+     "layer": 40,
+     "layer_name": "Tuolumne County Parcels",
+     "name": "Tuolumne County Parcels",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "APN",
+      "PREFIX",
+      "ZONING",
+      "REF2",
+      "Ordinances",
+      "OrdinanceL",
+      "FeeParcel",
+      "Asmt",
+      "APN_Format",
+      "TRA",
+      "LandUse1",
+      "DwellingUn",
+      "Neighborho",
+      "Acres",
+      "SitusStree",
+      "SitusStr_1",
+      "SitusStr_2",
+      "SitusStr_3",
+      "SitusSpace",
+      "SitusStr_4",
+      "SitusStr_5",
+      "SitusConca",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "APN",
+      "owner": null,
+      "acres": "Acres",
+      "address": "SitusStree"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 40,
+   "why": [
+    "owner 'myersd_gis_cc' looks official",
+    "title suggests an archive or draft"
+   ],
+   "title": "SNC_OldStrawberryRd_2",
+   "owner": "myersd_gis_cc",
+   "type": "Feature Service",
+   "url": "https://services.arcgis.com/WJrhXAhQBQVHUcIJ/arcgis/rest/services/SNC_OldStrawberryRd_2/FeatureServer",
+   "modified": 1771274972000,
+   "item": "https://www.arcgis.com/home/item.html?id=7723024809b543b88f83343ad73a6f89",
+   "layers": [
+    {
+     "layer": 41,
+     "layer_name": "Tuolumne County Parcels",
+     "name": "Tuolumne County Parcels",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "APN",
+      "PREFIX",
+      "ZONING",
+      "REF2",
+      "Ordinances",
+      "OrdinanceL",
+      "FeeParcel",
+      "Asmt",
+      "APN_Format",
+      "TRA",
+      "LandUse1",
+      "DwellingUn",
+      "Neighborho",
+      "Acres",
+      "SitusStree",
+      "SitusStr_1",
+      "SitusStr_2",
+      "SitusStr_3",
+      "SitusSpace",
+      "SitusStr_4",
+      "SitusStr_5",
+      "SitusConca",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "APN",
+      "owner": null,
+      "acres": "Acres",
+      "address": "SitusStree"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 40,
+   "why": [
+    "owner 'myersd_gis_cc' looks official",
+    "title suggests an archive or draft"
+   ],
+   "title": "SNC_OldStrawberryRd_20260227_WFL1",
+   "owner": "myersd_gis_cc",
+   "type": "Feature Service",
+   "url": "https://services.arcgis.com/WJrhXAhQBQVHUcIJ/arcgis/rest/services/SNC_OldStrawberryRd_20260227_WFL1/FeatureServer",
+   "modified": 1772215949000,
+   "item": "https://www.arcgis.com/home/item.html?id=40c14761a20f46bd9d39a1c89ffcd0cc",
+   "layers": [
+    {
+     "layer": 47,
+     "layer_name": "Tuolumne County Parcels",
+     "name": "Tuolumne County Parcels",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "APN",
+      "PREFIX",
+      "ZONING",
+      "REF2",
+      "Ordinances",
+      "OrdinanceL",
+      "FeeParcel",
+      "Asmt",
+      "APN_Format",
+      "TRA",
+      "LandUse1",
+      "DwellingUn",
+      "Neighborho",
+      "Acres",
+      "SitusStree",
+      "SitusStr_1",
+      "SitusStr_2",
+      "SitusStr_3",
+      "SitusSpace",
+      "SitusStr_4",
+      "SitusStr_5",
+      "SitusConca",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "APN",
+      "owner": null,
+      "acres": "Acres",
+      "address": "SitusStree"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 20,
+   "why": [
+    "owner 'soconnell_CMNH' not obviously the authority",
+    "title names parcels"
+   ],
+   "title": "Summit County, OH Parcels",
+   "owner": "soconnell_CMNH",
+   "type": "Feature Service",
+   "url": "https://services3.arcgis.com/3Ukh5HzAdI6WZ3KP/arcgis/rest/services/TaxParcels_public/FeatureServer/0",
+   "modified": 1704916808000,
+   "item": "https://www.arcgis.com/home/item.html?id=135b86b564f445b2bad1fee32e58acf2",
+   "layers": []
+  },
+  {
+   "score": 0,
+   "why": [
+    "owner 'melodyp' not obviously the authority"
+   ],
+   "title": "UNION COUNTY DEVELOPMENT 2021_WFL1",
+   "owner": "melodyp",
+   "type": "Feature Service",
+   "url": "https://services9.arcgis.com/iHIkkaQhluOy5R3S/arcgis/rest/services/UNION_COUNTY_DEVELOPMENT_2021_WFL1/FeatureServer",
+   "modified": 1611147550000,
+   "item": "https://www.arcgis.com/home/item.html?id=d84c80c2daea421583a36a606c190e06"
+  }
+ ]
+}

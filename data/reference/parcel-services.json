@@ -1,0 +1,259 @@
+{
+ "registry_version": 1,
+ "updated": "2026-09-22",
+ "note": "Parcel services per county, and statewide where one exists. A county entry wins over the statewide one. Seeded from tbdi-pasa county-services.json (reviewed entries only). Nothing is auto-registered: discover_parcel_service.py writes a proposal, a person reviews it and adds it here. fields maps our roles to that service's column names.",
+ "statewide": {
+  "51": {
+   "state": "VA",
+   "reviewed": "2026-09-09",
+   "service": {
+    "base": "https://vginmaps.vdem.virginia.gov/arcgis/rest/services/VA_Base_Layers/VA_Parcels/MapServer",
+    "layer": 0,
+    "name": "Virginia Statewide Parcels (VGIN / VDEM)",
+    "owner": "Virginia Geographic Information Network",
+    "fields": {
+     "apn": "PARCELID"
+    },
+    "notes": "Covers all 133 Virginia localities from one service, which is why it is statewide rather than per-county. Carries no address field: an address-to-parcel match is one geocode landing in one polygon and must be confirmed against the assessor. A county-level entry, if one is ever registered, wins over this."
+   }
+  },
+  "39": {
+   "state": "OH",
+   "reviewed": "2026-09-22",
+   "service": {
+    "base": "https://services2.arcgis.com/MlJ0G8iWUyC7jAmu/arcgis/rest/services/OhioStatewidePacels_full_view/FeatureServer",
+    "layer": 0,
+    "name": "Ohio Statewide Parcels",
+    "owner": "Ohio (OGRIP statewide parcel aggregation)",
+    "fields": {
+     "apn": "LocalParcelID",
+     "address": "SitusAddressAll"
+    },
+    "notes": "6,313,610 records covering all Ohio counties from one service. Used and verified by the Aug 2026 Windstream parcel work (19 sites across 8 counties); re-probed 2026-09-22, 12/12 Ohio Windstream sites returned exactly one polygon. LocalParcelID is the county parcel number (StateParcelID also present). NO owner field - Ohio's aggregation omits owner names; use the county auditor link in CAMADataSite. LandArea is empty across the service (0 non-zero in a 400-row sample), so acreage comes from the geometry. SitusAddressAll is sparse. A county-level entry, if one is ever registered, wins over this."
+   }
+  }
+ },
+ "counties": {
+  "08001": {
+   "county": "Adams County",
+   "state": "CO",
+   "publisher": "AdamsCO_GIS",
+   "reviewed": "2026-09-09",
+   "review_notes": "Discovery verified nine candidate layers against a point inside GEOID 08001. Field names came from the proposal rather than from the generic role patterns, which matched none of them \u2014 no two counties name these fields alike, and that mapping is the whole reason this registry exists.",
+   "service": {
+    "base": "https://services3.arcgis.com/4PNQOtAivErR7nbT/arcgis/rest/services/Parcels/FeatureServer",
+    "layer": 0,
+    "name": "Adams County Parcels",
+    "owner": "AdamsCO_GIS",
+    "fields": {
+     "apn": "PIN",
+     "owner": "OWNERNAMEFULL"
+    },
+    "notes": "Four other parcel-ish layers are published (Unincorporated_Parcels, Tax_Authority_Parcels_Lot_by_Lot, Development_Parcels_WFL1, Parcel_Linework) and were not chosen. PARCELNB is the key the assessor tables join on."
+   }
+  },
+  "51095": {
+   "county": "James City County",
+   "state": "VA",
+   "publisher": "property.jamescitycountyva.gov (the county's own ArcGIS Server, not ArcGIS Online)",
+   "reviewed": "2026-09-15",
+   "review_notes": "Discovery (AGOL search) found only a William & Mary lab and a developer mirror and proposed nothing; the county publishes on its own server, found by probing property.jamescitycountyva.gov/arcgis after CivQuest linked there. Every layer below was queried against parcel 6010200001 on 2026-09-15 and returned attributes consistent with the assessor page and the example deck (zoning M2; 1 story built 2023; legal 34.5369 ac). `GIS_Data` layer 72 carries the assessor's parcel record (owner, year built, finished size, sales, values) as a spatial layer, so it serves assessment, improvements and sales at once, joined on PIN.",
+   "service": {
+    "base": "https://property.jamescitycountyva.gov/arcgis/rest/services/JCC/GIS_Data/MapServer",
+    "layer": 17,
+    "name": "James City County Parcels",
+    "owner": "James City County, VA",
+    "fields": {
+     "apn": "PIN",
+     "address": "Full_Address"
+    },
+    "notes": "PIN is the county parcel number (6010200001 at 1637 Green Mount Pkwy). Wins over the VGIN statewide layer."
+   }
+  },
+  "48113": {
+   "county": "Dallas County",
+   "state": "TX",
+   "publisher": null,
+   "reviewed": null,
+   "review_notes": null,
+   "service": {
+    "base": "https://maps.dcad.org/prdwa/rest/services/Property/ParcelHistory/MapServer",
+    "layer": 3,
+    "name": "Dallas County parcel (TaxParcel2025)",
+    "owner": "maps.dcad.org",
+    "fields": {
+     "apn": "PARCELID"
+    },
+    "notes": "Registered by county_register.py: passed the gate against tx-dallas-bilindsay parcel 65159958010140000. one feature at the point, covers 100% of the site, id agrees with the run's; 841,621 records"
+   }
+  },
+  "34011": {
+   "county": "Cumberland County",
+   "state": "NJ",
+   "publisher": null,
+   "reviewed": null,
+   "review_notes": null,
+   "service": {
+    "base": "https://services2.arcgis.com/XVOqAjTOJ5P6ngMu/arcgis/rest/services/Parcels_Composite_NJ_WM/FeatureServer",
+    "layer": 0,
+    "name": "Cumberland County parcel (Cad_parcel_mod4)",
+    "owner": "NJOGIS",
+    "fields": {
+     "apn": "PAMS_PIN"
+    },
+    "notes": "Registered by county_register.py: passed the gate against nj-cumberland-fairfield-township parcel None. one feature at the point, covers 98% of the site, no independent id; 3,481,240 records"
+   }
+  },
+  "37159": {
+   "county": "Rowan County",
+   "state": "NC",
+   "publisher": "Rowan Tax Parcels",
+   "reviewed": "2026-09-22",
+   "review_notes": "Service used and verified by the Aug 2026 Windstream parcel work (2 site(s), e.g. CHGVNCXA -> APN 163 012); re-probed 2026-09-22, one polygon at the point.",
+   "service": {
+    "base": "https://gis.rowancountync.gov/arcgis/rest/services/Public/RowanTaxParcels/MapServer",
+    "layer": 0,
+    "name": "Rowan Tax Parcels",
+    "owner": "Rowan Tax Parcels",
+    "fields": {
+     "apn": "PARCEL_ID",
+     "address": "PROP_ADDRESS"
+    },
+    "notes": "Seeded from WS_Sites_Parcel_Sizes_FINAL.csv source column."
+   }
+  },
+  "37167": {
+   "county": "Stanly County",
+   "state": "NC",
+   "publisher": "Parcels",
+   "reviewed": "2026-09-22",
+   "review_notes": "Service used and verified by the Aug 2026 Windstream parcel work (2 site(s), e.g. ALBMNCXA -> APN 6.54801E+11); re-probed 2026-09-22, one polygon at the point.",
+   "service": {
+    "base": "https://services6.arcgis.com/w1igg0Q14weqYXUh/arcgis/rest/services/parcel_records_base_2/FeatureServer",
+    "layer": 3,
+    "name": "Parcels",
+    "owner": "Parcels",
+    "fields": {
+     "apn": "PIN",
+     "owner": "TaxPayerAddr1",
+     "acres": "DeedAcres"
+    },
+    "notes": "Seeded from WS_Sites_Parcel_Sizes_FINAL.csv source column."
+   }
+  },
+  "13013": {
+   "county": "Barrow County",
+   "state": "GA",
+   "publisher": "BarrowParcelswOwner_Project",
+   "reviewed": "2026-09-22",
+   "review_notes": "Service used and verified by the Aug 2026 Windstream parcel work (1 site(s), e.g. WNDRGAXA -> APN WN12   293); re-probed 2026-09-22, one polygon at the point.",
+   "service": {
+    "base": "https://services5.arcgis.com/OVFGXfRTCVcPwl55/arcgis/rest/services/Barrow_Parcels_w_Owner/FeatureServer",
+    "layer": 0,
+    "name": "BarrowParcelswOwner_Project",
+    "owner": "BarrowParcelswOwner_Project",
+    "fields": {
+     "apn": "Parcel_no",
+     "address": "address1"
+    },
+    "notes": "Seeded from WS_Sites_Parcel_Sizes_FINAL.csv source column."
+   }
+  },
+  "13055": {
+   "county": "Chattooga County",
+   "state": "GA",
+   "publisher": "parcels",
+   "reviewed": "2026-09-22",
+   "review_notes": "Service used and verified by the Aug 2026 Windstream parcel work (1 site(s), e.g. SUVLGAXA -> APN S27-009); re-probed 2026-09-22, one polygon at the point.",
+   "service": {
+    "base": "https://services9.arcgis.com/eXIsbyIncFwEzqul/arcgis/rest/services/parcels_zoning/FeatureServer",
+    "layer": 2,
+    "name": "parcels",
+    "owner": "parcels",
+    "fields": {
+     "apn": "PARCEL_NO",
+     "acres": "ACRES",
+     "address": "parcel_address"
+    },
+    "notes": "Seeded from WS_Sites_Parcel_Sizes_FINAL.csv source column."
+   }
+  },
+  "13057": {
+   "county": "Cherokee County",
+   "state": "GA",
+   "publisher": "Property_Value_TY2024",
+   "reviewed": "2026-09-22",
+   "review_notes": "Service used and verified by the Aug 2026 Windstream parcel work (1 site(s), e.g. CNTNGAXA -> APN 14-0166-0003); re-probed 2026-09-22, one polygon at the point.",
+   "service": {
+    "base": "https://services6.arcgis.com/dpaY3zboICQILFY5/arcgis/rest/services/Property_Value_TY2024/FeatureServer",
+    "layer": 0,
+    "name": "Property_Value_TY2024",
+    "owner": "Property_Value_TY2024",
+    "fields": {
+     "apn": "PIN",
+     "owner": "Owner",
+     "acres": "Acreage",
+     "address": "Mailing_Address"
+    },
+    "notes": "Seeded from WS_Sites_Parcel_Sizes_FINAL.csv source column."
+   }
+  },
+  "13157": {
+   "county": "Jackson County",
+   "state": "GA",
+   "publisher": "Tax Parcels",
+   "reviewed": "2026-09-22",
+   "review_notes": "Service used and verified by the Aug 2026 Windstream parcel work (1 site(s), e.g. CMRCGAXA -> APN C14    049); re-probed 2026-09-22, one polygon at the point.",
+   "service": {
+    "base": "https://services8.arcgis.com/bcbi4lYRFOsss0F5/ArcGIS/rest/services/jackson_baselayers/FeatureServer",
+    "layer": 9,
+    "name": "Tax Parcels",
+    "owner": "Tax Parcels",
+    "fields": {
+     "apn": "PARCEL_NO",
+     "acres": "TOTALACRES",
+     "address": "ADDRESS1"
+    },
+    "notes": "Seeded from WS_Sites_Parcel_Sizes_FINAL.csv source column."
+   }
+  },
+  "13187": {
+   "county": "Lumpkin County",
+   "state": "GA",
+   "publisher": "LD_2025parcels",
+   "reviewed": "2026-09-22",
+   "review_notes": "Service used and verified by the Aug 2026 Windstream parcel work (1 site(s), e.g. DHLNGAXA -> APN D10    049); re-probed 2026-09-22, one polygon at the point.",
+   "service": {
+    "base": "https://services6.arcgis.com/BAJNi3EgCdtQ1BCG/arcgis/rest/services/Lumpkin_2025Parcels/FeatureServer",
+    "layer": 0,
+    "name": "LD_2025parcels",
+    "owner": "LD_2025parcels",
+    "fields": {
+     "apn": "PARCEL_NO",
+     "acres": "TOTALACRES",
+     "address": "ADDRESS1"
+    },
+    "notes": "Seeded from WS_Sites_Parcel_Sizes_FINAL.csv source column."
+   }
+  },
+  "37125": {
+   "county": "Moore County",
+   "state": "NC",
+   "publisher": "Accela_taxparcels",
+   "reviewed": "2026-09-22",
+   "review_notes": "Service used and verified by the Aug 2026 Windstream parcel work (1 site(s), e.g. ABRDNCXA -> APN 8.57013E+11); re-probed 2026-09-22, one polygon at the point.",
+   "service": {
+    "base": "https://services7.arcgis.com/WOKJvFrknOcT2chj/arcgis/rest/services/Accela_taxparcels/FeatureServer",
+    "layer": 0,
+    "name": "Accela_taxparcels",
+    "owner": "Accela_taxparcels",
+    "fields": {
+     "apn": "PIN",
+     "acres": "DEED_ACRES",
+     "address": "ADDRESS"
+    },
+    "notes": "Seeded from WS_Sites_Parcel_Sizes_FINAL.csv source column."
+   }
+  }
+ }
+}

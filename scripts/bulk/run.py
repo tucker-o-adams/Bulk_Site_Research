@@ -22,7 +22,7 @@ from cache import Cache                                     # noqa: E402
 from provenance import PROVENANCE_COLUMNS, now_iso          # noqa: E402
 
 ALL_PRODUCERS = ['transmission', 'substations', 'flood', 'wetlands', 'metro', 'datacenter',
-                 'housing', 'schools', 'worship', 'healthcare']
+                 'housing', 'schools', 'worship', 'healthcare', 'parcel']
 
 
 def main():
