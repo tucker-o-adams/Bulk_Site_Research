@@ -1,0 +1,134 @@
+{
+ "state": "IA",
+ "checked": 8,
+ "probe_points": [
+  [
+   "ANWOIAXO",
+   41.2891466499999,
+   -91.5551446799999
+  ],
+  [
+   "ALBIIAXO",
+   41.0259585599999,
+   -92.80564617
+  ],
+  [
+   "ADBNIAXO",
+   41.72127167,
+   -94.9293833299999
+  ],
+  [
+   "CNVLIAXO",
+   40.7322668999999,
+   -92.8761186699999
+  ]
+ ],
+ "note": "PROPOSAL ONLY \u2014 a person reviews and moves the winner into parcel-services.json.",
+ "candidates": [
+  {
+   "url": "https://services3.arcgis.com/kd9gaiUExYqUbnoq/arcgis/rest/services/Iowa_Parcels_2017/FeatureServer/0",
+   "name": "Parcels_20171102",
+   "records": 2450589,
+   "fields_guess": {
+    "apn": "PARCELNUMB"
+   },
+   "probe_hits": 4,
+   "probe_tried": 4,
+   "sample": {
+    "ANWOIAXO": {
+     "PARCELNUMB": "1221177006"
+    }
+   },
+   "score": 110,
+   "why": "ArcGIS Hub: Iowa Statewide Parcel Data, 2017"
+  },
+  {
+   "url": "https://gis.ne.gov/Enterprise/rest/services/StatewideParcelsExternal/FeatureServer/0",
+   "name": "StatewideParcels",
+   "records": 1154898,
+   "fields_guess": {
+    "apn": "Parcel_ID",
+    "owner": "Ownership_Type",
+    "acres": "GIS_Acres",
+    "address": "Situs_Address"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 15,
+   "why": "ArcGIS Hub: Statewide Parcels"
+  },
+  {
+   "url": "https://arcgis-central.gis.vt.edu/arcgis/rest/services/facilities/VABuildingandParcel/FeatureServer/1",
+   "name": "Virginia Tech Statewide Parcels",
+   "records": 76,
+   "fields_guess": {
+    "apn": "parcel_id",
+    "owner": "owner1",
+    "acres": "gis_acres",
+    "address": "site_addr"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 15,
+   "why": "ArcGIS Hub: Virginia Tech Statewide Parcels"
+  },
+  {
+   "url": "https://services9.arcgis.com/iERBXXD4hiy1L6en/arcgis/rest/services/Iowa_Parcels_Demo_v2/FeatureServer/0",
+   "name": "Iowa_Parcels_Demo",
+   "records": 100677,
+   "fields_guess": {
+    "apn": "PARCELNUMB",
+    "acres": "CalcAcres"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 10,
+   "why": "ArcGIS Hub: Iowa Parcels Demo"
+  },
+  {
+   "url": "https://services9.arcgis.com/iERBXXD4hiy1L6en/arcgis/rest/services/Iowa_Qualified_Parcels/FeatureServer/0",
+   "name": "Iowa_Qualified_Parcels",
+   "records": 7198,
+   "fields_guess": {
+    "apn": "PARCELNUMB",
+    "acres": "CalcAcres"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 10,
+   "why": "ArcGIS Hub: Iowa Qualified Parcels"
+  },
+  {
+   "url": "https://services.arcgis.com/i14SLLmXo7Hn9vNc/arcgis/rest/services/RealEstateParcel/FeatureServer/0",
+   "name": "RealEstateParcel",
+   "records": 105841,
+   "fields_guess": {
+    "owner": "OwnerDeed",
+    "acres": "Acres",
+    "address": "SitusAddress"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 5,
+   "why": "AGOL item: Real Estate Parcel (owner lc.ago.user)"
+  },
+  {
+   "url": "https://programs.iowadnr.gov/geospatial/rest/services/Boundaries/DNR_Parcels/MapServer/0",
+   "name": "DNR Parcel Boundaries",
+   "records": 4345,
+   "fields_guess": {
+    "acres": "ACRES"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 0,
+   "why": "state host programs.iowadnr.gov"
+  }
+ ]
+}

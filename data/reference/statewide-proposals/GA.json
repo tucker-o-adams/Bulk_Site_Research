@@ -1,0 +1,103 @@
+{
+ "state": "GA",
+ "checked": 21,
+ "probe_points": [
+  [
+   "ADELGAXA",
+   31.13789183,
+   -83.4224465199999
+  ],
+  [
+   "CRNLGA01",
+   34.4972084699999,
+   -83.54997767
+  ],
+  [
+   "BLVIGABW",
+   34.8640250999999,
+   -83.9848088499999
+  ],
+  [
+   "BLKLGAXA",
+   31.3825399999999,
+   -84.957519
+  ]
+ ],
+ "note": "PROPOSAL ONLY \u2014 a person reviews and moves the winner into parcel-services.json.",
+ "candidates": [
+  {
+   "url": "https://gis.ne.gov/Enterprise/rest/services/StatewideParcelsExternal/FeatureServer/0",
+   "name": "StatewideParcels",
+   "records": 1154898,
+   "fields_guess": {
+    "apn": "Parcel_ID",
+    "owner": "Ownership_Type",
+    "acres": "GIS_Acres",
+    "address": "Situs_Address"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 15,
+   "why": "ArcGIS Hub: Statewide Parcels"
+  },
+  {
+   "url": "https://arcgis-central.gis.vt.edu/arcgis/rest/services/facilities/VABuildingandParcel/FeatureServer/1",
+   "name": "Virginia Tech Statewide Parcels",
+   "records": 76,
+   "fields_guess": {
+    "apn": "parcel_id",
+    "owner": "owner1",
+    "acres": "gis_acres",
+    "address": "site_addr"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 15,
+   "why": "ArcGIS Hub: Virginia Tech Statewide Parcels"
+  },
+  {
+   "url": "https://services3.arcgis.com/n6uYoouQZW75n5WI/arcgis/rest/services/Wisconsin_Statewide_Parcels_DB/FeatureServer/0",
+   "name": "V1200_WisconsinParcels_2026",
+   "records": 3574646,
+   "fields_guess": {
+    "apn": "PARCELID",
+    "owner": "OWNERNME1",
+    "acres": "GISACRES"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 15,
+   "why": "ArcGIS Hub: Tax Parcels (Statewide Service)"
+  },
+  {
+   "url": "https://services2.arcgis.com/MlJ0G8iWUyC7jAmu/arcgis/rest/services/OhioStatewidePacels_full_view/FeatureServer/0",
+   "name": "Parcels",
+   "records": 6313610,
+   "fields_guess": {
+    "apn": "LocalParcelID",
+    "address": "SitusAddressAll"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 10,
+   "why": "ArcGIS Hub: Ohio Statewide Parcels Public View"
+  },
+  {
+   "url": "https://services1.arcgis.com/AYDfqcgKTeVc6b2f/arcgis/rest/services/Cadastral_Users/FeatureServer/1",
+   "name": "Airport Parcels",
+   "records": 304,
+   "fields_guess": {
+    "owner": "PREVOWNER"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 5,
+   "why": "ArcGIS Hub: Cadastral Users"
+  }
+ ]
+}

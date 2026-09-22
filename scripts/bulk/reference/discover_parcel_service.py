@@ -21,6 +21,9 @@ Two ways in, because AGOL indexes only what a publisher registered there and a
 county that self-hosts and never registered is invisible to a search:
 
   1. **AGOL search** for items whose title names parcels.
+  1a. **ArcGIS Hub dataset API** (`hub.arcgis.com/api/v3/datasets`) — a different
+     index that reaches open-data portals AGOL item search does not. It is how
+     Nebraska's statewide parcels and several state clearinghouse layers surface.
   2. **Web maps and apps** — a county that never registered a *service* has very
      often published a *viewer*. Searching AGOL for the county's web maps and
      apps and reading each item's `data` yields the `url` of every operational
@@ -188,6 +191,36 @@ def enumerate_services(root):
     return [(n, k) for n, k in out if k in ('FeatureServer', 'MapServer')], None
 
 
+HUB = 'https://hub.arcgis.com/api/v3/datasets'
+
+
+def from_hub(county, state, probe, limit=12):
+    """Candidates from the ArcGIS Hub dataset index (open-data portals, not just AGOL items)."""
+    out = []
+    for q in (f'{county} {state or ""} parcels', f'{state or ""} statewide parcels'):
+        r = g(f'{HUB}?q={urllib.parse.quote(q)}&page[size]={limit}')
+        if r.get('__error__'):
+            print(f'  hub search failed: {r["__error__"]}')
+            continue
+        for d in (r.get('data') or []):
+            a = d.get('attributes') or {}
+            u, nm = a.get('url'), str(a.get('name') or '')
+            if not u or not any(k in nm.lower() for k in ('parcel', 'cadas', 'property')):
+                continue
+            if any(h in u for h in BASEMAP_HOSTS) or any(c.get('url') == u for c in out):
+                continue
+            pl = probe_layer(u.rsplit('/', 1)[0], u.rsplit('/', 1)[-1], probe) if u.rstrip('/').split('/')[-1].isdigit()                 else probe_layer(u, 0, probe)
+            pts, why = layer_points(pl)
+            src = a.get('source') or a.get('orgContactEmail') or ''
+            c = {'score': 45 + pts, 'why': [f'ArcGIS Hub dataset {nm!r} (source {src})'] + why,
+                 'title': nm, 'owner': str(src)[:40], 'type': 'from hub', 'url': u, 'modified': a.get('modified'),
+                 'item': a.get('landingPage'),
+                 'layers': [{'layer': 0, 'layer_name': nm, 'points': pts, **pl}]}
+            out.append(c)
+    print(f'  hub candidates: {len(out)}')
+    return out
+
+
 WEBMAP_TYPES = ('Web Map', 'Web Mapping Application', 'Web Experience', 'Instant App', 'Dashboard')
 
 
@@ -344,6 +377,9 @@ def main():
             if pl.get('probe', {}).get('features') == 1:
                 c['score'] += 15
             c['layers'].append({'layer': lid, 'layer_name': lname, **pl})
+    # ---- ArcGIS Hub index
+    cands += from_hub(county, state, probe)
+
     # ---- web maps and apps: the county's viewers name their own layers
     cands += from_webmaps(county, state, probe)
 

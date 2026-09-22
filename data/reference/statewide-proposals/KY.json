@@ -1,0 +1,140 @@
+{
+ "state": "KY",
+ "checked": 17,
+ "probe_points": [
+  [
+   "ALBYKYXA",
+   36.6930220799999,
+   -85.13449812
+  ],
+  [
+   "ASLDKYXA",
+   38.4758,
+   -82.64385
+  ],
+  [
+   "MEDSKYXA",
+   38.4096499699999,
+   -82.71303235
+  ],
+  [
+   "BBVLKYXA",
+   36.86533403,
+   -83.88827335
+  ]
+ ],
+ "note": "PROPOSAL ONLY \u2014 a person reviews and moves the winner into parcel-services.json.",
+ "candidates": [
+  {
+   "url": "https://gis.ne.gov/Enterprise/rest/services/StatewideParcelsExternal/FeatureServer/0",
+   "name": "StatewideParcels",
+   "records": 1154898,
+   "fields_guess": {
+    "apn": "Parcel_ID",
+    "owner": "Ownership_Type",
+    "acres": "GIS_Acres",
+    "address": "Situs_Address"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 15,
+   "why": "ArcGIS Hub: Statewide Parcels"
+  },
+  {
+   "url": "https://arcgis-central.gis.vt.edu/arcgis/rest/services/facilities/VABuildingandParcel/FeatureServer/1",
+   "name": "Virginia Tech Statewide Parcels",
+   "records": 76,
+   "fields_guess": {
+    "apn": "parcel_id",
+    "owner": "owner1",
+    "acres": "gis_acres",
+    "address": "site_addr"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 15,
+   "why": "ArcGIS Hub: Virginia Tech Statewide Parcels"
+  },
+  {
+   "url": "https://services3.arcgis.com/9nfxWATFamVUTTGb/arcgis/rest/services/Parcels/FeatureServer/0",
+   "name": "Parcels",
+   "records": 121,
+   "fields_guess": {
+    "apn": "Parcel_ID"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 10,
+   "why": "ArcGIS Hub: Parcels"
+  },
+  {
+   "url": "https://services8.arcgis.com/exgR4BNI38IIwXOt/arcgis/rest/services/Parcels_Project/FeatureServer/0",
+   "name": "Parcels_Project",
+   "records": 121,
+   "fields_guess": {
+    "apn": "Parcel_ID"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 10,
+   "why": "ArcGIS Hub: Parcels Project"
+  },
+  {
+   "url": "https://services1.arcgis.com/eGSDp8lpKe5izqVc/arcgis/rest/services/Parcels_AF/FeatureServer/0",
+   "name": "Parcels",
+   "records": 121,
+   "fields_guess": {
+    "apn": "Parcel_ID"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 10,
+   "why": "ArcGIS Hub: Parcels AF"
+  },
+  {
+   "url": "https://services1.arcgis.com/79kfd2K6fskCAkyg/arcgis/rest/services/New_AllParcels/FeatureServer/0",
+   "name": "New_AllParcels",
+   "records": 289963,
+   "fields_guess": {
+    "apn": "ParcelID",
+    "address": "Address"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 10,
+   "why": "ArcGIS Hub: Commercial Parcels"
+  },
+  {
+   "url": "https://services1.arcgis.com/eGSDp8lpKe5izqVc/arcgis/rest/services/Esmeria_Louisville_Surf_Imperviousness_WFL1/FeatureServer/0",
+   "name": "Parcels",
+   "records": 121,
+   "fields_guess": {
+    "apn": "Parcel_ID"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 10,
+   "why": "ArcGIS Hub: Parcels"
+  },
+  {
+   "url": "https://services1.arcgis.com/eGSDp8lpKe5izqVc/arcgis/rest/services/Esmeria_Louisville_SurfaceImpervious_WFL1/FeatureServer/0",
+   "name": "Parcels",
+   "records": 121,
+   "fields_guess": {
+    "apn": "Parcel_ID"
+   },
+   "probe_hits": 0,
+   "probe_tried": 4,
+   "sample": null,
+   "score": 10,
+   "why": "ArcGIS Hub: Parcels"
+  }
+ ]
+}
