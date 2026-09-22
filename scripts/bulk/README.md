@@ -32,6 +32,18 @@ Rejected rows are listed with a reason in the console and in `run.json`, never d
 `status` is one of `ok`, `absent` (source confirmed nothing there — an answer, not an error),
 `failed` (source unreachable; value null), `manual` (supplied by a person).
 
+## Workbook
+
+```
+.venv_fema/Scripts/python.exe scripts/bulk/excel.py Outputs/<batch>/ --name <Title>
+```
+
+Writes `<Title>.xlsx` in the batch folder: **Sites** (one row per site, producer bands over
+field names, absent cells grey / failed cells red, frozen site columns, autofilter), **Gaps**
+(every absent/failed value with the source's note), **Sources** (one row per producer: source,
+URL, vintage, method, fields, tallies), **Provenance** (full site × field table), **Run** (input
+file + sha256, run time, counts, rejected rows, status meanings). Distances stay in metres.
+
 ## Producers
 
 | Producer | Fields | Source | Status |
