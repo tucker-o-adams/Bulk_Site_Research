@@ -38,7 +38,10 @@ COUNTY = {
     ('GA', 'Macon County'): 'https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Parcels12_2018/FeatureServer/0',
     ('GA', 'Meriwether County'): 'https://services9.arcgis.com/Xv8vRekQ4FVHSSIe/arcgis/rest/services/MeriwetherParcels/FeatureServer/0',
     ('GA', 'Screven County'): 'https://maps.crc.ga.gov/crcarcgis/rest/services/Screven/ScrevenParcels/MapServer/0',
+    ('GA', 'Telfair County'): 'https://services5.arcgis.com/HHvUPZ2XuLOAJxjR/arcgis/rest/services/Telfair_County_Wide_View/FeatureServer/15',
     ('GA', 'Walker County'): 'https://services.arcgis.com/UnTXoPXBYERF0OH6/arcgis/rest/services/Walker_Parcels_2026LLLT/FeatureServer/4',
+    ('GA', 'White County'): 'https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Cleveland_Water_2023_WFL1/FeatureServer/8',
+    ('GA', 'Wilcox County'): 'https://services5.arcgis.com/HHvUPZ2XuLOAJxjR/arcgis/rest/services/Wilcox_County_Wide_View/FeatureServer/12',
     ('GA', 'Whitfield County'): 'https://gis.whitfieldcountyga.com/server/rest/services/Parcels_and_Development/MapServer/4',
     ('KY', 'Bullitt County'): WFS + 'BullittCountyKY_WFS/MapServer/0',
     ('KY', 'Hardin County'): WFS + 'HardinCountyKY_WFS/MapServer/0',
@@ -53,6 +56,9 @@ CAVEAT = {
     ('GA', 'Meriwether County'): 'published by an individual AGOL account; publisher unverified',
     ('GA', 'Walker County'): 'Lula Lake Land Trust copy hosted by UT-Chattanooga',
     ('GA', 'Screven County'): 'Coastal Regional Commission host',
+    ('GA', 'Telfair County'): 'Heart of Georgia Altamaha RC, TaxParcels25: geometry only, no parcel id or owner',
+    ('GA', 'Wilcox County'): 'Heart of Georgia Altamaha RC, TaxParcels_25: geometry and acres only, no parcel id or owner',
+    ('GA', 'White County'): 'City of Cleveland water map (2023), city parcels only; TAX_CLASS U = utility',
 }
 OPERATOR = re.compile(r'windstream|kinetic|\bcsl\b|valor tele|telephone|alltel|allied tele|white river tel|arcco|public utility|-PU$', re.I)
 OWNER_KEY = re.compile(r'^(owner|owners|owner_?name|ownername|name_?1?|lastname|own_?name)$', re.I)

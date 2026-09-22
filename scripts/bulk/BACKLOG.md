@@ -120,7 +120,7 @@ Researched how the problem is already solved before building more (kickoff:
 art, public-records law, hidden aggregation points, assessor-vendor structure, and the Georgia
 qPublic measurement. Then every lead was probed at the actual unresolved sites.
 
-**Result: 57 of the 102 unresolved Windstream sites return a parcel polygon at the point from free
+**Result: 60 of the 102 unresolved Windstream sites return a parcel polygon at the point from free
 sources; 49 of those carry an operator-looking owner** (CSL / Kinetic / Windstream / Valor / a
 telephone co. / a `-PU` public-utility parcel number). Per-site evidence:
 `data/reference/parcel-proposals/remaining-probe.csv`, produced by
@@ -133,7 +133,7 @@ review before it goes into `parcel-services.json`.
 | AR | 8 | 6 | 5 | **Arkansas GIS Office** `gis.arkansas.gov/.../Planning_Cadastre/FeatureServer/6`, 75/75 counties, 2.1M parcels, published 2026-04, plain query. | Crossett: point is in the street; the parcel 60 m away is CSL Arkansas at the site address (see D). Fordyce, Dalark: no operator parcel nearby |
 | OK | 10 | 10 | 10 | **OKMaps `ogi_wms:Statewide_Parcels`** (GeoServer WMS `GetFeatureInfo`, JSON), 77/77 counties, compiled by Property Records Preservation LLC, county updates Feb–Aug 2026. Terms: "view only or through OGC WMS… not available for download" — per-site lookups fit; bulk harvest does not. INCOG (`map11.incog.org`) also serves Tulsa, Creek, Osage, Rogers, Wagoner as open FeatureServers (Creek/Osage/Rogers are 2022). | none |
 | AL | 2 | 2 | 2 | County servers (Jefferson, St. Clair), both in OpenAddresses. KCS hosts open ArcGIS for ~18–22 AL counties (`web3..6.kcsgis.com/kcsgis/rest/services/<County>/`, and `al<NN>portal.kcsgis.com`). | none |
-| GA | 35 | 16 | 13 | County / regional-commission ArcGIS (Baldwin, Ben Hill, Berrien, Cook, Houston, Macon, Meriwether, Screven, Whitfield) and **Schneider's open WFS host** (Franklin, Grady, Habersham ×3). | 19 sites: Colquitt 2, Early, Murray, Pickens, Seminole, Telfair, Terrell, Towns, Union, Upson 2, Walton 2, White, Wilcox, Wilkinson, Walker (no polygon at point), Charlton (see caveats) |
+| GA | 35 | 19 | 13 | County / regional-commission ArcGIS (Baldwin, Ben Hill, Berrien, Cook, Houston, Macon, Meriwether, Screven, Whitfield; Telfair and Wilcox geometry-only via Heart of Georgia Altamaha RC; White via the City of Cleveland water map, `TAX_CLASS` U) and **Schneider's open WFS host** (Franklin, Grady, Habersham ×3). | 16 sites: Colquitt 2, Early, Murray, Pickens, Seminole, Terrell, Towns, Union, Upson 2, Walton 2, Wilkinson, Walker (no polygon at point), Charlton (see caveats) |
 | KY | 27 | 4 | 2 | Schneider WFS (Bullitt ×2, Hardin), Madison Co. server | 23 sites in 18 counties. No public multi-county source covers them (below) |
 
 ### The Georgia measurement
@@ -159,8 +159,18 @@ portal terms prohibit "automated data mining" and point bulk requests to support
 WFS host is a machine-facing service a county paid to publish, and a per-site point query is not bulk
 extraction — but that reading is ours, not Schneider's. Asking Schneider is cheap.
 
-So Georgia is **not** structurally closed, but it is county-by-county: the 19 GA sites still open
+So Georgia is **not** structurally closed, but it is county-by-county: the 16 GA sites still open
 are in counties whose only public face is the qPublic portal.
+
+**Georgia regional commissions, fully scanned.** All 12 RCs publish into one shared AGOL org,
+`services1.arcgis.com/Ug5xGQbHsD8zuZzM` (1,617 services; every layer scanned). Systematic parcel
+hosting: **Heart of Georgia Altamaha** 17/17 counties on its own org
+`services5.arcgis.com/HHvUPZ2XuLOAJxjR` (`<County>_County_Wide_View`, mostly 2025–26, mostly geometry +
+acres with no owner); **Southern Georgia** 11/18 (`sgrcmaps.com/alma`, `valorgis.com`);
+**Middle Georgia** 6/11; **River Valley** 9/16. Coastal 3; Northeast and Georgia Mountains a few
+unmaintained project/city-utility layers (Georgia Mountains sells parcels at $85/hr). Three Rivers,
+Northwest, CSRA, Southwest and Atlanta RC publish none. The Georgia GIS Clearinghouse
+(`data.georgiaspatial.org`) is login-only. No license terms stated on any RC item.
 
 ### What the evidence says, by question
 
@@ -240,9 +250,9 @@ are in counties whose only public face is the qPublic portal.
 | B | **Seed discovery from OpenAddresses + NSGIC** instead of AGOL search alone: for a county, read OA's `sources/us/<st>/<county>.json` parcels URL and the NSGIC portal row first, probe them, then fall back to the existing discovery. OA is a person-curated list, so it also beats our scoring guards on false positives. | GA/AL/KY/TX counties OA lists; status for all 3,000+ | small | OA URLs alone returned a parcel for 7 of our GA counties (one is the Charlton CoreLogic copy), Wagoner OK, Bullitt and Madison KY, and both AL counties |
 | C | **Add known multi-county hosts** to host enumeration: `wfs.schneidercorp.com`, `sgrcmaps.com/alma`, the GA regional AGOL org, `maps.crc.ga.gov`, `map11.incog.org`, KCS `webN`/`al<NN>portal`. Schneider depends on the terms decision. | the GA/KY/AL counties on them | small | 5 GA + 3 KY sites came from the Schneider host alone (Habersham 3, Franklin, Grady; Bullitt 2, Hardin) |
 | D | **Near-miss fallback**: when the point hits no parcel (or a road), take parcels within ~60 m and accept one only if its owner or situs address matches the site. Otherwise stay `point only`. | ROW-coordinate sites (Crossett AR) | small | 1 confirmed case |
-| E | **Operator-owner check as a review aid**: for portfolio batches the owner field self-validates the parcel (49/57 hits). Flag hits whose owner is not the operator for a person to look at. | every portfolio batch | trivial | Dalark AR and Moore TX would be flagged |
+| E | **Operator-owner check as a review aid**: for portfolio batches the owner field self-validates the parcel (49/60 hits). Flag hits whose owner is not the operator for a person to look at. | every portfolio batch | trivial | Dalark AR and Moore TX would be flagged |
 | F | **Kentucky: ask DOR** for the statewide layer (108/120 counties already aggregated) — one email from Tucker. A formal records request needs a KY resident/business requester (HB 312). | up to 23 KY sites | an email | GIS council minutes |
-| G | **GA qPublic-only tail**: survivor-only. Ask the county board of assessors for the parcel shapefile under O.C.G.A. 50-18-71 (native format, 3 business days) for the counties a flags cut leaves, or accept `point only`. | ≤19 GA sites | per-county email + possible fee | statute; economics above |
+| G | **GA qPublic-only tail**: survivor-only. Ask the county board of assessors for the parcel shapefile under O.C.G.A. 50-18-71 (native format, 3 business days) for the counties a flags cut leaves, or accept `point only`. | ≤16 GA sites | per-county email + possible fee | statute; economics above |
 
 Recommended order: **A, B, E** first (they turn most of the remaining 102 into reviewable
 proposals for a few hours' work); **C** after the Schneider terms call; **F** as a parallel

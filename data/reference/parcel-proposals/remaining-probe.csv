@@ -21,7 +21,7 @@ CNVLGAXA,GA,Houston County,Centerville,109 Gunn Road,Houston County layer,https:
 CHWOGAXA,GA,Murray County,Chatsworth,220 North 2nd Avenue,,,no candidate source,,,,
 CHTHOKXD,OK,McIntosh County,Checotah,115 Northwest 1st Street,OKMaps Statewide_Parcels WMS (statewide),https://okmaps.org/geoserver/wms,hit,460026091,"CSL OKLAHOMA SYSTEM, LLC %WINDSTREAM COMMUNICATIONS",yes,
 CLVLGAXA,GA,Habersham County,Clarkesville,390 Jefferson Street,Habersham County layer,https://wfs.schneidercorp.com/arcgis/rest/services/HabershamCountyGA_WFS/MapServer/4,hit,102 098,STANDARD TELEPHONE COMPANY,yes,
-CLEVGAXA,GA,White County,Cleveland,158 West Kytle Street,,,no candidate source,,,,
+CLEVGAXA,GA,White County,Cleveland,158 West Kytle Street,White County layer,https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Cleveland_Water_2023_WFL1/FeatureServer/8,hit,C01C  081,,,"City of Cleveland water map (2023), city parcels only; TAX_CLASS U = utility"
 CLDGTXXA,TX,Limestone County,Coolidge,102 S Second,TxGIO StratMap Land Parcels (statewide),https://feature.geographic.texas.gov/arcgis/rest/services/Parcels/stratmap_land_parcels_48_most_recent/MapServer,hit,1260,CSL TEXAS SYSTEM LLC,yes,
 CRNLGAXA,GA,Habersham County,Cornelia,350 North Main Street,Habersham County layer,https://wfs.schneidercorp.com/arcgis/rest/services/HabershamCountyGA_WFS/MapServer/4,hit,087D120,CSL GEORGIA SYSTEM LLC,yes,
 COWTOKXB,OK,Wagoner County,Coweta,124 West Sycamore Street,OKMaps Statewide_Parcels WMS (statewide),https://okmaps.org/geoserver/wms,hit,730023985,"CSL OKLAHOMA SYSTEM, LLC C/O WINDSTREAM COMM ATTN: C. ZIHALA",yes,
@@ -57,7 +57,7 @@ LTFDKYXA,KY,Grayson County,Leitchfield,399 N Cannon Dr BLDG A,,,no candidate sou
 LVLDTXXA,TX,Hockley County,Levelland,506 Avenue I,TxGIO StratMap Land Parcels (statewide),https://feature.geographic.texas.gov/arcgis/rest/services/Parcels/stratmap_land_parcels_48_most_recent/MapServer,hit,9029,CSL TEXAS SYSTEM LLC,yes,
 LTFDTXXA,TX,Lamb County,Littlefield,600 East 5th Street,TxGIO StratMap Land Parcels (statewide),https://feature.geographic.texas.gov/arcgis/rest/services/Parcels/stratmap_land_parcels_48_most_recent/MapServer,hit,20091,CSL TEXAS SYSTEM LLC,yes,
 MNCHGAXA,GA,Meriwether County,Manchester,212 2nd Street,Meriwether County layer,https://services9.arcgis.com/Xv8vRekQ4FVHSSIe/arcgis/rest/services/MeriwetherParcels/FeatureServer/0,hit,MA13   144,WINDSTREAM GEORGIA COMMUNICATIONS CORP,yes,published by an individual AGOL account; publisher unverified
-MCRAGAXA,GA,Telfair County,McRae,8 East Oak Street,,,no candidate source,,,,
+MCRAGAXA,GA,Telfair County,McRae,8 East Oak Street,Telfair County layer,https://services5.arcgis.com/HHvUPZ2XuLOAJxjR/arcgis/rest/services/Telfair_County_Wide_View/FeatureServer/15,hit,,,,"Heart of Georgia Altamaha RC, TaxParcels25: geometry only, no parcel id or owner"
 MMPHTXXA,TX,Hall County,Memphis,721 West Noel Street,TxGIO StratMap Land Parcels (statewide),https://feature.geographic.texas.gov/arcgis/rest/services/Parcels/stratmap_land_parcels_48_most_recent/MapServer,hit,203500,"CSL TEXAS SYSTEM, LLC",yes,
 MDVLGAXA,GA,Baldwin County,Milledgeville,750 North Jefferson Street,Baldwin County layer,https://services7.arcgis.com/Da8HZMsU25Hzzob3/arcgis/rest/services/Parcels_Feb2026/FeatureServer/0,hit,M80 091,CSL GEORGIA SYSTEM LLC,yes,
 MONRGAXB,GA,Walton County,Monroe,3375 GA-11,,,no candidate source,,,,
@@ -78,7 +78,7 @@ PECSTXXB,TX,Reeves County,Pecos,924 West Daggett Street,TxGIO StratMap Land Parc
 PRRYGAAI,GA,Houston County,Perry,2031 US HWY 41 S,Houston County layer,https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/HoustonCoParcels_withOwner/FeatureServer/0,hit,P34-21-PU,,yes,
 PRRYGAXA,GA,Houston County,Perry,910 Main Street,Houston County layer,https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/HoustonCoParcels_withOwner/FeatureServer/0,hit,P4-43-PU,,yes,
 PYTNTXXA,TX,Ochiltree County,Perryton,301 South Amherst Street,TxGIO StratMap Land Parcels (statewide),https://feature.geographic.texas.gov/arcgis/rest/services/Parcels/stratmap_land_parcels_48_most_recent/MapServer,hit,1485,CSL TEXAS SYSTEM LLC,yes,
-PITSGAXA,GA,Wilcox County,Pitts,108 7Th Ave W,,,no candidate source,,,,
+PITSGAXA,GA,Wilcox County,Pitts,108 7Th Ave W,Wilcox County layer,https://services5.arcgis.com/HHvUPZ2XuLOAJxjR/arcgis/rest/services/Wilcox_County_Wide_View/FeatureServer/12,hit,,,,"Heart of Georgia Altamaha RC, TaxParcels_25: geometry and acres only, no parcel id or owner"
 POTEOKAY,OK,Le Flore County,Poteau,201 Kerr Ave,OKMaps Statewide_Parcels WMS (statewide),https://okmaps.org/geoserver/wms,hit,400031866,OKLAHOMA ALLIED TELEPHONE,yes,
 POTEOKXA,OK,Le Flore County,Poteau,310 Clayton Avenue,OKMaps Statewide_Parcels WMS (statewide),https://okmaps.org/geoserver/wms,hit,400029081,KINETIC ABS OK LLC,yes,
 PRCLOKXA,OK,McClain County,Purcell,319 West Apache,OKMaps Statewide_Parcels WMS (statewide),https://okmaps.org/geoserver/wms,hit,440018925,CSL OKLAHOMA SYSTEM LLC,yes,
