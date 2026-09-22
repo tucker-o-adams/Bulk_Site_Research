@@ -1,5 +1,5 @@
 {
- "run_at": "2026-09-22T16:41:44+00:00",
+ "run_at": "2026-09-22T19:25:28+00:00",
  "elapsed_s": 0.2,
  "input": {
   "path": "E:\\Claude\\Projects\\TBDI Modeling\\Mireye\\scripts\\bulk\\fixtures\\windstream_200.csv",
@@ -28,13 +28,13 @@
     "parcel_status"
    ],
    "status_counts": {
-    "ok": 1014,
-    "absent": 1586
+    "ok": 1294,
+    "absent": 1306
    }
   }
  },
  "cache": {
-  "hits": 258,
+  "hits": 298,
   "misses": 0
  }
 }

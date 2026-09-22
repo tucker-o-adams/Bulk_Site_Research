@@ -7,7 +7,7 @@
   "fields_missing": [],
   "field_count": 19,
   "url": "https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/US_Electric_Power_Transmission_Lines/FeatureServer/0",
-  "checked_at": "2026-09-22T16:03:27+00:00"
+  "checked_at": "2026-09-22T19:26:19+00:00"
  },
  "substations:LYR": {
   "ok": true,
@@ -17,7 +17,7 @@
   "fields_missing": [],
   "field_count": 25,
   "url": "https://services5.arcgis.com/HDRa0B57OVrv2E1q/ArcGIS/rest/services/Electric_Substations/FeatureServer/0",
-  "checked_at": "2026-09-22T16:03:27+00:00"
+  "checked_at": "2026-09-22T19:26:19+00:00"
  },
  "flood:LYR": {
   "ok": true,
@@ -27,7 +27,7 @@
   "fields_missing": [],
   "field_count": 0,
   "url": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer",
-  "checked_at": "2026-09-22T16:03:27+00:00"
+  "checked_at": "2026-09-22T19:26:19+00:00"
  },
  "flood:NFHL": {
   "ok": true,
@@ -37,7 +37,7 @@
   "fields_missing": [],
   "field_count": 0,
   "url": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer",
-  "checked_at": "2026-09-22T16:03:28+00:00"
+  "checked_at": "2026-09-22T19:26:20+00:00"
  },
  "wetlands:LYR": {
   "ok": true,
@@ -47,17 +47,17 @@
   "fields_missing": [],
   "field_count": 43,
   "url": "https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services/Wetlands/MapServer/0",
-  "checked_at": "2026-09-22T16:03:28+00:00"
+  "checked_at": "2026-09-22T19:26:55+00:00"
  },
  "wetlands:WET": {
   "ok": true,
   "name": "Wetlands",
   "vintage": null,
-  "records": 38159047,
+  "records": null,
   "fields_missing": [],
   "field_count": 43,
   "url": "https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services/Wetlands/MapServer/0",
-  "checked_at": "2026-09-22T16:03:28+00:00"
+  "checked_at": "2026-09-22T19:27:30+00:00"
  },
  "wetlands:STATUS": {
   "ok": true,
@@ -67,7 +67,7 @@
   "fields_missing": [],
   "field_count": 6,
   "url": "https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services/Wetlands_Status/MapServer/0",
-  "checked_at": "2026-09-22T16:03:28+00:00"
+  "checked_at": "2026-09-22T19:27:35+00:00"
  },
  "wetlands:IMGYR": {
   "ok": true,
@@ -77,7 +77,7 @@
   "fields_missing": [],
   "field_count": 16,
   "url": "https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services/Data_Source/MapServer/2",
-  "checked_at": "2026-09-22T16:03:29+00:00"
+  "checked_at": "2026-09-22T19:27:57+00:00"
  },
  "metro:LYR": {
   "ok": true,
@@ -87,7 +87,7 @@
   "fields_missing": [],
   "field_count": 18,
   "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Urban/MapServer/0",
-  "checked_at": "2026-09-22T16:03:29+00:00"
+  "checked_at": "2026-09-22T19:27:57+00:00"
  },
  "housing:LYR": {
   "ok": true,
@@ -97,7 +97,7 @@
   "fields_missing": [],
   "field_count": 28,
   "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/10",
-  "checked_at": "2026-09-22T16:03:29+00:00"
+  "checked_at": "2026-09-22T19:27:58+00:00"
  },
  "schools:LYR": {
   "ok": true,
@@ -107,7 +107,7 @@
   "fields_missing": [],
   "field_count": 25,
   "url": "https://nces.ed.gov/opengis/rest/services/K12_School_Locations/EDGE_GEOCODE_PUBLICSCH_2425/MapServer/0",
-  "checked_at": "2026-09-22T16:03:30+00:00"
+  "checked_at": "2026-09-22T19:27:59+00:00"
  },
  "schools:PUB": {
   "ok": true,
@@ -117,7 +117,7 @@
   "fields_missing": [],
   "field_count": 25,
   "url": "https://nces.ed.gov/opengis/rest/services/K12_School_Locations/EDGE_GEOCODE_PUBLICSCH_2425/MapServer/0",
-  "checked_at": "2026-09-22T16:03:31+00:00"
+  "checked_at": "2026-09-22T19:27:59+00:00"
  },
  "schools:PRV": {
   "ok": true,
@@ -127,7 +127,7 @@
   "fields_missing": [],
   "field_count": 23,
   "url": "https://nces.ed.gov/opengis/rest/services/K12_School_Locations/EDGE_GEOCODE_PRIVATESCH_2324/MapServer/0",
-  "checked_at": "2026-09-22T16:03:32+00:00"
+  "checked_at": "2026-09-22T19:28:00+00:00"
  },
  "worship:LYR": {
   "ok": true,
@@ -137,7 +137,7 @@
   "fields_missing": [],
   "field_count": 54,
   "url": "https://services.arcgis.com/XG15cJAlne2vxtgt/ArcGIS/rest/services/All_Places_Of_Worship__HiFLD_Open_/FeatureServer/42",
-  "checked_at": "2026-09-22T16:03:32+00:00"
+  "checked_at": "2026-09-22T19:28:00+00:00"
  },
  "parcel:LYR": {
   "ok": true,
@@ -147,7 +147,7 @@
   "fields_missing": [],
   "field_count": 19,
   "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1",
-  "checked_at": "2026-09-22T16:03:33+00:00"
+  "checked_at": "2026-09-22T19:28:01+00:00"
  },
  "parcel:TIGER": {
   "ok": true,
@@ -157,7 +157,7 @@
   "fields_missing": [],
   "field_count": 19,
   "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1",
-  "checked_at": "2026-09-22T16:03:33+00:00"
+  "checked_at": "2026-09-22T19:28:01+00:00"
  },
  "parcel:statewide:VA": {
   "ok": true,
@@ -167,7 +167,7 @@
   "fields_missing": [],
   "field_count": 10,
   "url": "https://vginmaps.vdem.virginia.gov/arcgis/rest/services/VA_Base_Layers/VA_Parcels/MapServer/0",
-  "checked_at": "2026-09-22T16:03:33+00:00"
+  "checked_at": "2026-09-22T19:28:02+00:00"
  },
  "parcel:statewide:OH": {
   "ok": true,
@@ -177,7 +177,7 @@
   "fields_missing": [],
   "field_count": 22,
   "url": "https://services2.arcgis.com/MlJ0G8iWUyC7jAmu/arcgis/rest/services/OhioStatewidePacels_full_view/FeatureServer/0",
-  "checked_at": "2026-09-22T16:03:34+00:00"
+  "checked_at": "2026-09-22T19:28:04+00:00"
  },
  "parcel:statewide:FL": {
   "ok": true,
@@ -187,7 +187,17 @@
   "fields_missing": [],
   "field_count": 122,
   "url": "https://services9.arcgis.com/Gh9awoU677aKree0/arcgis/rest/services/Florida_Statewide_Cadastral/FeatureServer/0",
-  "checked_at": "2026-09-22T16:03:34+00:00"
+  "checked_at": "2026-09-22T19:28:04+00:00"
+ },
+ "parcel:statewide:IA": {
+  "ok": true,
+  "name": "Parcels_20171102",
+  "vintage": "2024-05-10",
+  "records": 2450589,
+  "fields_missing": [],
+  "field_count": 9,
+  "url": "https://services3.arcgis.com/kd9gaiUExYqUbnoq/arcgis/rest/services/Iowa_Parcels_2017/FeatureServer/0",
+  "checked_at": "2026-09-22T19:28:05+00:00"
  },
  "parcel:county:08001 Adams County": {
   "ok": true,
@@ -197,7 +207,7 @@
   "fields_missing": [],
   "field_count": 30,
   "url": "https://services3.arcgis.com/4PNQOtAivErR7nbT/arcgis/rest/services/Parcels/FeatureServer/0",
-  "checked_at": "2026-09-22T16:03:34+00:00"
+  "checked_at": "2026-09-22T19:28:05+00:00"
  },
  "parcel:county:51095 James City County": {
   "ok": true,
@@ -207,7 +217,7 @@
   "fields_missing": [],
   "field_count": 122,
   "url": "https://property.jamescitycountyva.gov/arcgis/rest/services/JCC/GIS_Data/MapServer/17",
-  "checked_at": "2026-09-22T16:03:35+00:00"
+  "checked_at": "2026-09-22T19:28:05+00:00"
  },
  "parcel:county:48113 Dallas County": {
   "ok": true,
@@ -217,7 +227,7 @@
   "fields_missing": [],
   "field_count": 62,
   "url": "https://maps.dcad.org/prdwa/rest/services/Property/ParcelHistory/MapServer/3",
-  "checked_at": "2026-09-22T16:03:39+00:00"
+  "checked_at": "2026-09-22T19:28:13+00:00"
  },
  "parcel:county:34011 Cumberland County": {
   "ok": true,
@@ -227,7 +237,7 @@
   "fields_missing": [],
   "field_count": 45,
   "url": "https://services2.arcgis.com/XVOqAjTOJ5P6ngMu/arcgis/rest/services/Parcels_Composite_NJ_WM/FeatureServer/0",
-  "checked_at": "2026-09-22T16:03:39+00:00"
+  "checked_at": "2026-09-22T19:28:13+00:00"
  },
  "parcel:county:37159 Rowan County": {
   "ok": true,
@@ -237,7 +247,7 @@
   "fields_missing": [],
   "field_count": 52,
   "url": "https://gis.rowancountync.gov/arcgis/rest/services/Public/RowanTaxParcels/MapServer/0",
-  "checked_at": "2026-09-22T16:03:40+00:00"
+  "checked_at": "2026-09-22T19:28:13+00:00"
  },
  "parcel:county:37167 Stanly County": {
   "ok": true,
@@ -247,7 +257,7 @@
   "fields_missing": [],
   "field_count": 49,
   "url": "https://services6.arcgis.com/w1igg0Q14weqYXUh/arcgis/rest/services/parcel_records_base_2/FeatureServer/3",
-  "checked_at": "2026-09-22T16:03:40+00:00"
+  "checked_at": "2026-09-22T19:28:14+00:00"
  },
  "parcel:county:13013 Barrow County": {
   "ok": true,
@@ -257,7 +267,7 @@
   "fields_missing": [],
   "field_count": 19,
   "url": "https://services5.arcgis.com/OVFGXfRTCVcPwl55/arcgis/rest/services/Barrow_Parcels_w_Owner/FeatureServer/0",
-  "checked_at": "2026-09-22T16:03:40+00:00"
+  "checked_at": "2026-09-22T19:28:14+00:00"
  },
  "parcel:county:13055 Chattooga County": {
   "ok": true,
@@ -267,7 +277,7 @@
   "fields_missing": [],
   "field_count": 19,
   "url": "https://services9.arcgis.com/eXIsbyIncFwEzqul/arcgis/rest/services/parcels_zoning/FeatureServer/2",
-  "checked_at": "2026-09-22T16:03:41+00:00"
+  "checked_at": "2026-09-22T19:28:15+00:00"
  },
  "parcel:county:13057 Cherokee County": {
   "ok": true,
@@ -277,7 +287,7 @@
   "fields_missing": [],
   "field_count": 65,
   "url": "https://services6.arcgis.com/dpaY3zboICQILFY5/arcgis/rest/services/Property_Value_TY2024/FeatureServer/0",
-  "checked_at": "2026-09-22T16:03:42+00:00"
+  "checked_at": "2026-09-22T19:28:15+00:00"
  },
  "parcel:county:13157 Jackson County": {
   "ok": true,
@@ -287,7 +297,7 @@
   "fields_missing": [],
   "field_count": 37,
   "url": "https://services8.arcgis.com/bcbi4lYRFOsss0F5/ArcGIS/rest/services/jackson_baselayers/FeatureServer/9",
-  "checked_at": "2026-09-22T16:03:42+00:00"
+  "checked_at": "2026-09-22T19:28:15+00:00"
  },
  "parcel:county:13187 Lumpkin County": {
   "ok": true,
@@ -297,7 +307,7 @@
   "fields_missing": [],
   "field_count": 46,
   "url": "https://services6.arcgis.com/BAJNi3EgCdtQ1BCG/arcgis/rest/services/Lumpkin_2025Parcels/FeatureServer/0",
-  "checked_at": "2026-09-22T16:03:42+00:00"
+  "checked_at": "2026-09-22T19:28:16+00:00"
  },
  "parcel:county:37125 Moore County": {
   "ok": true,
@@ -307,6 +317,16 @@
   "fields_missing": [],
   "field_count": 44,
   "url": "https://services7.arcgis.com/WOKJvFrknOcT2chj/arcgis/rest/services/Accela_taxparcels/FeatureServer/0",
-  "checked_at": "2026-09-22T16:03:43+00:00"
+  "checked_at": "2026-09-22T19:28:16+00:00"
+ },
+ "parcel:county:40143 Tulsa County": {
+  "ok": true,
+  "name": "Parcels_TulsaCo",
+  "vintage": null,
+  "records": 284675,
+  "fields_missing": [],
+  "field_count": 75,
+  "url": "https://map11.incog.org/arcgis11wa/rest/services/Parcels_TulsaCo/FeatureServer/0",
+  "checked_at": "2026-09-22T19:28:17+00:00"
  }
 }

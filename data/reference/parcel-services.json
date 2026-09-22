@@ -47,6 +47,23 @@
     },
     "notes": "10,831,924 records covering all Florida counties, published by the state GIO from Department of Revenue cadastral data; service data last edited 2026-09-16. Probed 2026-09-22 at ALCHFL01 (Alachua Co): one polygon, OWN_NAME \"CSL FLORIDA SYSTEM LLC\", PHY_ADDR1 \"13715 W STATE RD 235\". No acreage field (Shape__Area only), so acreage comes from the geometry. A county-level entry, if registered, wins."
    }
+  },
+  "19": {
+   "state": "IA",
+   "reviewed": "2026-09-22",
+   "service": {
+    "base": "https://services3.arcgis.com/kd9gaiUExYqUbnoq/arcgis/rest/services/Iowa_Parcels_2017/FeatureServer",
+    "layer": 0,
+    "name": "Iowa Statewide Parcels, 2017 snapshot",
+    "owner": "University of Iowa (hosted); source Iowa counties",
+    "data_vintage": "2017-11-02",
+    "fields": {
+     "apn": "PARCELNUMB",
+     "owner": "DEEDHOLDER",
+     "address": "COUNTYNAME"
+    },
+    "notes": "2,450,589 parcels, layer named Parcels_20171102 - a 2017 snapshot, re-hosted on a university account; the service itself was last edited 2024-05-10 but the DATA is 2017. The only statewide Iowa parcel layer that exists: confirmed 2026-09-22 by three independent searches (AGOL item search, ArcGIS Hub dataset index, Iowa DOT and Iowa AGOL org enumeration). Registered deliberately with data_vintage 2017-11-02, which every value carries. BOUNDARIES: fine for screening - parcels rarely move, and a split since 2017 would show as an over-large acreage, not a wrong location. DEEDHOLDER: nine years stale and known wrong for this portfolio - the Windstream/Kinetic parcels transferred through CSL entities in late 2025 (Aug 2026 county-record work). Treat owner from this layer as a 2017 fact, never as current ownership. PARCELCLAS carries the use class (COMMERCIAL / EXEMPT / ...). No acreage field; acreage comes from the geometry."
+   }
   }
  },
  "counties": {

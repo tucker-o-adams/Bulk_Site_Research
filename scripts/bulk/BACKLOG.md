@@ -43,7 +43,7 @@ Unresolved, by state — what each needs:
 
 | State | Sites | Counties | Statewide sweep result (2026-09-22) |
 |---|---|---|---|
-| IA | 40 | 29 | **Only `Iowa_Parcels_2017`** answers all four probe points (2.45M records, university-hosted 2017 snapshot). Confirmed by three independent methods now. The choice is: register it with its 2017 vintage stated, or go county-by-county. |
+| ~~IA~~ | ~~40~~ **0 left — registered 2026-09-22** | 29 | **Only `Iowa_Parcels_2017`** answers all four probe points (2.45M records, university-hosted 2017 snapshot). Confirmed by three independent methods now. The choice is: register it with its 2017 vintage stated, or go county-by-county. |
 | GA | 35 | 28 | none — 21 candidate URLs checked, 5 probed |
 | KY | 27 | 21 | none — 17 checked, 8 probed |
 | TX | 20 | 19 | none — 27 checked, 6 probed |
@@ -51,7 +51,7 @@ Unresolved, by state — what each needs:
 | AR | 8 | 6 | none — 9 checked, 4 probed |
 | AL | 2 | 2 | none — 9 checked, 6 probed |
 
-**Sweep verdict: 1 statewide layer in 7 states, and it is a 2017 snapshot.** 97 candidate URLs
+**Sweep verdict: 1 statewide layer in 7 states, and it is a 2017 snapshot — registered 2026-09-22 after review (see below).** 97 candidate URLs
 checked, 40 probed at four real sites each. The statewide shortcut that won Ohio (35 sites) and
 Florida (8) does not exist for the six states holding 106 of the 154 unresolved sites. Those are
 county-by-county or nothing. Re-run `sweep_statewide_parcels.py` for any new batch's states before
@@ -90,6 +90,16 @@ footprints ship as per-state files, not a queryable endpoint. That half of G nee
 step (see E). **BLM PLSS is verified working** as a free national service (township/section at any
 point) but a section is 640 acres — useful as context for large rural parcels, useless for a
 0.17-acre telecom exchange.
+
+**Iowa 2017, registered deliberately (2026-09-22).** Tucker'''s call, with the trade stated: parcel
+*boundaries* are the stable attribute and a split since 2017 shows as an over-large acreage rather
+than a wrong location, so 2017 is fine for screening. Probed acreages are plausible for telecom
+exchanges (0.02–0.97 ac, matching the Ohio and Florida profile). The service carries 
+2017-11-02 and **every value carries that vintage, not the review date** —  now prefers
+ over  for exactly this case.  is 2017 ownership: it returns the
+CSL entities (e.g. CSL Iowa System LLC), which are Windstream-affiliated and consistent with the
+portfolio, but predate the late-2025 CSL→Kinetic transfers seen in the Ohio county records. Treat
+owner from this layer as a 2017 fact.
 
 **Economics.** At 1–2 sites per county, discovery + human review is poor value for a broker batch.
 Treat `parcel` as a **survivor-only** step: run it after the flags cut a batch to ~20 sites, and

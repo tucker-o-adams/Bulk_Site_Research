@@ -120,7 +120,9 @@ def run(site, cache):
             [mk('parcel_status', 'unresolved: no registered service', SOURCE, LYR, '2025', why)]
 
     url = f"{svc['base']}/{svc['layer']}"
-    vint = entry.get('reviewed') or svc.get('reviewed')
+    # The vintage on a value is the data's, not the day a person reviewed the service: an
+    # Iowa 2017 snapshot reviewed in 2026 must not carry a 2026 vintage.
+    vint = svc.get('data_vintage') or entry.get('reviewed') or svc.get('reviewed')
     src = f"{svc.get('name')} ({svc.get('owner')})"
     resp, f2, e2 = cache.get_json(NAME, coord_key(la, ln, f"parcel_{scope}"),
                                   arcgis_query(url, la, ln, '*', geometry=True, fmt='geojson', precision=7))
