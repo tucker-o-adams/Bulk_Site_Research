@@ -1,0 +1,456 @@
+{
+ "geoid": "19135",
+ "county": "Monroe County",
+ "state": "IA",
+ "probe": "41.0259585599999,-92.80564617",
+ "note": "PROPOSAL ONLY - a person reviews this and moves the chosen service into parcel-services.json. Nothing here is used by a run.",
+ "candidates": [
+  {
+   "score": 50,
+   "why": [
+    "referenced by the web map 'Monroe County Map Layers_2' (owner pfreshwater)",
+    "has a parcel-id field (PIN)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Zoning districts",
+   "owner": "services3.arcgis.com",
+   "type": "from web map",
+   "url": "https://services3.arcgis.com/rPGIngGsuNJl5jbk/arcgis/rest/services/Monroe_Features/FeatureServer/45",
+   "modified": null,
+   "item": "https://www.arcgis.com/home/item.html?id=f214233fb01b4b27ae03de9abe169c58",
+   "layers": [
+    {
+     "layer": 45,
+     "layer_name": "Zoning districts",
+     "points": 5,
+     "name": "Zoning districts",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "Acreage",
+      "OBJECTID",
+      "Zoning_Districts",
+      "PIN",
+      "ALTPin",
+      "Txt_Angle",
+      "Point_Type",
+      "Label_Class",
+      "Zone_Parcel_Owner",
+      "Township_Range_Sec",
+      "PIN2",
+      "PIN3",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "PIN",
+      "owner": "Zone_Parcel_Owner",
+      "acres": "Acreage",
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 45,
+   "why": [
+    "referenced by the web map 'Monroe County Map Layers_2' (owner pfreshwater)",
+    "2 features at the probe point"
+   ],
+   "title": "Voting districts",
+   "owner": "services3.arcgis.com",
+   "type": "from web map",
+   "url": "https://services3.arcgis.com/rPGIngGsuNJl5jbk/arcgis/rest/services/Monroe_Features/FeatureServer/47",
+   "modified": null,
+   "item": "https://www.arcgis.com/home/item.html?id=f214233fb01b4b27ae03de9abe169c58",
+   "layers": [
+    {
+     "layer": 47,
+     "layer_name": "Voting districts",
+     "points": 0,
+     "name": "Voting districts",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "Address",
+      "City",
+      "Precinct",
+      "Street",
+      "Townships",
+      "OBJECTID",
+      "Polling_Place",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": null,
+      "acres": null,
+      "address": "Address"
+     },
+     "probe": {
+      "features": 2
+     }
+    }
+   ]
+  },
+  {
+   "score": 45,
+   "why": [
+    "referenced by the web map 'Monroe County Map Layers_2' (owner pfreshwater)",
+    "has a parcel-id field (PIN)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "School districts",
+   "owner": "services3.arcgis.com",
+   "type": "from web map",
+   "url": "https://services3.arcgis.com/rPGIngGsuNJl5jbk/arcgis/rest/services/Monroe_Features/FeatureServer/56",
+   "modified": null,
+   "item": "https://www.arcgis.com/home/item.html?id=f214233fb01b4b27ae03de9abe169c58",
+   "layers": [
+    {
+     "layer": 56,
+     "layer_name": "School districts",
+     "points": 0,
+     "name": "School districts",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "School_District",
+      "Precinct",
+      "Director_District",
+      "PIN",
+      "ALTPin",
+      "Txt_Angle",
+      "Point_Type",
+      "Label_Class",
+      "Acreage",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "PIN",
+      "owner": null,
+      "acres": "Acreage",
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 25,
+   "why": [
+    "referenced by the web map 'Monroe County Map Layers_2' (owner pfreshwater)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "MonroeHydrographyArea",
+   "owner": "services3.arcgis.com",
+   "type": "from web map",
+   "url": "https://services3.arcgis.com/rPGIngGsuNJl5jbk/arcgis/rest/services/MonroeHydrographyArea/FeatureServer/4",
+   "modified": null,
+   "item": "https://www.arcgis.com/home/item.html?id=f214233fb01b4b27ae03de9abe169c58",
+   "layers": [
+    {
+     "layer": 4,
+     "layer_name": "MonroeHydrographyArea",
+     "points": -20,
+     "name": "MonroeHydrographyArea",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "ANSICODE",
+      "HYDROID",
+      "FULLNAME",
+      "MTFCC",
+      "ALAND",
+      "AWATER",
+      "INTPTLAT",
+      "INTPTLON",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": null,
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 25,
+   "why": [
+    "referenced by the web map 'Monroe County Map Layers_2' (owner pfreshwater)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Townships",
+   "owner": "services3.arcgis.com",
+   "type": "from web map",
+   "url": "https://services3.arcgis.com/rPGIngGsuNJl5jbk/arcgis/rest/services/Monroe_Features/FeatureServer/50",
+   "modified": null,
+   "item": "https://www.arcgis.com/home/item.html?id=f214233fb01b4b27ae03de9abe169c58",
+   "layers": [
+    {
+     "layer": 50,
+     "layer_name": "Townships",
+     "points": -20,
+     "name": "Townships",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "Township",
+      "OBJECTID",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": null,
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 15,
+   "why": [
+    "owner 'pfreshwater' not obviously the authority"
+   ],
+   "title": "Monroe_Features",
+   "owner": "pfreshwater",
+   "type": "Feature Service",
+   "url": "https://services3.arcgis.com/rPGIngGsuNJl5jbk/arcgis/rest/services/Monroe_Features/FeatureServer",
+   "modified": 1783532543000,
+   "item": "https://www.arcgis.com/home/item.html?id=db817f481d7847e697aa48cb58624fb4",
+   "layers": [
+    {
+     "layer": 43,
+     "layer_name": "Parcels_Join",
+     "name": "Parcels_Join",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "PIN",
+      "Acreage",
+      "ALTPin",
+      "Zoning_District",
+      "DIRECTOR_DISTRICT",
+      "Parcel_Numbeber",
+      "UPI",
+      "Test",
+      "TaxD2",
+      "UPID",
+      "TscID",
+      "GISPID",
+      "CLASS",
+      "EXEMPTCODE",
+      "ADDRESS",
+      "VALUE1_DESC",
+      "VALUE2_DESC",
+      "VALUE2_ACRES",
+      "TOTAL_ACRES",
+      "PRIMARY_NAME1",
+      "PRIMARY_ADDR1",
+      "PRIMARY_CTYSTZP",
+      "LEGALDESC1",
+      "LEGALDESC2",
+      "LEGALDESC3",
+      "LEGALDESC4",
+      "LEGALDESC5",
+      "MISCCODE1",
+      "TOWNSHIP",
+      "RANGE_",
+      "SECTION",
+      "CITY",
+      "ADDITION",
+      "VALUE1_AUDDESC",
+      "VALUE1_AUDACRES",
+      "VALUE2_AUDDESC",
+      "TOTAL_AUDACRES",
+      "OBJECTID_1",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "PIN",
+      "owner": null,
+      "acres": "Acreage",
+      "address": "ADDRESS"
+     },
+     "probe": {
+      "features": 2
+     }
+    }
+   ]
+  },
+  {
+   "score": 15,
+   "why": [
+    "referenced by the web map 'Monroe County Map Layers_2' (owner pfreshwater)",
+    "answers at the probe point but carries no parcel attributes - a basemap or boundary layer"
+   ],
+   "title": "Fire Districts",
+   "owner": "services3.arcgis.com",
+   "type": "from web map",
+   "url": "https://services3.arcgis.com/rPGIngGsuNJl5jbk/arcgis/rest/services/Monroe_Features/FeatureServer/44",
+   "modified": null,
+   "item": "https://www.arcgis.com/home/item.html?id=f214233fb01b4b27ae03de9abe169c58",
+   "layers": [
+    {
+     "layer": 44,
+     "layer_name": "Fire Districts",
+     "points": -30,
+     "name": "Fire Districts",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "Coverage",
+      "OBJECTID",
+      "Fire_District",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": null,
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 1
+     }
+    }
+   ]
+  },
+  {
+   "score": 15,
+   "why": [
+    "referenced by the web map 'Monroe County Map Layers_2' (owner pfreshwater)",
+    "answers at the probe point but carries no parcel attributes - a basemap or boundary layer"
+   ],
+   "title": "Albia First Ward",
+   "owner": "services3.arcgis.com",
+   "type": "from web map",
+   "url": "https://services3.arcgis.com/rPGIngGsuNJl5jbk/arcgis/rest/services/Monroe_Features/FeatureServer/46",
+   "modified": null,
+   "item": "https://www.arcgis.com/home/item.html?id=f214233fb01b4b27ae03de9abe169c58",
+   "layers": [
+    {
+     "layer": 46,
+     "layer_name": "Albia First Ward",
+     "points": -30,
+     "name": "Albia First Ward",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "Albia_Ward",
+      "Precinct",
+      "Director_District",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": null,
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 1
+     }
+    }
+   ]
+  },
+  {
+   "score": 15,
+   "why": [
+    "referenced by the web map 'Monroe County Map Layers_2' (owner pfreshwater)",
+    "answers at the probe point but carries no parcel attributes - a basemap or boundary layer"
+   ],
+   "title": "County Poly",
+   "owner": "services3.arcgis.com",
+   "type": "from web map",
+   "url": "https://services3.arcgis.com/rPGIngGsuNJl5jbk/arcgis/rest/services/Monroe_Features/FeatureServer/48",
+   "modified": null,
+   "item": "https://www.arcgis.com/home/item.html?id=f214233fb01b4b27ae03de9abe169c58",
+   "layers": [
+    {
+     "layer": 48,
+     "layer_name": "County Poly",
+     "points": -30,
+     "name": "County Poly",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "DOMCountyID",
+      "FIPS",
+      "FIPS_INT",
+      "CountyName",
+      "StateAbbr",
+      "CountyDisplayName",
+      "PERIMETER",
+      "IACountyIDPadded",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": null,
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 1
+     }
+    }
+   ]
+  },
+  {
+   "score": 15,
+   "why": [
+    "referenced by the web map 'Monroe County Map Layers_2' (owner pfreshwater)",
+    "answers at the probe point but carries no parcel attributes - a basemap or boundary layer"
+   ],
+   "title": "Section",
+   "owner": "services3.arcgis.com",
+   "type": "from web map",
+   "url": "https://services3.arcgis.com/rPGIngGsuNJl5jbk/arcgis/rest/services/Monroe_Features/FeatureServer/51",
+   "modified": null,
+   "item": "https://www.arcgis.com/home/item.html?id=f214233fb01b4b27ae03de9abe169c58",
+   "layers": [
+    {
+     "layer": 51,
+     "layer_name": "Section",
+     "points": -30,
+     "name": "Section",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "Sec_Num",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": null,
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 1
+     }
+    }
+   ]
+  }
+ ]
+}

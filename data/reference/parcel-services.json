@@ -270,6 +270,25 @@
     },
     "notes": "Seeded from WS_Sites_Parcel_Sizes_FINAL.csv source column."
    }
+  },
+  "40143": {
+   "county": "Tulsa County",
+   "state": "OK",
+   "publisher": "Parcels_TulsaCo",
+   "reviewed": "2026-09-22",
+   "review_notes": "Hosted by INCOG (Indian Nations Council of Governments), the regional council that serves Tulsa County - not on AGOL by title; found via the layer URL inside INCOG's own public web map, then host enumeration. Probed 2026-09-22 at a Windstream site: one polygon, ParcelNo=78100841102540.",
+   "service": {
+    "base": "https://map11.incog.org/arcgis11wa/rest/services/Parcels_TulsaCo/FeatureServer",
+    "layer": 0,
+    "name": "Parcels_TulsaCo",
+    "owner": "map11.incog.org",
+    "fields": {
+     "apn": "ParcelNo",
+     "owner": "Owner",
+     "address": "PropertyAddress"
+    },
+    "notes": "Registered after review of the discovery proposal."
+   }
   }
  }
 }

@@ -51,15 +51,26 @@ Unresolved, by state — what each needs:
 | AR | 8 | 6 | county-by-county |
 | AL | 2 | 2 | county-by-county |
 
-**Discovery techniques, and how far each got (tested 2026-09-22 on Tulsa County OK, 4 sites):**
+**Discovery techniques, all built and measured 2026-09-22:**
 
-| Technique | Status | Result on Tulsa |
-|---|---|---|
-| AGOL title search | built | one weak hit (`INCOG 911 Address Map`, owner `Josh060123`), probe 0 features |
-| **Host enumeration** (`org_root` + `enumerate_services`, ported from tbdi-pasa) | built, `--server` flag | enumerated the one host AGOL gave (7 services); no parcel layer answered |
-| **Web-app config** — read an AGOL web map/app's `data` and harvest the `url` of every operational layer | **lead, not built** | found `https://map9.incog.org/arcgis9wa/rest/services/Parcels_TulsaCo/FeatureServer`, a real regional-council host AGOL title search never surfaces — but it returns 404 from here (stale reference in the app, or internal-only). Worth building: a county that publishes a viewer but never registered a service is the common case. |
+| Technique | What it reaches |
+|---|---|
+| AGOL title search | services a publisher registered on ArcGIS Online under a parcel-ish title |
+| **Web maps and apps** | a county that published a *viewer* but never registered a *service*: search its web maps/apps, read each item's `data`, harvest the `url` of every operational layer. This is what reached Tulsa County, whose parcels are served by INCOG, a regional council. |
+| **Host enumeration** (`--server`, or the root of any URL found) | everything on a host, folders included — including the live service when a web map points at a stale one (Tulsa's map named `map8`, the live host is `map11`) |
 
-Tulsa remains unresolved after all three. **The ports improved the tooling; they did not crack the tail.**
+The three **compose**: a web map reveals the host, enumeration finds the live layer on it.
+
+**Scoring guards learned the hard way.** A probe hit only counts when the layer also carries
+parcel attributes — `World_Imagery` and `StateBoundaries` answer a point query anywhere and were
+out-ranking real parcel layers. Short field names (`pid`, `pin`, `apn`) match **exactly only**:
+as a substring, `pid` matched `ZIP_ID` and would have registered a Boyd County KY **ZIP-code
+layer** as parcels. Esri basemap hosts are excluded outright.
+
+**Measured hit rate: roughly 3 of 10 counties**, and one of those three was the ZIP-code false
+positive now rejected. Tulsa County is a genuine win (4 sites, unreachable by any other route).
+**Discovery does not eliminate manual research on the tail** — it makes the search cheaper and
+much safer, and a person still reviews every proposal.
 
 **Economics.** At 1–2 sites per county, discovery + human review is poor value for a broker batch.
 Treat `parcel` as a **survivor-only** step: run it after the flags cut a batch to ~20 sites, and

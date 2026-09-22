@@ -1,0 +1,731 @@
+{
+ "geoid": "40145",
+ "county": "Wagoner County",
+ "state": "OK",
+ "probe": "36.0615241599999,-95.68429788",
+ "note": "PROPOSAL ONLY - a person reviews this and moves the chosen service into parcel-services.json. Nothing here is used by a run.",
+ "candidates": [
+  {
+   "score": 70,
+   "why": [
+    "published by the host services.arcgis.com itself",
+    "has a parcel-id field (PARCELID)"
+   ],
+   "title": "TaxParcelQuery",
+   "owner": "services.arcgis.com",
+   "type": "FeatureServer",
+   "url": "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/TaxParcelQuery/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "TaxParcelPublishing",
+     "points": 20,
+     "name": "TaxParcelPublishing",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "LOWPARCELID",
+      "PARCELID",
+      "BUILDING",
+      "UNIT",
+      "CVTTXCD",
+      "CVTTXDSCRP",
+      "SCHLTXCD",
+      "SCHLDSCRP",
+      "USECD",
+      "USEDSCRP",
+      "NGHBRHDCD",
+      "CLASSCD",
+      "CLASSDSCRP",
+      "SITEADDRESS",
+      "PRPRTYDSCRP",
+      "CNVYNAME",
+      "OWNERNME1",
+      "OWNERNME2",
+      "PSTLADDRESS",
+      "PSTLCITY",
+      "PSTLSTATE",
+      "PSTLZIP5",
+      "PSTLZIP4",
+      "RESFLRAREA",
+      "RESYRBLT",
+      "RESSTRTYP",
+      "STRCLASS",
+      "CLASSMOD",
+      "LNDVALUE",
+      "PRVASSDVAL",
+      "CNTASSDVAL",
+      "ASSDVALYRCG",
+      "ASSDPCNTCG",
+      "PRVTXBLVAL",
+      "CNTTXBLVAL",
+      "TXBLVALYRCHG",
+      "TXBLPCNTCHG",
+      "PRVWNTTXOD",
+      "PRVSMRTXOD",
+      "TOTPRVTXTOD",
+      "CNTWNTTXOD",
+      "CNTSMRTXOD",
+      "TOTCNTTXOD",
+      "TXODYRCHG",
+      "TXODPCNTCHG",
+      "LASTUPDATE"
+     ],
+     "field_guess": {
+      "apn": "PARCELID",
+      "owner": "OWNERNME1",
+      "acres": null,
+      "address": "SITEADDRESS"
+     },
+     "probe": {
+      "error": "{'error': {'code': 400, 'message': 'Cannot perform query. Invalid query parameters.', 'details': ['Unable to perform query. Please check your parameters.']}}"
+     }
+    }
+   ]
+  },
+  {
+   "score": 50,
+   "why": [
+    "published by the host services5.arcgis.com itself",
+    "has a parcel-id field (accountno)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "OKCountyPotentialHousingParcels",
+   "owner": "services5.arcgis.com",
+   "type": "FeatureServer",
+   "url": "https://services5.arcgis.com/ZTbCl7IqVy1LQh5d/arcgis/rest/services/OKCountyPotentialHousingParcels/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "OKCountyPotentialHousingParcels22652",
+     "points": 0,
+     "name": "OKCountyPotentialHousingParcels22652",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "globalid",
+      "propertyid",
+      "accountno",
+      "accttype",
+      "Subtype",
+      "PARCELNB_1",
+      "taxdistrictname",
+      "mailingaddress1",
+      "city",
+      "state",
+      "zipcode",
+      "currentmarket",
+      "currentaccountadjustments",
+      "currentassessed",
+      "currenttaxable",
+      "netassessed",
+      "currentmillevy",
+      "landvalue",
+      "location",
+      "acres",
+      "width",
+      "depth",
+      "locationcity",
+      "CODEDesc",
+      "Centroid",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "accountno",
+      "owner": null,
+      "acres": "acres",
+      "address": "location"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 50,
+   "why": [
+    "published by the host services5.arcgis.com itself",
+    "has a parcel-id field (ParcelNo)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Tulsa_Parcel_100plus",
+   "owner": "services5.arcgis.com",
+   "type": "FeatureServer",
+   "url": "https://services5.arcgis.com/ZTbCl7IqVy1LQh5d/arcgis/rest/services/Tulsa_Parcel_100plus/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Parcel_Rev",
+     "points": 0,
+     "name": "Parcel_Rev",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "ACCT_NUM",
+      "PAR_TYPE",
+      "AccountNo",
+      "ParcelNo",
+      "AcctType",
+      "VI",
+      "UseCode",
+      "BusinessName",
+      "AreaID",
+      "SiteCity",
+      "IncrementDist",
+      "LoadDate",
+      "PropertyGroup",
+      "PropertyAddress",
+      "PropertyZIP",
+      "PropertyCity",
+      "AccountGroup",
+      "Name1",
+      "Name2",
+      "Owner",
+      "Address1",
+      "Address2",
+      "City",
+      "State",
+      "ZIPCode",
+      "Legal",
+      "HomesteadExemption",
+      "Neighborhood",
+      "Zoning",
+      "ReceptionNo",
+      "DocumentDate",
+      "SaleDate",
+      "DeedType",
+      "SaleConfirmation",
+      "ValidFlag",
+      "ExcludeReason",
+      "PropertyType",
+      "Quality",
+      "Condition",
+      "YearBuilt",
+      "YearRemodeled",
+      "Exterior",
+      "Foundation",
+      "BuiltAsOccCode",
+      "LEAID",
+      "LEADescription",
+      "OccCode",
+      "TR_SEC",
+      "UnitsTotal",
+      "BasementSF",
+      "FinishedBasementSF",
+      "GarageSF",
+      "PoolSF",
+      "GrossSF",
+      "GrossAcre",
+      "SalePrice",
+      "Baths",
+      "Stories",
+      "TotalImpValue",
+      "TotalLandValue",
+      "TotalAcctValue",
+      "TaxableValue",
+      "ImpSFTotal",
+      "OccCodePerc",
+      "LandDolPerSF",
+      "SF",
+      "NetSF",
+      "BuiltAsSF",
+      "StoryHeight",
+      "Units",
+      "ImpDolPerSF",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "ParcelNo",
+      "owner": "Owner",
+      "acres": null,
+      "address": "PropertyAddress"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 30,
+   "why": [
+    "referenced by the web map 'Oklahoma Housing Development Research' (owner dat.nguyen)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Airport Runways",
+   "owner": "services5.arcgis.com",
+   "type": "from web map",
+   "url": "https://services5.arcgis.com/ZTbCl7IqVy1LQh5d/arcgis/rest/services/Oklahoma_Aerospace_Assets_WFL1/FeatureServer/6",
+   "modified": null,
+   "item": "https://www.arcgis.com/home/item.html?id=be7396efb9fe464793a176212883bf3a",
+   "layers": [
+    {
+     "layer": 6,
+     "layer_name": "Airport Runways",
+     "points": -15,
+     "name": "Airport Runways",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "permanent_identifier",
+      "source_featureid",
+      "source_datasetid",
+      "source_datadesc",
+      "source_originator",
+      "loaddate",
+      "fcode",
+      "runway_id",
+      "faa_airport_code",
+      "city",
+      "state",
+      "ownertype",
+      "usestatus",
+      "globalid",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": "ownertype",
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 25,
+   "why": [
+    "referenced by the web map 'Oklahoma Housing Development Research' (owner dat.nguyen)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "USA_Flood_Hazard_Reduced_Set",
+   "owner": "services.arcgis.com",
+   "type": "from web map",
+   "url": "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/USA_Flood_Hazard_Reduced_Set_gdb/FeatureServer/0",
+   "modified": null,
+   "item": "https://www.arcgis.com/home/item.html?id=be7396efb9fe464793a176212883bf3a",
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "USA_Flood_Hazard_Reduced_Set",
+     "points": -20,
+     "name": "USA_Flood_Hazard_Reduced_Set",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "DFIRM_ID",
+      "VERSION_ID",
+      "FLD_AR_ID",
+      "STUDY_TYP",
+      "FLD_ZONE",
+      "ZONE_SUBTY",
+      "SFHA_TF",
+      "STATIC_BFE",
+      "V_DATUM",
+      "DEPTH",
+      "LEN_UNIT",
+      "VELOCITY",
+      "VEL_UNIT",
+      "DUAL_ZONE",
+      "SOURCE_CIT",
+      "GFID",
+      "esri_symbology",
+      "GlobalID",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": null,
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 25,
+   "why": [
+    "referenced by the web map 'Oklahoma Housing Development Research' (owner dat.nguyen)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Military Installations, Ranges, and Training Areas",
+   "owner": "services5.arcgis.com",
+   "type": "from web map",
+   "url": "https://services5.arcgis.com/ZTbCl7IqVy1LQh5d/arcgis/rest/services/Oklahoma_Aerospace_Assets_WFL1/FeatureServer/7",
+   "modified": null,
+   "item": "https://www.arcgis.com/home/item.html?id=be7396efb9fe464793a176212883bf3a",
+   "layers": [
+    {
+     "layer": 7,
+     "layer_name": "Military Installations, Ranges, and Training Areas",
+     "points": -20,
+     "name": "Military Installations, Ranges, and Training Areas",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "featureName",
+      "installationId",
+      "isCui",
+      "isFirrmaSite",
+      "isJointBase",
+      "mediaId",
+      "metadataId",
+      "mirtaLocationsIdpk",
+      "sdsId",
+      "siteName",
+      "siteOperationalStatus",
+      "siteReportingComponent",
+      "stateNameCode",
+      "Shape__Area",
+      "Shape__Length",
+      "FederalG",
+      "ProgramArea",
+      "PrgDetails",
+      "Notes"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": null,
+      "acres": null,
+      "address": "mirtaLocationsIdpk"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 15,
+   "why": [
+    "referenced by the web map 'Oklahoma Housing Development Research' (owner dat.nguyen)",
+    "answers at the probe point but carries no parcel attributes - a basemap or boundary layer"
+   ],
+   "title": "OK Counties",
+   "owner": "services5.arcgis.com",
+   "type": "from web map",
+   "url": "https://services5.arcgis.com/ZTbCl7IqVy1LQh5d/arcgis/rest/services/OK_Counties_Potential_Housing_Areas/FeatureServer/0",
+   "modified": null,
+   "item": "https://www.arcgis.com/home/item.html?id=be7396efb9fe464793a176212883bf3a",
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "OK Counties",
+     "points": -30,
+     "name": "OK Counties",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "NAME",
+      "CountyName",
+      "FTZones",
+      "Subtype",
+      "OKFM",
+      "GlobalID",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": null,
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 1
+     }
+    }
+   ]
+  },
+  {
+   "score": 15,
+   "why": [
+    "referenced by the web map 'Oklahoma Housing Development Research' (owner dat.nguyen)",
+    "answers at the probe point but carries no parcel attributes - a basemap or boundary layer"
+   ],
+   "title": "StateBoundaries",
+   "owner": "services5.arcgis.com",
+   "type": "from web map",
+   "url": "https://services5.arcgis.com/ZTbCl7IqVy1LQh5d/arcgis/rest/services/OK_State_Boundaries/FeatureServer/0",
+   "modified": null,
+   "item": "https://www.arcgis.com/home/item.html?id=be7396efb9fe464793a176212883bf3a",
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "StateBoundaries",
+     "points": -30,
+     "name": "StateBoundaries",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "STATENS",
+      "GEOID",
+      "STUSPS",
+      "NAME",
+      "ALAND",
+      "AWATER",
+      "B28001_001E",
+      "B28001_001M",
+      "B28001_002E",
+      "B28001_002M",
+      "B28001_003E",
+      "B28001_003M",
+      "B28001_004E",
+      "B28001_004M",
+      "B28001_005E",
+      "B28001_005M",
+      "B28001_006E",
+      "B28001_006M",
+      "B28001_007E",
+      "B28001_007M",
+      "B28001_008E",
+      "B28001_008M",
+      "B28001_009E",
+      "B28001_009M",
+      "B28001_010E",
+      "B28001_010M",
+      "B28001_011E",
+      "B28001_011M",
+      "B28001_calc_pctNoCompE",
+      "B28001_calc_pctNoCompM",
+      "B28002_002E",
+      "B28002_002M",
+      "B28002_003E",
+      "B28002_003M",
+      "B28002_004E",
+      "B28002_004M",
+      "B28002_005E",
+      "B28002_005M",
+      "B28002_006E",
+      "B28002_006M",
+      "B28002_007E",
+      "B28002_007M",
+      "B28002_008E",
+      "B28002_008M",
+      "B28002_009E",
+      "B28002_009M",
+      "B28002_010E",
+      "B28002_010M",
+      "B28002_011E",
+      "B28002_011M",
+      "B28002_012E",
+      "B28002_012M",
+      "B28002_013E",
+      "B28002_013M",
+      "B28002_calc_pctNoIntE",
+      "B28002_calc_pctNoIntM",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": null,
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 1
+     }
+    }
+   ]
+  },
+  {
+   "score": 10,
+   "why": [
+    "published by the host services5.arcgis.com itself",
+    "geometry is esriGeometryPoint, not polygons"
+   ],
+   "title": "Property_Listing",
+   "owner": "services5.arcgis.com",
+   "type": "FeatureServer",
+   "url": "https://services5.arcgis.com/ZTbCl7IqVy1LQh5d/arcgis/rest/services/Property_Listing/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "PropertyListing",
+     "points": -40,
+     "name": "PropertyListing",
+     "geometryType": "esriGeometryPoint",
+     "fields": [
+      "PropertyType",
+      "PropertyName",
+      "StreetAddr",
+      "StreetAddr2",
+      "City",
+      "State",
+      "Zipcode",
+      "FirstName",
+      "LastName",
+      "Email",
+      "Phone",
+      "ListingType",
+      "ListingPrice",
+      "BusIndusPark",
+      "PropertyDesc",
+      "OBJECTID",
+      "CreationDate",
+      "comments",
+      "priority",
+      "GlobalID",
+      "CreationDate_1",
+      "Creator",
+      "EditDate",
+      "Editor"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": null,
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 5,
+   "why": [
+    "referenced by the web map 'Oklahoma Housing Development Research' (owner dat.nguyen)",
+    "geometry is esriGeometryPoint, not polygons"
+   ],
+   "title": "Aviation Facilities",
+   "owner": "services5.arcgis.com",
+   "type": "from web map",
+   "url": "https://services5.arcgis.com/ZTbCl7IqVy1LQh5d/arcgis/rest/services/Oklahoma_Aerospace_Assets_WFL1/FeatureServer/5",
+   "modified": null,
+   "item": "https://www.arcgis.com/home/item.html?id=be7396efb9fe464793a176212883bf3a",
+   "layers": [
+    {
+     "layer": 5,
+     "layer_name": "Aviation Facilities",
+     "points": -40,
+     "name": "Aviation Facilities",
+     "geometryType": "esriGeometryPoint",
+     "fields": [
+      "OBJECTID",
+      "EFF_DATE",
+      "SITE_NO",
+      "SITE_TYPE_CODE",
+      "STATE_CODE",
+      "ARPT_ID",
+      "CITY",
+      "COUNTRY_CODE",
+      "REGION_CODE",
+      "ADO_CODE",
+      "STATE_NAME",
+      "COUNTY_NAME",
+      "COUNTY_ASSOC_STATE",
+      "ARPT_NAME",
+      "OWNERSHIP_TYPE_CODE",
+      "FACILITY_USE_CODE",
+      "LAT_DEG",
+      "LAT_MIN",
+      "LAT_SEC",
+      "LAT_HEMIS",
+      "LAT_DECIMAL",
+      "LONG_DEG",
+      "LONG_MIN",
+      "LONG_SEC",
+      "LONG_HEMIS",
+      "LONG_DECIMAL",
+      "SURVEY_METHOD_CODE",
+      "ELEV",
+      "ELEV_METHOD_CODE",
+      "MAG_VARN",
+      "MAG_HEMIS",
+      "MAG_VARN_YEAR",
+      "TPA",
+      "CHART_NAME",
+      "DIST_CITY_TO_AIRPORT",
+      "DIRECTION_CODE",
+      "ACREAGE",
+      "RESP_ARTCC_ID",
+      "COMPUTER_ID",
+      "ARTCC_NAME",
+      "FSS_ON_ARPT_FLAG",
+      "FSS_ID",
+      "FSS_NAME",
+      "PHONE_NO",
+      "TOLL_FREE_NO",
+      "ALT_FSS_ID",
+      "ALT_FSS_NAME",
+      "ALT_TOLL_FREE_NO",
+      "NOTAM_ID",
+      "NOTAM_FLAG",
+      "ACTIVATION_DATE",
+      "ARPT_STATUS",
+      "FAR_139_TYPE_CODE",
+      "FAR_139_CARRIER_SER_CODE",
+      "ARFF_CERT_TYPE_DATE",
+      "NASP_CODE",
+      "ASP_ANLYS_DTRM_CODE",
+      "CUST_FLAG",
+      "LNDG_RIGHTS_FLAG",
+      "JOINT_USE_FLAG",
+      "MIL_LNDG_FLAG",
+      "INSPECT_METHOD_CODE",
+      "INSPECTOR_CODE",
+      "LAST_INSPECTION",
+      "LAST_INFO_RESPONSE",
+      "FUEL_TYPES",
+      "AIRFRAME_REPAIR_SER_CODE",
+      "PWR_PLANT_REPAIR_SER",
+      "BOTTLED_OXY_TYPE",
+      "BULK_OXY_TYPE",
+      "LGT_SKED",
+      "BCN_LGT_SKED",
+      "TWR_TYPE_CODE",
+      "SEG_CIRCLE_MKR_FLAG",
+      "BCN_LENS_COLOR",
+      "LNDG_FEE_FLAG",
+      "MEDICAL_USE_FLAG",
+      "ARPT_PSN_SOURCE",
+      "POSITION_SRC_DATE",
+      "ARPT_ELEV_SOURCE",
+      "ELEVATION_SRC_DATE",
+      "CONTR_FUEL_AVBL",
+      "TRNS_STRG_BUOY_FLAG",
+      "TRNS_STRG_HGR_FLAG",
+      "TRNS_STRG_TIE_FLAG",
+      "OTHER_SERVICES",
+      "WIND_INDCR_FLAG",
+      "ICAO_ID",
+      "MIN_OP_NETWORK",
+      "USER_FEE_FLAG",
+      "CTA"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": "OWNERSHIP_TYPE_CODE",
+      "acres": "ACREAGE",
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  }
+ ]
+}

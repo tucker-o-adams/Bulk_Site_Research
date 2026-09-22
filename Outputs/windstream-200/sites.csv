@@ -23,9 +23,9 @@ BLVIGABW,34.8640250999999,-83.9848088499999,WNS3282,40 River Road Connector,,,GA
 BLKLGAXA,31.3825399999999,-84.957519,WNS0261,15166 River St,,,GA,,Other,,Building,Blakely,Owned,Central Office,35,Early County,13099,,,,,,,,,,,unresolved: no registered service
 BRFRFLXA,29.96008262,-82.9279976299999,,108 Drane St Nw| Branford| FL| 32008,,,FL,,Other,,Building,Branford,Owned,Central Office,20,Suwannee County,12121,statewide,FDOR Cadastral 2025 (Florida Statewide Parcels),1706S14E04083280080,CITY OF BRANFORD JAIL,108 EXPRESS ST NW,0.2633,,,,7,ok
 BRHDKYXA,37.3416834599999,-84.44990833,,4297 Highway 70,,,KY,,Other,,Building,BRODHEAD,Owned,Central Office,14,Rockcastle County,21203,,,,,,,,,,,unresolved: no registered service
-BRAROKXA,36.0526137,-95.7918259599999,WNS2324,114 West Broadway,,,OK,,Other,,Building,Broken Arrow,Owned,Central Office,150,Tulsa County,40143,,,,,,,,,,,unresolved: no registered service
-BRAROKXC,35.99867768,-95.7968520799999,WNS2325,5301 South Elm Place W,,,OK,,Other,,Building,Broken Arrow,Owned,Central Office,109,Tulsa County,40143,,,,,,,,,,,unresolved: no registered service
-BRAROKXD,36.0896024099999,-95.7905582,WNS2327,201 East Omaha Street,,,OK,,Other,,Building,Broken Arrow,Owned,Central Office,106,Tulsa County,40143,,,,,,,,,,,unresolved: no registered service
+BRAROKXA,36.0526137,-95.7918259599999,WNS2324,114 West Broadway,,,OK,,Other,,Building,Broken Arrow,Owned,Central Office,150,Tulsa County,40143,county,Parcels_TulsaCo,78100841102540,CSL OKLAHOMA SYSTEM LLC,,0.1241,,,,8,ok
+BRAROKXC,35.99867768,-95.7968520799999,WNS2325,5301 South Elm Place W,,,OK,,Other,,Building,Broken Arrow,Owned,Central Office,109,Tulsa County,40143,county,Parcels_TulsaCo,98435843532130,CSL OKLAHOMA SYSTEM LLC,5301 S ELM PL W,3.0836,,,,17,ok
+BRAROKXD,36.0896024099999,-95.7905582,WNS2327,201 East Omaha Street,,,OK,,Other,,Building,Broken Arrow,Owned,Central Office,106,Tulsa County,40143,county,Parcels_TulsaCo,99435943547930,CSL OKLAHOMA SYSTEM LLC,201 E OMAHA ST,0.6805,,,,4,ok
 BRAROKXE,36.0615241599999,-95.68429788,WNS2326,1025 North 84th Street,,,OK,,Other,,Building,Broken Arrow,Owned,Central Office,38,Wagoner County,40145,,,,,,,,,,,unresolved: no registered service
 BKVLKYXA,38.6825019999999,-84.067487,WNS1712,202 Madison St,,,KY,,Other,,Building,Brooksville,Owned,Central Office,16,Bracken County,21023,,,,,,,,,,,unresolved: no registered service
 BWFDTXXA,33.1772204099999,-102.274424499999,,101 East Tate,,,TX,,Other,,Building,Brownfield,Owned,Central Office,93,Terry County,48445,,,,,,,,,,,unresolved: no registered service
@@ -186,7 +186,7 @@ TPTNIAXO,41.77051661,-91.12666418,WNS1668,506 Meridian,,,IA,,Other,,Building,Tip
 TOLDIAXO,41.98152657,-92.5812656199999,WNS1669,1201 South County Road,,,IA,,Other,,Building,Toledo,Owned,Central Office,23,Tama County,19171,,,,,,,,,,,unresolved: no registered service
 TRARIAXO,42.19143728,-92.46705144,WNS1670,505 3rd Street,,,IA,,Other,,Building,Traer,Owned,Central Office,10,Tama County,19171,,,,,,,,,,,unresolved: no registered service
 TRINGAXA,34.54083387,-85.31313762,WNS1588,207 Allgood Street,,,GA,,Other,,Building,Trion,Owned,Central Office,21,Chattooga County,13055,county,parcels,00T0700000041,,0 PARK AVE,0.4552,0.4541,,,7,ok
-BRAROKXB,36.0575717899999,-95.8690106199999,WNS2371,7200 S Mingo Rd,,,OK,,Other,,Building,Tulsa,Owned,Central Office,226,Tulsa County,40143,,,,,,,,,,,unresolved: no registered service
+BRAROKXB,36.0575717899999,-95.8690106199999,WNS2371,7200 S Mingo Rd,,,OK,,Other,,Building,Tulsa,Owned,Central Office,226,Tulsa County,40143,county,Parcels_TulsaCo,98312831201060,CSL OKLAHOMA SYSTEM LLC,7322 S MINGO RD W,0.864,,,,9,ok
 TWBGOHIR,41.3112491199999,-81.4423444499999,,2684 East Aurora Road,,,OH,,Interesting,,Building,Twinsburg,Owned,Central Office,,Summit County,39153,statewide,Ohio Statewide Parcels,6406505,,,0.4985,,,,7,ok
 TWBGOHXA,41.31113087,-81.44232343,,2684 Route 82,,,OH,,Interesting,,Building,Twinsburg,TBD,Central Office,99,Summit County,39153,statewide,Ohio Statewide Parcels,6406505,,,0.4985,,,,7,ok
 VNBGKYXA,38.5941079999999,-83.321195,WNS1806,403 Fairlane Dr.,,,KY,,Other,,Building,Vanceburg,Owned,Central Office,44,Lewis County,21135,,,,,,,,,,,unresolved: no registered service

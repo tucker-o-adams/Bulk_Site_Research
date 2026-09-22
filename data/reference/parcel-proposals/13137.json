@@ -1,0 +1,23 @@
+{
+ "geoid": "13137",
+ "county": "Habersham County",
+ "state": "GA",
+ "probe": "34.4972084699999,-83.54997767",
+ "note": "PROPOSAL ONLY - a person reviews this and moves the chosen service into parcel-services.json. Nothing here is used by a run.",
+ "candidates": [
+  {
+   "score": 20,
+   "why": [
+    "owner 'GDITAdmin' not obviously the authority",
+    "title names parcels"
+   ],
+   "title": "Parcels - GA - Habersham County",
+   "owner": "GDITAdmin",
+   "type": "Feature Service",
+   "url": "https://arcgis5.roktech.net/arcgis/rest/services/habersham/habersham_rokmaps/MapServer/8",
+   "modified": 1658091433000,
+   "item": "https://www.arcgis.com/home/item.html?id=78596b434c3b4b52aa04adc5ca98e9bc",
+   "layers": []
+  }
+ ]
+}

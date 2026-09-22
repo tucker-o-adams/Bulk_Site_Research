@@ -1,0 +1,617 @@
+{
+ "geoid": "13153",
+ "county": "Houston County",
+ "state": "GA",
+ "probe": "32.6234985899999,-83.6879990999999",
+ "note": "PROPOSAL ONLY - a person reviews this and moves the chosen service into parcel-services.json. Nothing here is used by a run.",
+ "candidates": [
+  {
+   "score": 100,
+   "why": [
+    "published by the host services1.arcgis.com itself",
+    "has a parcel-id field (PIN)",
+    "exactly one polygon at the probe point"
+   ],
+   "title": "HoustonCoParcels_withOwner",
+   "owner": "services1.arcgis.com",
+   "type": "FeatureServer",
+   "url": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/HoustonCoParcels_withOwner/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Houston County Parcels",
+     "points": 50,
+     "name": "Houston County Parcels",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "PIN",
+      "ZONINGCODE",
+      "PARCEL_NO",
+      "CURR_VAL",
+      "TOTALACRES",
+      "LAT",
+      "LON",
+      "OWNKEY_1",
+      "LASTNAME",
+      "ADDRESS",
+      "ParcelCity",
+      "ZIP_CODE",
+      "STATE",
+      "Shape__Length_12",
+      "Shape__Area_12",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "PIN",
+      "owner": null,
+      "acres": "TOTALACRES",
+      "address": "ADDRESS"
+     },
+     "probe": {
+      "features": 1
+     }
+    }
+   ]
+  },
+  {
+   "score": 95,
+   "why": [
+    "published by the host services1.arcgis.com itself",
+    "has a parcel-id field (Parcel_No)",
+    "exactly one polygon at the probe point"
+   ],
+   "title": "Parcels_LitterSurvey",
+   "owner": "services1.arcgis.com",
+   "type": "FeatureServer",
+   "url": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Parcels_LitterSurvey/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Parcel Scores",
+     "points": 45,
+     "name": "Parcel Scores",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "Parcel_No",
+      "Calc_Ac",
+      "Shape_Leng",
+      "Parcel_Typ",
+      "ScoreArea",
+      "Location",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "Parcel_No",
+      "owner": null,
+      "acres": null,
+      "address": "Location"
+     },
+     "probe": {
+      "features": 1
+     }
+    }
+   ]
+  },
+  {
+   "score": 55,
+   "why": [
+    "published by the host services1.arcgis.com itself",
+    "has a parcel-id field (Parcel_no)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Parcels_7_2023",
+   "owner": "services1.arcgis.com",
+   "type": "FeatureServer",
+   "url": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Parcels_7_2023/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Parcels_7_2023",
+     "points": 5,
+     "name": "Parcels_7_2023",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "FID",
+      "Parcel_no",
+      "TOTALACRES",
+      "SUBD_NAME",
+      "Val",
+      "ClassCode",
+      "TaxDistr_1",
+      "Owner",
+      "MailingAdd",
+      "PhisicAddr",
+      "Acres",
+      "Value",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "Parcel_no",
+      "owner": "Owner",
+      "acres": "Acres",
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 55,
+   "why": [
+    "published by the host services1.arcgis.com itself",
+    "has a parcel-id field (Parcel_no)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Parcels4_2025",
+   "owner": "services1.arcgis.com",
+   "type": "FeatureServer",
+   "url": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Parcels4_2025/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Parcels4_2025_1",
+     "points": 5,
+     "name": "Parcels4_2025_1",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "AssessedValue",
+      "PhisicalAddress",
+      "MailAddress",
+      "OBJECTID",
+      "ZIP_1",
+      "ADDRESS1",
+      "ADDRESS2",
+      "ADDRESS3",
+      "CITY",
+      "COUNTRY",
+      "FIRSTNAME",
+      "FLBASEVAL",
+      "FMVACC",
+      "FMVRES",
+      "LASTNAME",
+      "MIDDLE",
+      "ORIGHSVAL2",
+      "Parcel_no",
+      "STATE",
+      "SUBD_NAME",
+      "TAXDISTRIC",
+      "TOTALACRES",
+      "Owner",
+      "TaxDistrict",
+      "Acres",
+      "Value",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "Parcel_no",
+      "owner": "Owner",
+      "acres": "Acres",
+      "address": "PhisicalAddress"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 55,
+   "why": [
+    "published by the host services1.arcgis.com itself",
+    "has a parcel-id field (PARCEL_NO)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Parcels4_2026_HUB",
+   "owner": "services1.arcgis.com",
+   "type": "FeatureServer",
+   "url": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Parcels4_2026_HUB/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Parcels4_2026_HUB",
+     "points": 5,
+     "name": "Parcels4_2026_HUB",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "PhisicalAddress",
+      "MailAddress",
+      "Owner",
+      "TaxDistrict",
+      "Acres",
+      "Value",
+      "OBJECTID",
+      "ADDRESS1",
+      "ADDRESS2",
+      "ADDRESS3",
+      "CITY",
+      "COUNTRY",
+      "FIRSTNAME",
+      "MIDDLE",
+      "LASTNAME",
+      "FLBASEVAL",
+      "FMVACC",
+      "FMVRES",
+      "OBJECTID_1",
+      "ORIGHSVAL2",
+      "PARCEL_NO",
+      "Shape_Leng",
+      "STATE",
+      "SUBD_NAME",
+      "TAXDISTRIC",
+      "TOTALACRES",
+      "ZIP",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "PARCEL_NO",
+      "owner": "Owner",
+      "acres": "Acres",
+      "address": "PhisicalAddress"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 55,
+   "why": [
+    "published by the host services1.arcgis.com itself",
+    "has a parcel-id field (PARCEL_NO)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Parcels5_2024",
+   "owner": "services1.arcgis.com",
+   "type": "FeatureServer",
+   "url": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Parcels5_2024/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Parcels5_2024",
+     "points": 5,
+     "name": "Parcels5_2024",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "PARCEL_NO",
+      "SUBD_NAME",
+      "TAXDISTRIC",
+      "ClassCode",
+      "Owner",
+      "MailingAddress",
+      "OBJECTID",
+      "PhisicAddress",
+      "Value",
+      "Acres",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "PARCEL_NO",
+      "owner": "Owner",
+      "acres": "Acres",
+      "address": "MailingAddress"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 55,
+   "why": [
+    "published by the host services1.arcgis.com itself",
+    "has a parcel-id field (Parcel_no)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Parcels9_2025HUB2",
+   "owner": "services1.arcgis.com",
+   "type": "FeatureServer",
+   "url": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Parcels9_2025HUB2/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Parcels9_2025HUB1",
+     "points": 5,
+     "name": "Parcels9_2025HUB1",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "FID",
+      "Parcel_no",
+      "SUBD_NAME",
+      "TaxDistri",
+      "Owner",
+      "MailAddres",
+      "PhAddress",
+      "Value",
+      "Acres",
+      "ADDRESS1",
+      "ADDRESS2",
+      "ADDRESS3",
+      "CITY",
+      "COUNTRY",
+      "DIGCLASS",
+      "EXTENSION",
+      "Field",
+      "FIRSTNAME",
+      "FLBASEVAL",
+      "FMVACC",
+      "FMVRES",
+      "HOUSE_NO",
+      "LASTNAME",
+      "MIDDLE",
+      "ORIGHSVAL2",
+      "RETURNMAIL",
+      "STATE",
+      "STDIRECT",
+      "STREET_NAM",
+      "STTYPE",
+      "TAXDISTRIC",
+      "TOTALACRES",
+      "UNIT",
+      "ZIP",
+      "ZIP_1",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "Parcel_no",
+      "owner": "Owner",
+      "acres": "Acres",
+      "address": "PhAddress"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 55,
+   "why": [
+    "published by the host services.arcgis.com itself",
+    "has a parcel-id field (PARCELID)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Cranberry_production_parcels_in_Wisconsin_counties_of_Jackson_and_Monroe",
+   "owner": "services.arcgis.com",
+   "type": "FeatureServer",
+   "url": "http://services.arcgis.com/jDGuO8tYggdCCnUJ/arcgis/rest/services/Cranberry_production_parcels_in_Wisconsin_counties_of_Jackson_and_Monroe/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Cranberry_production_parcels_in_Wisconsin_counties_of_Jackson_and_Monroe",
+     "points": 5,
+     "name": "Cranberry_production_parcels_in_Wisconsin_counties_of_Jackson_and_Monroe",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "FID",
+      "STATEID",
+      "PARCELID",
+      "TAXPARCELI",
+      "PARCELDATE",
+      "TAXROLLYEA",
+      "OWNERNME1",
+      "OWNERNME2",
+      "PSTLADRESS",
+      "SITEADRESS",
+      "ADDNUMPREF",
+      "ADDNUM",
+      "ADDNUMSUFF",
+      "PREFIX",
+      "STREETNAME",
+      "STREETTYPE",
+      "SUFFIX",
+      "LANDMARKNA",
+      "UNITTYPE",
+      "UNITID",
+      "PLACENAME",
+      "ZIPCODE",
+      "ZIP4",
+      "STATE",
+      "SCHOOLDIST",
+      "SCHOOLDI_1",
+      "IMPROVED",
+      "CNTASSDVAL",
+      "LNDVALUE",
+      "IMPVALUE",
+      "FORESTVALU",
+      "ESTFMKVALU",
+      "NETPRPTA",
+      "GRSPRPTA",
+      "PROPCLASS",
+      "AUXCLASS",
+      "ASSDACRES",
+      "DEEDACRES",
+      "GISACRES",
+      "CONAME",
+      "LOADDATE",
+      "PARCELFIPS",
+      "PARCELSRC",
+      "LONGITUDE",
+      "LATITUDE",
+      "Shape_Leng",
+      "Shape_Area",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "PARCELID",
+      "owner": "OWNERNME1",
+      "acres": "GISACRES",
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 55,
+   "why": [
+    "published by the host services.arcgis.com itself",
+    "has a parcel-id field (PARCELID)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Cranberry_production_parcels_in_Wisconsin_counties_of_Jackson_Monroe_Wood_and_Clark",
+   "owner": "services.arcgis.com",
+   "type": "FeatureServer",
+   "url": "http://services.arcgis.com/jDGuO8tYggdCCnUJ/arcgis/rest/services/Cranberry_production_parcels_in_Wisconsin_counties_of_Jackson_Monroe_Wood_and_Clark/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Cranberry_production_parcels_in_Wisconsin_counties_of_Jackson_Monroe_Wood_and_Clark",
+     "points": 5,
+     "name": "Cranberry_production_parcels_in_Wisconsin_counties_of_Jackson_Monroe_Wood_and_Clark",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "FID",
+      "OBJECTID",
+      "STATEID",
+      "PARCELID",
+      "TAXPARCELI",
+      "PARCELDATE",
+      "TAXROLLYEA",
+      "OWNERNME1",
+      "OWNERNME2",
+      "PSTLADRESS",
+      "SITEADRESS",
+      "ADDNUMPREF",
+      "ADDNUM",
+      "ADDNUMSUFF",
+      "PREFIX",
+      "STREETNAME",
+      "STREETTYPE",
+      "SUFFIX",
+      "LANDMARKNA",
+      "UNITTYPE",
+      "UNITID",
+      "PLACENAME",
+      "ZIPCODE",
+      "ZIP4",
+      "STATE",
+      "SCHOOLDIST",
+      "SCHOOLDI_1",
+      "IMPROVED",
+      "CNTASSDVAL",
+      "LNDVALUE",
+      "IMPVALUE",
+      "FORESTVALU",
+      "ESTFMKVALU",
+      "NETPRPTA",
+      "GRSPRPTA",
+      "PROPCLASS",
+      "AUXCLASS",
+      "DEEDACRES",
+      "GISACRES",
+      "CONAME",
+      "LOADDATE",
+      "PARCELFIPS",
+      "PARCELSRC",
+      "Shape_Leng",
+      "Shape_Area",
+      "ASSDACRES",
+      "LONGITUDE",
+      "LATITUDE",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "PARCELID",
+      "owner": "OWNERNME1",
+      "acres": "GISACRES",
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 55,
+   "why": [
+    "published by the host services.arcgis.com itself",
+    "has a parcel-id field (PROP_ID)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Existing_Proposed_Sand_Mining_Parcels_in_Bexar_and_Atascosa_Counties_Texas",
+   "owner": "services.arcgis.com",
+   "type": "FeatureServer",
+   "url": "http://services.arcgis.com/jDGuO8tYggdCCnUJ/arcgis/rest/services/Existing_Proposed_Sand_Mining_Parcels_in_Bexar_and_Atascosa_Counties_Texas/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Existing_Proposed_Sand_Mining_Parcels_in_Bexar_and_Atascosa_Counties_Texas",
+     "points": 5,
+     "name": "Existing_Proposed_Sand_Mining_Parcels_in_Bexar_and_Atascosa_Counties_Texas",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "FID",
+      "Acreage",
+      "PROPERTYID",
+      "ACTUAL_ACR",
+      "CALCULATED",
+      "DOCUMENT_D",
+      "PROP_ID",
+      "PropID",
+      "Situs",
+      "Owner",
+      "AddrLn2",
+      "AddrCity",
+      "AddrSt",
+      "Country",
+      "Zip",
+      "DBA",
+      "LandVal",
+      "TotVal",
+      "LglAcres",
+      "Acres",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "PROP_ID",
+      "owner": "Owner",
+      "acres": "Acres",
+      "address": "Situs"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,652 @@
+{
+ "geoid": "21019",
+ "county": "Boyd County",
+ "state": "KY",
+ "probe": "38.4758,-82.64385",
+ "note": "PROPOSAL ONLY - a person reviews this and moves the chosen service into parcel-services.json. Nothing here is used by a run.",
+ "candidates": [
+  {
+   "score": 50,
+   "why": [
+    "published by the host services.arcgis.com itself",
+    "has a parcel-id field (PARCEL_NO)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "BannockParcels",
+   "owner": "services.arcgis.com",
+   "type": "FeatureServer",
+   "url": "http://services.arcgis.com/cfmdyB05xBau1dNQ/arcgis/rest/services/BannockParcels/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "BannockParcels",
+     "points": 0,
+     "name": "BannockParcels",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "FID",
+      "OBJECTID",
+      "PARCEL_NO",
+      "GIS_ACRES",
+      "PARCEL_OWN",
+      "MAIL_ADDR1",
+      "MAIL_ADDR2",
+      "MAIL_ADDR3",
+      "MAIL_ADDR4",
+      "MAIL_CITY",
+      "MAIL_STATE",
+      "MAIL_ZIP",
+      "LEG_DESC1",
+      "LEG_DESC2",
+      "LEG_DESC3",
+      "LEG_DESC4",
+      "LEG_DESC5",
+      "LEG_DESC6",
+      "HOUSE_NO",
+      "APT_NO",
+      "STREET",
+      "DIRECTION",
+      "PROP_TYPE",
+      "PREV_NO",
+      "CODE_AREA",
+      "DEED",
+      "OLD_DEED",
+      "LAST_PERSO",
+      "MAP_NO",
+      "COMMENTS",
+      "Shape_STAr",
+      "Shape_STLe",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "PARCEL_NO",
+      "owner": null,
+      "acres": "GIS_ACRES",
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 50,
+   "why": [
+    "published by the host services.arcgis.com itself",
+    "has a parcel-id field (Parcel_ID)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Casco_ME_Parcel_Polygons",
+   "owner": "services.arcgis.com",
+   "type": "FeatureServer",
+   "url": "http://services.arcgis.com/cfmdyB05xBau1dNQ/arcgis/rest/services/Casco_ME_Parcel_Polygons/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Casco_ME_Parcel_Polygons",
+     "points": 0,
+     "name": "Casco_ME_Parcel_Polygons",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "FID",
+      "Layer",
+      "Text",
+      "Full_Num",
+      "PARCEL_NUM",
+      "FEATURE_ID",
+      "OBJECTID_1",
+      "ID",
+      "ParcelNumb",
+      "GisFullNum",
+      "CamaFullNu",
+      "Owner_s_Na",
+      "Location",
+      "Street_Nam",
+      "Street_Num",
+      "Street_N_1",
+      "Map",
+      "Map_Cut",
+      "Block",
+      "Block_Cut",
+      "Lot",
+      "Lot_Cut",
+      "Unit",
+      "Unit_Cut",
+      "Total_Asse",
+      "Total_As_1",
+      "Total_As_2",
+      "Total_As_3",
+      "Total_As_4",
+      "Total_As_5",
+      "Use_Code",
+      "Use_Descri",
+      "Use_Code_2",
+      "Use_2_Desc",
+      "Use_Code_3",
+      "Use_3_Desc",
+      "Zone",
+      "Zone_Desc",
+      "Frontage",
+      "Assessed_L",
+      "Co_grantee",
+      "Mailing_Ad",
+      "Mailing__1",
+      "City",
+      "State",
+      "Zip",
+      "Municip",
+      "Parcel_ID",
+      "Account_Nu",
+      "Land_Area_",
+      "Nhbd",
+      "Nhbd_Adj",
+      "Sale_Date",
+      "Book_Page",
+      "Price",
+      "Depth",
+      "Land_Value",
+      "AV_PID",
+      "Prcl_Ttl_E",
+      "Shape_Leng",
+      "Shape_Area",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "Parcel_ID",
+      "owner": "Owner_s_Na",
+      "acres": null,
+      "address": "Location"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 50,
+   "why": [
+    "published by the host services.arcgis.com itself",
+    "has a parcel-id field (Parcel_Num)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "PowerCounty_Parcels",
+   "owner": "services.arcgis.com",
+   "type": "FeatureServer",
+   "url": "http://services.arcgis.com/cfmdyB05xBau1dNQ/arcgis/rest/services/PowerCounty_Parcels/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "PowerCounty_Parcels",
+     "points": 0,
+     "name": "PowerCounty_Parcels",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "FID",
+      "OBJECTID",
+      "Attribute1",
+      "Parcel_Num",
+      "Instrument",
+      "S_T_R",
+      "Instrumen1",
+      "Instrumen2",
+      "Photo",
+      "Photo_2",
+      "Photo_3",
+      "Photo_4",
+      "Has_Photo",
+      "ANMYEAR",
+      "ANMPARCEL",
+      "ANMPROPTYP",
+      "ANMOWNER1",
+      "ANMOWNER2",
+      "ANMMAILAD1",
+      "ANMMAILAD2",
+      "ANMMAILAD3",
+      "ANMMAILAD4",
+      "ANMMAILAD5",
+      "ANMPROPAD1",
+      "ANMPROPAD2",
+      "ANMLGDESC1",
+      "ANMLGDESC2",
+      "ANMLGDESC3",
+      "ANMLGDESC4",
+      "ANMLGDESC5",
+      "GFTOWNSHIP",
+      "GFRANGE",
+      "GFSECTION",
+      "GFDSCRPTN",
+      "ANMZONING",
+      "ANMTTLACRS",
+      "ANMCODAREA",
+      "LNDVALUE",
+      "FRMVALUE",
+      "COMVALUE",
+      "RESVALUE",
+      "MFGVALUE",
+      "PERVALUE",
+      "ANMMRKTVAL",
+      "ANMHOMEVAL",
+      "ANMTAXVAL",
+      "CIPSTREET",
+      "CIPPREDIR",
+      "CIPSTRTNAM",
+      "CIPSTRTSFX",
+      "CIPPSTDIR",
+      "CIPSECUNIT",
+      "CIPSECOND",
+      "CIPCITY",
+      "CIPSTATE",
+      "CIPZIPCODE",
+      "ANMPPEVAL",
+      "PMLCODE",
+      "PMPTYPE",
+      "PMINITIALS",
+      "PMAYEAR"
+     ],
+     "field_guess": {
+      "apn": "Parcel_Num",
+      "owner": "ANMOWNER1",
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 50,
+   "why": [
+    "published by the host services.arcgis.com itself",
+    "has a parcel-id field (PARCELID)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Parcels_2024_area",
+   "owner": "services.arcgis.com",
+   "type": "FeatureServer",
+   "url": "http://services.arcgis.com/cfmdyB05xBau1dNQ/arcgis/rest/services/Parcels_2024_area/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Parcels_2024_area",
+     "points": 0,
+     "name": "Parcels_2024_area",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "FID",
+      "FtrID",
+      "GID",
+      "COUNTYFIPS",
+      "COUNTYID",
+      "PARCELID",
+      "PARCELLGL",
+      "SOURCEREF",
+      "SOURCEDATE",
+      "OWNERNAME",
+      "ADRNUM",
+      "PREDIR",
+      "PSTRNAM",
+      "PSTRTYPE",
+      "PSUFDIR",
+      "ADRCITY",
+      "ADRZIP5",
+      "ADRLABEL",
+      "PARCELTYPE",
+      "ASSESSVALU",
+      "IMPVALUE",
+      "LANDVALUE",
+      "TOTALVALUE",
+      "SUBDIVISIO",
+      "NBHD",
+      "SECTION",
+      "TOWNSHIP",
+      "RANGE",
+      "STR",
+      "TAXCODE",
+      "TAXAREA",
+      "CAMAKEY",
+      "CAMAPROV",
+      "COUNTY",
+      "DATAPROV",
+      "CAMADATE",
+      "PUBDATE",
+      "NATCOORDSY",
+      "SHAPE_STAR",
+      "SHAPE_STLE",
+      "Attachment",
+      "History",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "PARCELID",
+      "owner": "OWNERNAME",
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 45,
+   "why": [
+    "published by the host services.arcgis.com itself",
+    "has a parcel-id field (PIN)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "King_County_Parcels",
+   "owner": "services.arcgis.com",
+   "type": "FeatureServer",
+   "url": "http://services.arcgis.com/cfmdyB05xBau1dNQ/arcgis/rest/services/King_County_Parcels/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "King_County_Parcels",
+     "points": -5,
+     "name": "King_County_Parcels",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "FID",
+      "MAJOR",
+      "MINOR",
+      "PIN",
+      "Shape_area",
+      "Shape_len"
+     ],
+     "field_guess": {
+      "apn": "PIN",
+      "owner": null,
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 45,
+   "why": [
+    "published by the host services.arcgis.com itself",
+    "has a parcel-id field (Parcel_Num)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Power_County_Parcels_Nov",
+   "owner": "services.arcgis.com",
+   "type": "FeatureServer",
+   "url": "http://services.arcgis.com/cfmdyB05xBau1dNQ/arcgis/rest/services/Power_County_Parcels_Nov/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Power_County_Parcels_Nov",
+     "points": -5,
+     "name": "Power_County_Parcels_Nov",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "FID",
+      "OBJECTID_1",
+      "OBJECTID",
+      "Attribute1",
+      "Parcel_Num",
+      "Instrument",
+      "S_T_R",
+      "Instrumen1",
+      "Instrumen2",
+      "Photo",
+      "Photo_2",
+      "Photo_3",
+      "Photo_4",
+      "Has_Photo",
+      "Shape_Leng",
+      "Shape_Le_1",
+      "Shape_Area"
+     ],
+     "field_guess": {
+      "apn": "Parcel_Num",
+      "owner": null,
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 35,
+   "why": [
+    "published by the host services.arcgis.com itself",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Wimberley_TX_Parcels",
+   "owner": "services.arcgis.com",
+   "type": "FeatureServer",
+   "url": "http://services.arcgis.com/cfmdyB05xBau1dNQ/arcgis/rest/services/Wimberley_TX_Parcels/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Wimberley_TX_Parcels",
+     "points": -15,
+     "name": "Wimberley_TX_Parcels",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "FID",
+      "Level_",
+      "Layer",
+      "RefName",
+      "DocName",
+      "DocPath",
+      "DocType",
+      "FontID",
+      "Text",
+      "Height",
+      "TxtAngle",
+      "TxtWidth",
+      "TxtOblique",
+      "TxtJust",
+      "VertAlign",
+      "TxtMemo",
+      "GlobalID",
+      "RecordType",
+      "PropertyID",
+      "QuickRefID",
+      "PropertyNu",
+      "OwnerID",
+      "OwnerQuick",
+      "OwnerPrope",
+      "OwnerName",
+      "Address1",
+      "Address2",
+      "Address3",
+      "City",
+      "State",
+      "Zip",
+      "OwnershipP",
+      "Confidenti",
+      "ExemptionL",
+      "HSCapAdj",
+      "CurrHSCapA",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": "OwnerName",
+      "acres": null,
+      "address": "Address1"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 30,
+   "why": [
+    "published by the host services2.arcgis.com itself",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Mashpee_Fee_and_Trust_Parcels_withAttributes",
+   "owner": "services2.arcgis.com",
+   "type": "FeatureServer",
+   "url": "https://services2.arcgis.com/EU4dnuTJvNAXzccv/arcgis/rest/services/Mashpee_Fee_and_Trust_Parcels_withAttributes/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 8,
+     "layer_name": "Mashpee_Fee_Trust_Parcels_withAttributes",
+     "points": -20,
+     "name": "Mashpee_Fee_Trust_Parcels_withAttributes",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "MAP_PAR_ID",
+      "LOC_ID",
+      "POLY_TYPE",
+      "MAP_NO",
+      "SOURCE",
+      "PLAN_ID",
+      "LAST_EDIT",
+      "BND_CHK",
+      "NO_MATCH",
+      "TOWN_ID",
+      "SITE",
+      "ESN",
+      "LU_CODES",
+      "DEV",
+      "SYM1",
+      "SYM2",
+      "Shape__Length_1",
+      "Shape__Area_1",
+      "ID",
+      "STATUS",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": null,
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 30,
+   "why": [
+    "published by the host services2.arcgis.com itself",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Wampanoag_Tribal_Parcels",
+   "owner": "services2.arcgis.com",
+   "type": "FeatureServer",
+   "url": "https://services2.arcgis.com/EU4dnuTJvNAXzccv/arcgis/rest/services/Wampanoag_Tribal_Parcels/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Wampanoag_Tribal_Parcels",
+     "points": -20,
+     "name": "Wampanoag_Tribal_Parcels",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "FID",
+      "Name",
+      "Shape_Leng",
+      "Shape_Area",
+      "Shape__Area",
+      "Shape__Length",
+      "GlobalID"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": null,
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 25,
+   "why": [
+    "referenced by the web map 'County of Boyd KY GIS Data' (owner alertsense)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Boyd_County_esn",
+   "owner": "services.arcgis.com",
+   "type": "from web map",
+   "url": "http://services.arcgis.com/cfmdyB05xBau1dNQ/arcgis/rest/services/Boyd_County_esn/FeatureServer/0",
+   "modified": null,
+   "item": "https://www.arcgis.com/home/item.html?id=6f0c04a64a1d41e3802b0980844c20d3",
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Boyd_County_esn",
+     "points": -20,
+     "name": "Boyd_County_esn",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "FID",
+      "AREA",
+      "PERIMETER",
+      "ESN_",
+      "ESN_ID",
+      "NAME",
+      "ESN",
+      "MUID",
+      "THT",
+      "TANG",
+      "XOFF",
+      "YOFF",
+      "ANNOSTRING",
+      "Community"
+     ],
+     "field_guess": {
+      "apn": null,
+      "owner": null,
+      "acres": null,
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  }
+ ]
+}
