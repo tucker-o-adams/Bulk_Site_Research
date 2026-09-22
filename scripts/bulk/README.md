@@ -44,6 +44,21 @@ field names, absent cells grey / failed cells red, frozen site columns, autofilt
 URL, vintage, method, fields, tallies), **Provenance** (full site × field table), **Run** (input
 file + sha256, run time, counts, rejected rows, status meanings). Distances stay in metres.
 
+## KMZ
+
+```
+.venv_fema/Scripts/python.exe scripts/bulk/kmz.py Outputs/<batch>/ --name <Title>
+```
+
+Writes `<Title>.kmz` in the batch folder, entirely from `data/cache` and the CMS reference files (no
+network), so the map shows exactly what the workbook was computed from. Folders: **A** sites by
+`group` with a full popup; **B** HIFLD transmission within 5 km by voltage; **C** nearest line per
+site + connector; **D** substations within 5 km; **E** FEMA SFHA polygons within 1 km; **F** NWI
+polygons within 500 m; **G** schools / places of worship / nursing homes / hospitals within 1 mi;
+**H** site-by-site verification (group → state → site, fly-to). D–H ship switched off. E/F polygons
+are clipped to 1.5 km around each site (a whole-river polygon otherwise dominates the file).
+Windstream 200: 4.5 MB, 6,307 placemarks; folder C matches `Combined_3` on all 198 sites.
+
 ## Producers
 
 | Producer | Fields | Source | Status |
