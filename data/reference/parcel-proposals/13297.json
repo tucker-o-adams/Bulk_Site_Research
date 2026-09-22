@@ -1,0 +1,617 @@
+{
+ "geoid": "13297",
+ "county": "Walton County",
+ "state": "GA",
+ "probe": "33.7838866,-83.731829",
+ "note": "PROPOSAL ONLY - a person reviews this and moves the chosen service into parcel-services.json. Nothing here is used by a run.",
+ "candidates": [
+  {
+   "score": 70,
+   "why": [
+    "owner 'waltongis' looks official",
+    "title names parcels"
+   ],
+   "title": "walton_parcels view",
+   "owner": "waltongis",
+   "type": "Feature Service",
+   "url": "https://services9.arcgis.com/RtJQnMkoH9LGs7n0/arcgis/rest/services/walton_parcels_view/FeatureServer",
+   "modified": 1719270458000,
+   "item": "https://www.arcgis.com/home/item.html?id=fa351bcd37884d7c89f9a759b7f891af",
+   "layers": []
+  },
+  {
+   "score": 55,
+   "why": [
+    "published by the host services1.arcgis.com itself",
+    "has a parcel-id field (Parcel_no)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Parcels_7_2023",
+   "owner": "services1.arcgis.com",
+   "type": "FeatureServer",
+   "url": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Parcels_7_2023/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Parcels_7_2023",
+     "points": 5,
+     "name": "Parcels_7_2023",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "FID",
+      "Parcel_no",
+      "TOTALACRES",
+      "SUBD_NAME",
+      "Val",
+      "ClassCode",
+      "TaxDistr_1",
+      "Owner",
+      "MailingAdd",
+      "PhisicAddr",
+      "Acres",
+      "Value",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "Parcel_no",
+      "owner": "Owner",
+      "acres": "Acres",
+      "address": null
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 55,
+   "why": [
+    "published by the host services1.arcgis.com itself",
+    "has a parcel-id field (Parcel_no)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Parcels4_2025",
+   "owner": "services1.arcgis.com",
+   "type": "FeatureServer",
+   "url": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Parcels4_2025/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Parcels4_2025_1",
+     "points": 5,
+     "name": "Parcels4_2025_1",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "AssessedValue",
+      "PhisicalAddress",
+      "MailAddress",
+      "OBJECTID",
+      "ZIP_1",
+      "ADDRESS1",
+      "ADDRESS2",
+      "ADDRESS3",
+      "CITY",
+      "COUNTRY",
+      "FIRSTNAME",
+      "FLBASEVAL",
+      "FMVACC",
+      "FMVRES",
+      "LASTNAME",
+      "MIDDLE",
+      "ORIGHSVAL2",
+      "Parcel_no",
+      "STATE",
+      "SUBD_NAME",
+      "TAXDISTRIC",
+      "TOTALACRES",
+      "Owner",
+      "TaxDistrict",
+      "Acres",
+      "Value",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "Parcel_no",
+      "owner": "Owner",
+      "acres": "Acres",
+      "address": "PhisicalAddress"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 55,
+   "why": [
+    "published by the host services1.arcgis.com itself",
+    "has a parcel-id field (PARCEL_NO)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Parcels4_2026_HUB",
+   "owner": "services1.arcgis.com",
+   "type": "FeatureServer",
+   "url": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Parcels4_2026_HUB/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Parcels4_2026_HUB",
+     "points": 5,
+     "name": "Parcels4_2026_HUB",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "PhisicalAddress",
+      "MailAddress",
+      "Owner",
+      "TaxDistrict",
+      "Acres",
+      "Value",
+      "OBJECTID",
+      "ADDRESS1",
+      "ADDRESS2",
+      "ADDRESS3",
+      "CITY",
+      "COUNTRY",
+      "FIRSTNAME",
+      "MIDDLE",
+      "LASTNAME",
+      "FLBASEVAL",
+      "FMVACC",
+      "FMVRES",
+      "OBJECTID_1",
+      "ORIGHSVAL2",
+      "PARCEL_NO",
+      "Shape_Leng",
+      "STATE",
+      "SUBD_NAME",
+      "TAXDISTRIC",
+      "TOTALACRES",
+      "ZIP",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "PARCEL_NO",
+      "owner": "Owner",
+      "acres": "Acres",
+      "address": "PhisicalAddress"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 55,
+   "why": [
+    "published by the host services1.arcgis.com itself",
+    "has a parcel-id field (PARCEL_NO)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Parcels5_2024",
+   "owner": "services1.arcgis.com",
+   "type": "FeatureServer",
+   "url": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Parcels5_2024/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Parcels5_2024",
+     "points": 5,
+     "name": "Parcels5_2024",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "PARCEL_NO",
+      "SUBD_NAME",
+      "TAXDISTRIC",
+      "ClassCode",
+      "Owner",
+      "MailingAddress",
+      "OBJECTID",
+      "PhisicAddress",
+      "Value",
+      "Acres",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "PARCEL_NO",
+      "owner": "Owner",
+      "acres": "Acres",
+      "address": "MailingAddress"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 55,
+   "why": [
+    "published by the host services1.arcgis.com itself",
+    "has a parcel-id field (Parcel_no)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "Parcels9_2025HUB2",
+   "owner": "services1.arcgis.com",
+   "type": "FeatureServer",
+   "url": "https://services1.arcgis.com/Ug5xGQbHsD8zuZzM/arcgis/rest/services/Parcels9_2025HUB2/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "Parcels9_2025HUB1",
+     "points": 5,
+     "name": "Parcels9_2025HUB1",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "FID",
+      "Parcel_no",
+      "SUBD_NAME",
+      "TaxDistri",
+      "Owner",
+      "MailAddres",
+      "PhAddress",
+      "Value",
+      "Acres",
+      "ADDRESS1",
+      "ADDRESS2",
+      "ADDRESS3",
+      "CITY",
+      "COUNTRY",
+      "DIGCLASS",
+      "EXTENSION",
+      "Field",
+      "FIRSTNAME",
+      "FLBASEVAL",
+      "FMVACC",
+      "FMVRES",
+      "HOUSE_NO",
+      "LASTNAME",
+      "MIDDLE",
+      "ORIGHSVAL2",
+      "RETURNMAIL",
+      "STATE",
+      "STDIRECT",
+      "STREET_NAM",
+      "STTYPE",
+      "TAXDISTRIC",
+      "TOTALACRES",
+      "UNIT",
+      "ZIP",
+      "ZIP_1",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "Parcel_no",
+      "owner": "Owner",
+      "acres": "Acres",
+      "address": "PhAddress"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 55,
+   "why": [
+    "published by the host gis.ne.gov itself",
+    "has a parcel-id field (Parcel_ID)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "StatewideParcelsExternal",
+   "owner": "gis.ne.gov",
+   "type": "FeatureServer",
+   "url": "https://gis.ne.gov/Enterprise/rest/services/StatewideParcelsExternal/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "StatewideParcels",
+     "points": 5,
+     "name": "StatewideParcels",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "State_PID",
+      "Parcel_ID",
+      "Situs_Address",
+      "Ph_Rd_Num",
+      "Ph_Pre_Dir",
+      "Ph_Rd_Name",
+      "Ph_Rd_Type",
+      "Ph_Suf_Dir",
+      "Ph_City",
+      "Ph_State",
+      "Ph_Zip5",
+      "Ph_Zip4",
+      "Ph_Full_Address",
+      "GeoCode",
+      "Legal_Description",
+      "Twn",
+      "Sect",
+      "Rng",
+      "Rng_Direction",
+      "Qrt",
+      "Acres_Deeded",
+      "GIS_Acres",
+      "Subdivision",
+      "County_ID",
+      "ASSRLOC",
+      "Total_Assessed_Value",
+      "Land_Value",
+      "Improvements_Value",
+      "Other_Impr_Value",
+      "Ag_Land_Value",
+      "Classification_Code",
+      "Property_Parcel_Status",
+      "Property_Parcel_Type",
+      "Zoning",
+      "Location",
+      "City_Size",
+      "Parcel_Size",
+      "Property_SubClass",
+      "Irrigation_Type",
+      "Ownership_Type",
+      "TAXDIST",
+      "School_District",
+      "School_District_Name",
+      "Source_Document",
+      "Sales_Date",
+      "Sales_Value",
+      "Sale_Useability",
+      "CAMAUpdate",
+      "ShapeUpdate",
+      "Parcel_URL",
+      "BuildingYear",
+      "RCN",
+      "ImpSF",
+      "QualImp",
+      "CondImp",
+      "Neighborhood",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "Parcel_ID",
+      "owner": "Ownership_Type",
+      "acres": "GIS_Acres",
+      "address": "Location"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 55,
+   "why": [
+    "published by the host gis.ne.gov itself",
+    "has a parcel-id field (Parcel_ID)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "StatewideParcelsExternal",
+   "owner": "gis.ne.gov",
+   "type": "MapServer",
+   "url": "https://gis.ne.gov/Enterprise/rest/services/StatewideParcelsExternal/MapServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 0,
+     "layer_name": "StatewideParcels",
+     "points": 5,
+     "name": "StatewideParcels",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "OBJECTID",
+      "State_PID",
+      "Parcel_ID",
+      "Situs_Address",
+      "Ph_Rd_Num",
+      "Ph_Pre_Dir",
+      "Ph_Rd_Name",
+      "Ph_Rd_Type",
+      "Ph_Suf_Dir",
+      "Ph_City",
+      "Ph_State",
+      "Ph_Zip5",
+      "Ph_Zip4",
+      "Ph_Full_Address",
+      "GeoCode",
+      "Legal_Description",
+      "Twn",
+      "Sect",
+      "Rng",
+      "Rng_Direction",
+      "Qrt",
+      "Acres_Deeded",
+      "GIS_Acres",
+      "Subdivision",
+      "County_ID",
+      "ASSRLOC",
+      "Total_Assessed_Value",
+      "Land_Value",
+      "Improvements_Value",
+      "Other_Impr_Value",
+      "Ag_Land_Value",
+      "Classification_Code",
+      "Property_Parcel_Status",
+      "Property_Parcel_Type",
+      "Zoning",
+      "Location",
+      "City_Size",
+      "Parcel_Size",
+      "Property_SubClass",
+      "Irrigation_Type",
+      "Ownership_Type",
+      "TAXDIST",
+      "School_District",
+      "School_District_Name",
+      "Source_Document",
+      "Sales_Date",
+      "Sales_Value",
+      "Sale_Useability",
+      "CAMAUpdate",
+      "ShapeUpdate",
+      "Parcel_URL",
+      "BuildingYear",
+      "RCN",
+      "ImpSF",
+      "QualImp",
+      "CondImp",
+      "Neighborhood",
+      "Shape",
+      "Shape.STArea()",
+      "Shape.STLength()"
+     ],
+     "field_guess": {
+      "apn": "Parcel_ID",
+      "owner": "Ownership_Type",
+      "acres": "GIS_Acres",
+      "address": "Location"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 55,
+   "why": [
+    "published by the host arcgis-central.gis.vt.edu itself",
+    "has a parcel-id field (parcel_id)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "facilities/VABuildingandParcel",
+   "owner": "arcgis-central.gis.vt.edu",
+   "type": "FeatureServer",
+   "url": "https://arcgis-central.gis.vt.edu/arcgis/rest/services/facilities/VABuildingandParcel/FeatureServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 1,
+     "layer_name": "Virginia Tech Statewide Parcels",
+     "points": 5,
+     "name": "Virginia Tech Statewide Parcels",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "objectid",
+      "parcel_id",
+      "owner1",
+      "owner2",
+      "site_name",
+      "deed_acres",
+      "gis_acres",
+      "ownermail1",
+      "ownermail2",
+      "descript",
+      "county",
+      "site_addr",
+      "deed_plat",
+      "huc12_numb",
+      "huc12_name",
+      "source",
+      "co_gislink",
+      "facility",
+      "region",
+      "hokieserv_property",
+      "lease_no",
+      "owned_leased",
+      "Shape__Area",
+      "Shape__Length"
+     ],
+     "field_guess": {
+      "apn": "parcel_id",
+      "owner": "owner1",
+      "acres": "gis_acres",
+      "address": "site_addr"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  },
+  {
+   "score": 55,
+   "why": [
+    "published by the host arcgis-central.gis.vt.edu itself",
+    "has a parcel-id field (parcel_id)",
+    "no feature at the probe point (wrong county, or a filtered extract)"
+   ],
+   "title": "facilities/VABuildingandParcel",
+   "owner": "arcgis-central.gis.vt.edu",
+   "type": "MapServer",
+   "url": "https://arcgis-central.gis.vt.edu/arcgis/rest/services/facilities/VABuildingandParcel/MapServer",
+   "modified": null,
+   "item": null,
+   "layers": [
+    {
+     "layer": 1,
+     "layer_name": "Virginia Tech Statewide Parcels",
+     "points": 5,
+     "name": "Virginia Tech Statewide Parcels",
+     "geometryType": "esriGeometryPolygon",
+     "fields": [
+      "objectid",
+      "parcel_id",
+      "owner1",
+      "owner2",
+      "site_name",
+      "deed_acres",
+      "gis_acres",
+      "ownermail1",
+      "ownermail2",
+      "descript",
+      "county",
+      "site_addr",
+      "deed_plat",
+      "huc12_numb",
+      "huc12_name",
+      "source",
+      "co_gislink",
+      "facility",
+      "region",
+      "hokieserv_property",
+      "lease_no",
+      "owned_leased",
+      "shape",
+      "st_area(shape)",
+      "st_length(shape)"
+     ],
+     "field_guess": {
+      "apn": "parcel_id",
+      "owner": "owner1",
+      "acres": "gis_acres",
+      "address": "site_addr"
+     },
+     "probe": {
+      "features": 0
+     }
+    }
+   ]
+  }
+ ]
+}
