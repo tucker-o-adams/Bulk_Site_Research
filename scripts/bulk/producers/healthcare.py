@@ -13,7 +13,7 @@ Neither file lists non-certified facilities (e.g. some assisted-living, VA
 hospitals are separate). "Retirement homes" in the ordinary sense are covered
 only insofar as they are certified nursing facilities.
 """
-import csv, json, os
+import csv, json, os, threading
 from provenance import Value, absent, now_iso
 from producers.pointsets import score_rows, counts
 
@@ -35,15 +35,18 @@ FIELDS = ['nursing_home_nearest_m', 'nursing_home_nearest_name', 'nursing_home_n
           'hospital_nearest_geocode_match', 'hospitals_within_1mi']
 
 _NH = _H = _META = None
+_LOCK = threading.Lock()      # run.py calls run() from several threads; load the files once, all three together
 
 
 def _load():
     global _NH, _H, _META
-    if _NH is not None:
-        return
-    _NH = list(csv.DictReader(open(os.path.join(REF, 'cms_nursing_homes.csv'), encoding='utf-8')))
-    _H = list(csv.DictReader(open(os.path.join(REF, 'cms_hospitals.csv'), encoding='utf-8')))
-    _META = json.load(open(os.path.join(REF, 'cms_reference.meta.json'), encoding='utf-8'))
+    with _LOCK:
+        if _META is not None:
+            return
+        nh = list(csv.DictReader(open(os.path.join(REF, 'cms_nursing_homes.csv'), encoding='utf-8')))
+        h = list(csv.DictReader(open(os.path.join(REF, 'cms_hospitals.csv'), encoding='utf-8')))
+        _NH, _H = nh, h
+        _META = json.load(open(os.path.join(REF, 'cms_reference.meta.json'), encoding='utf-8'))
 
 
 def run(site, cache):

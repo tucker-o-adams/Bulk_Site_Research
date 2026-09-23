@@ -18,8 +18,8 @@ Unmapped is not absent (tbdi-pasa D-008). A point that returns no zone is
 either "Area Not Included" or "no NFHL data" and `fema_determination` says
 which. Zone X is only reported when the layer actually returned Zone X.
 
-This is the point under the pin, not the parcel. A parcel-clipped SFHA acreage
-is a later, per-survivor step.
+This is the point under the pin, not the parcel. The footprint producer measures
+SFHA acres over the parcel (or the square around the pin) from this same answer.
 """
 from datetime import datetime, timezone
 from geom import arcgis_query, geojson_polygon_dist_m

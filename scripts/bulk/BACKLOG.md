@@ -4,7 +4,7 @@ Staged work and, per data source, the fallback to switch to if the primary
 dies (HIFLD Open's retirement and two county parcel services vanishing in one
 month are the reason this list exists). Free/public sources only.
 
-Last reviewed 2026-09-21.
+Last reviewed 2026-09-23 (Phase 1 wrap-up).
 
 ## Phase 1 wrap-up (agreed 2026-09-23)
 
@@ -34,7 +34,7 @@ from **1984** imagery (`nwi_image_year`) and never re-mapped. NWI vintage is oft
 | ~~5~~ | `healthcare` (nursing homes) **built 2026-09-21** | CMS Provider Data Catalog "Provider Information" (id `4pq5-n9py`, ~14k, monthly, has `latitude`/`longitude` + `geocoding_footnote`). Download CSV once per run, query locally. | OSM `amenity=nursing_home` / `social_facility`; state licensing lists + Census geocoder |
 | ~~6~~ | `healthcare` (hospitals) **built 2026-09-21**; 85 % geocoded, the rest need a second geocoder pass | **No live free point layer** (HIFLD hub 404, `Hospitals_WFL1` needs a token, NASA NCCS mirror unresolvable). Plan: CMS "Hospital General Information" (id `xubh-q36u`, ~5k, addresses only) + **Census batch geocoder** (free, 10k addresses/request). | OSM `amenity=hospital`; HHS/ASPR emPOWER or state hospital lists + geocoder |
 | ~~7~~ | `baxtel` — **dropped as a producer 2026-09-23.** Mike's plan does not allow export, so Baxtel data will not be used directly in the pipeline or its outputs. Where it helps, a person opens the Baxtel map on the Baxtel site during review — that is a workflow step (9d), not a producer. Earlier notes kept for the record: | **Manual entry only — Michael's free account has no export (confirmed 2026-09-21).** A person reads the map per survivor site and types the nearby facilities into `baxtel_*` columns of the input CSV; the pipeline carries them with `status: manual` and the Baxtel citation. A regional snapshot for a batch's area is the practical unit, not per-site counts at 200 sites. Prior note: Baxtel terms prohibit scraping and commercial use of the Map Tool without written consent; data may be shared when Baxtel is cited. Mike exports the region's CSV (statuses: Operational, Construction, Planned, Prospective, Expansion, Land Bank, In Doubt, Withdrawn, Decommissioned; MW), file goes in `Reference/`, producer runs locally with `status: manual` and the citation. Open: confirm Mike's plan covers export; ask Baxtel in writing about data-room use. | none — this is proprietary data |
-| ~~8~~ | `parcel` **built 2026-09-22**; registry covers OH+VA statewide and 12 counties (46/200 Windstream sites). Remaining: 117 counties need discovery + review | County/state ArcGIS parcel services via a registry (tbdi-pasa `county-services.json` pattern). Ozinga expected to supply APN + acreage. | statewide services where they exist (VA, others); OSM has no parcels; mark `manual` with the county assessor URL |
+| ~~8~~ | `parcel` **built 2026-09-22**; registry now covers 7 states statewide (OH, FL, VA, IA, TX, AR, OK) plus county entries — Windstream 200: 130 resolve. The remaining tail is under "Parcel registry coverage" below | County/state ArcGIS parcel services via a registry (tbdi-pasa `county-services.json` pattern). Ozinga expected to supply APN + acreage. | statewide services where they exist (VA, others); OSM has no parcels; mark `manual` with the county assessor URL |
 | ~~9~~ | `excel` **built 2026-09-21** (`excel.py`) | — | — |
 | ~~9a~~ | `kmz` **built 2026-09-21** (`kmz.py`) | — | — |
 | 9b | `flags` (**deferred** until Michael weighs in on thresholds, 2026-09-21). **Process rule (2026-09-23): thresholds are set per portfolio from the product requirement (target MW, product type, minimum size) and approved before any site is assessed — never tuned to the batch's own distribution.** `flags.py` refuses to run without an approved thresholds file for the batch and records its version in `run.json`. Portfolios differ: Windstream COs (median 0.35 ac, few-MW edge — distribution-voltage service, so nearest substation of any voltage + feeder headroom matter more than ≥100 kV) vs Ozinga (≥2 ac, mostly 2–20 ac, some 100–200+ ac, per Mike's Teams message) | rules as JSON, one per portfolio, approved before use | — |
@@ -42,6 +42,26 @@ from **1984** imagery (`nwi_image_year`) and never re-mapped. NWI vintage is oft
 | 9d | **Operating workflow for the tool** (noted 2026-09-23; **a very basic draft is Phase 1 scope**, before the new-sites test). A defined sequence for running a portfolio end to end, with thresholds set *before* any site is assessed as an explicit step (see 9b) — e.g. intake → product/target-MW definition → thresholds approved → run → flags → survivors → parcels/exhibits. **Draft our own hypothesis of this workflow before sharing anything with Mike**; the thresholds template goes to him as part of it, not on its own | — | — |
 | 9e | **Per-site layers in the KMZ verification folder** (considered 2026-09-23, on hold). Copy each site's flood (SFHA), wetland (NWI) and neighbour points into its folder H entry, off by default. ~1–2 h, all from cache. Measured cost: KMZ 4.8 → ~8.4 MB (doc.kml ~18 → ~32 MB) because sites barely share polygons (1,341 per-site vs 1,319 unique SFHA; 663 vs 632 NWI; 1,610 vs 1,065 neighbour points). Options: clip per-site copies to 500 m (~+1.5–2 MB, preferred); move polygons into H and drop E/F (no size change, loses the all-sites toggle); neighbours only (tiny) | — | — |
 | 10 | Demand / generation / congestion (Mike's method) — **Phase 2** (2026-09-23) | EIA-860 generators + EIA Energy Atlas substations; ISO queue data (PJM, MISO, SPP, ERCOT publish CSVs) | needs Mike's method first |
+
+## Phase 1 scan — done 2026-09-23, and what was left for later
+
+Done: input header aliases and lenient acreage (`sites.py`); `geocode.py` command line; the stand-in
+square sized from `acres_stated`; parcel near-miss bounded to 15 m with a note (was: first feature,
+silently); Dallas DCAD reviewed with owner/address mapped; capped ArcGIS answers (`exceededTransferLimit`)
+fail instead of caching an undercount; thread-safe reference loading (healthcare, datacenter); PeeringDB
+vintage from the KMZ's own export date; `requirements-bulk.txt` completed; transmission fixture frozen in
+`fixtures/`; `mireye-screen-10` regenerated with all producers; README run sequence, input rules, checks; workbook band colours; root README and `Outputs/README.md`.
+
+Left for later (small, none blocks a test batch):
+- **NJ statewide parcels**: `Parcels_Composite_NJ_WM` (NJOGIS) is registered for Cumberland only and not
+  reviewed; probe coverage and owner fields before any NJ batch (see its `review_notes`).
+- **Cache keys ignore the service URL** (`cache.coord_key`): replacing a registered parcel service keeps
+  serving the old service's cached answers until those files are deleted. Add a URL hash to the key.
+- **`check_sources.py` gaps**: checks the NFHL root twice; skips PeeringDB, the CMS files, NAIP and the
+  figure's TIGERweb context layers.
+- **Paging**: a capped ArcGIS answer now fails loudly; if a dense-metro batch ever hits it (Manhattan did
+  not: 924 worship points, 1,032 blocks), page the query rather than shrink the radius.
+- `reference/probe_remaining_parcels.py` hard-codes the Windstream owner regex; make it a flag if reused.
 
 ## Fallbacks for producers already built
 
@@ -108,8 +128,8 @@ much safer, and a person still reviews every proposal.
 
 **Graceful degradation (G, built 2026-09-22).** A site with no parcel boundary is not a blank row.
 Every workbook now carries a frozen **`basis`** column — `parcel boundary` or `point only` — with a
-legend saying what each means, and every KMZ site popup says the same. Windstream 200: 58 parcel
-boundary, 142 point only. A "point only" site still has its flood zone, wetland distance, power,
+legend saying what each means, and every KMZ site popup says the same. Windstream 200 at the time: 58 parcel
+boundary, 142 point only (superseded: 130 parcel since the TX/AR/OK registrations, and "point only" became the square around the pin — see Footprint). A "point only" site still has its flood zone, wetland distance, power,
 metro and neighbour values; it simply has no acreage and no parcel-clipped figure, and says so.
 
 **Footprint (built 2026-09-23, Tucker's direction: don't block on parcels).** Every site now gets an

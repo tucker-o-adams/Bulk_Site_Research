@@ -11,7 +11,7 @@ status:
     absent   the source confirmed there is nothing there (e.g. no line within
              the search radius). This is an answer, not an error.
     failed   the source could not be reached or returned an error; value is None
-    manual   supplied by a person (e.g. a Baxtel snapshot column in the input CSV)
+    manual   supplied by a person (reserved: no producer writes it today)
 """
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone

@@ -14,9 +14,8 @@ enterprise or single-tenant data centers, or facilities that never registered.
 `Networks` is the number of networks present, a fair proxy for how much of a
 hub it is; a facility with >= HUB_NETWORKS networks is called a hub below.
 """
-import os, zipfile
+import os, threading, zipfile
 import xml.etree.ElementTree as ET
-from datetime import datetime, timezone
 from geom import point_dist_m
 from provenance import Value, absent, now_iso
 
@@ -39,12 +38,20 @@ _FACILITIES = None
 _VINTAGE = None
 
 
+_LOCK = threading.Lock()      # run.py calls run() from several threads
+
+
 def _load():
+    with _LOCK:
+        if _FACILITIES is None:
+            _read()
+
+
+def _read():
     global _FACILITIES, _VINTAGE
-    if _FACILITIES is not None:
-        return
     NS = '{http://www.opengis.net/kml/2.2}'
-    root = ET.fromstring(zipfile.ZipFile(KMZ).read('doc.kml'))
+    z = zipfile.ZipFile(KMZ)
+    root = ET.fromstring(z.read('doc.kml'))
     facs = []
     for pm in root.iter(NS + 'Placemark'):
         d = {x.get('name'): (x.find(NS + 'value').text or '').strip() if x.find(NS + 'value') is not None else ''
@@ -60,8 +67,11 @@ def _load():
         except ValueError:
             nets = 0
         facs.append((lng, lat, d.get('name', ''), d.get('city', ''), d.get('state', ''), nets, d.get('peeringDB', '')))
+    # the export date is doc.kml's timestamp inside the KMZ - it travels with the file, unlike the file's
+    # mtime, which becomes the clone/copy date on any other machine
+    y, mo, dd = z.getinfo('doc.kml').date_time[:3]
+    _VINTAGE = f'{y:04d}-{mo:02d}-{dd:02d}'
     _FACILITIES = facs
-    _VINTAGE = datetime.fromtimestamp(os.path.getmtime(KMZ), tz=timezone.utc).date().isoformat()
 
 
 def run(site, cache):

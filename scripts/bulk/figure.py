@@ -517,6 +517,7 @@ def main():
                     print(f"  {sid} {layer}: FAILED - {d['zones_error' if layer == 'flood' else 'nwi_error']} (rerun)")
                     continue
                 print(f'  {sid} {layer} {vname}: wrote {render(v, layer, run, out_dir)}')
+        os.makedirs(out_dir, exist_ok=True)       # every render may have failed, so nothing created it yet
         with open(os.path.join(out_dir, f"{sid}_figures{'_internal' if a.audience == 'internal' else ''}.json"), 'w', encoding='utf-8') as f:
             json.dump(d['log'], f, indent=1, default=str)
         print(f'  {sid}: {time.time() - t0:.0f}s')

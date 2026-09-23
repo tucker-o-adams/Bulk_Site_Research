@@ -47,8 +47,13 @@ def main():
     os.makedirs(a.out, exist_ok=True)
     sites, rejected = load_sites(a.sites)
     if a.only:
-        keep = set(x.strip() for x in a.only.split(','))
+        keep = set(x.strip() for x in a.only.split(',') if x.strip())
+        unknown = keep - {s.site_id for s in sites}
+        if unknown:
+            print(f'  --only: not in the accepted sites (typo, or a rejected row?): {", ".join(sorted(unknown))}')
         sites = [s for s in sites if s.site_id in keep]
+        if not sites:
+            raise SystemExit('--only matched no accepted site; nothing to run')
     producers = [importlib.import_module(f'producers.{n.strip()}') for n in a.producers.split(',') if n.strip()]
     for p in producers:
         if hasattr(p, 'EXPECTED_OWNER') and a.expected_owner:

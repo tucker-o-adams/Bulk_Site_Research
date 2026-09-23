@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """Shared machinery for "nearest X and count within radius" producers over
 point features: schools, places of worship, healthcare. Each producer names
-its sources; this does the distance work and the Value bookkeeping."""
+its sources; this does the distance work and the counts."""
 from geom import point_dist_m
-from provenance import Value, absent
 
 HALF_MI, ONE_MI = 804.672, 1609.344
 

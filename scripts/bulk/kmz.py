@@ -5,7 +5,7 @@
 
 No network: every geometry is read from data/cache (the exact responses the
 producers scored) or from the CMS reference files, so the map shows what the
-workbook was computed from. Folders, in the Windstream layout:
+workbook was computed from. Folders:
 
     A. Sites                       one pin per site; split into `group` subfolders only when the
                                    input CSV has a group column; popup = key values + sources   (off)
@@ -472,9 +472,10 @@ def main():
         gf = folder(H, f'{g} ({len(by_group[g])})') if grouped else H
         by_state = defaultdict(list)
         for s in by_group[g]:
-            by_state[s.get('state') or '??'].append(s)
+            by_state[s.get('state') or 'State not given'].append(s)
         for stt in sorted(by_state):
-            sf = folder(gf, f'{stt} ({len(by_state[stt])})')
+            # an input with no state column gets no state level, rather than one folder of everything
+            sf = folder(gf, f'{stt} ({len(by_state[stt])})') if len(by_state) > 1 or stt != 'State not given' else gf
             for s in sorted(by_state[stt], key=lambda s: s['site_id']):
                 la, ln = float(s['lat']), float(s['lng']); nb = nearest.get(s['site_id'])
                 dist = nb[0] if nb else 2000.0

@@ -1,1 +1,14 @@
-openpyxl>=3.1
+# scripts/bulk pipeline. Versions are the ones the Windstream 200 run used (.venv_fema, 2026-09).
+#   run.py producers:  pyproj, shapely (footprint)
+#   excel.py:          openpyxl
+#   kmz.py:            shapely
+#   figure.py:         rasterio, geopandas, matplotlib, numpy
+#   reference/*:       requests
+openpyxl==3.1.5
+pyproj==3.7.2
+shapely==2.1.2
+rasterio==1.5.1
+geopandas==1.1.4
+matplotlib==3.11.1
+numpy==2.5.2
+requests==2.34.2

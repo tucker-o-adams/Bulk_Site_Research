@@ -30,7 +30,8 @@ BAND_TITLES = {
     'healthcare': 'Nursing homes & hospitals (CMS)', 'parcel': 'Parcel (county / state GIS)',
     'footprint': 'Site footprint: parcel, else square around pin (FEMA, NWI)',
 }
-BAND_COLORS = ['1F3864', '2E5A46', '7A4A00', '4A235A', '0B5345', '6E2C00', '1B4F72', '4D5656', '5B2C6F', '145A32']
+BAND_COLORS = ['1F3864', '2E5A46', '7A4A00', '4A235A', '0B5345', '6E2C00', '1B4F72', '4D5656', '5B2C6F', '145A32',
+               '78281F', '1A5276', '3D3D3D']      # one per band: Site + 12 producers
 
 FILL_ABSENT = PatternFill('solid', fgColor='E7E6E6')
 FILL_FAILED = PatternFill('solid', fgColor='F8CBAD')
@@ -74,6 +75,8 @@ def main():
     sites = list(csv.DictReader(open(os.path.join(b, 'sites.csv'), encoding='utf-8-sig')))
     prov = list(csv.DictReader(open(os.path.join(b, 'provenance.csv'), encoding='utf-8-sig')))
     run = json.load(open(os.path.join(b, 'run.json'), encoding='utf-8'))
+    if not sites:
+        raise SystemExit(f"{b}: sites.csv has no sites - every input row was rejected; see sites_rejected in run.json")
     status = {(p['site_id'], p['field']): p for p in prov}
     producers = run['producers']            # name -> {source, url, vintage, fields, status_counts}
 

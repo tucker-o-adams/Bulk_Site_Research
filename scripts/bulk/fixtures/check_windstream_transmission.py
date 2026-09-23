@@ -9,8 +9,9 @@ any-voltage and the >= 100 kV nearest line.
 import csv, os, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.abspath(os.path.join(HERE, '..', '..', '..'))
-REF = os.path.join(ROOT, 'Outputs', 'Excel outputs', 'WS_Top200_Transmission_Distance.csv')
+# A frozen copy of Outputs/Excel outputs/WS_Top200_Transmission_Distance.csv, kept beside the check so
+# tidying Outputs/ cannot break the regression.
+REF = os.path.join(HERE, 'ws200_transmission_aug2026.csv')
 
 
 def num(x):
