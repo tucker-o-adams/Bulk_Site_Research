@@ -28,7 +28,7 @@ BAND_TITLES = {
     'wetlands': 'Wetlands (USFWS NWI)', 'metro': 'Metro (Census urban areas)', 'datacenter': 'Data centers (PeeringDB)',
     'housing': 'Housing (Census 2020 blocks)', 'schools': 'Schools (NCES)', 'worship': 'Places of worship (HIFLD)',
     'healthcare': 'Nursing homes & hospitals (CMS)', 'parcel': 'Parcel (county / state GIS)',
-    'footprint': 'Site footprint: parcel, else 200 m square (FEMA, NWI)',
+    'footprint': 'Site footprint: parcel, else square around pin (FEMA, NWI)',
 }
 BAND_COLORS = ['1F3864', '2E5A46', '7A4A00', '4A235A', '0B5345', '6E2C00', '1B4F72', '4D5656', '5B2C6F', '145A32']
 
@@ -83,7 +83,7 @@ def main():
     ws = wb.active; ws.title = 'Sites'
     site_cols = ['site_id', 'lat', 'lng'] + [c for c in OPTIONAL if any(s.get(c) for s in sites)]
     # G: every row says which basis its answers rest on. A site with no parcel boundary is not a
-    # blank row - its values are real, measured over the 200 m square around the pin (footprint
+    # blank row - its values are real, measured over the square around the pin (footprint
     # producer) or, in a batch run without it, at the pin.
     has_fp = any(s.get('fp_basis') for s in sites)
     has_parcel = has_fp or any('parcel_status' in s for s in sites)
@@ -99,8 +99,9 @@ def main():
               '(1 mi = 1,609 m) — grey = source confirmed nothing there (absent), red = source failed (see Gaps)')
     if has_fp:
         legend += ('   |   basis: "parcel boundary" = a parcel polygon resolved; the fp_* footprint columns (flood zones, SFHA, '
-                   'floodway, wetland acres) are measured over that parcel. "200 m square" = no parcel resolved, so the fp_* '
-                   'columns are measured over a 200 m x 200 m square (9.88 ac) centred on the pin - ground around the site, '
+                   'floodway, wetland acres) are measured over that parcel. "<n> m square" = no parcel resolved, so the fp_* '
+                   'columns are measured over a square centred on the pin - 200 m x 200 m (9.88 ac), or sized to acres_stated '
+                   'when the input gives a larger acreage - ground around the site, '
                    'not a parcel, and no parcel acreage is claimed. Point columns (fema_*, nwi_*) are always at the pin.')
     elif has_parcel:
         legend += ('   |   basis: "parcel boundary" = a parcel polygon resolved, so acreage and any parcel-clipped '

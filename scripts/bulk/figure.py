@@ -13,14 +13,14 @@ The imagery underneath is a pluggable provider (basemap.py); the overlays are th
 them. --audience external (the default) refuses any provider not cleared for external use; internal
 figures are marked "INTERNAL - not for distribution" and written as *_internal.png.
 
-Footprint outline: solid dark red = parcel boundary; dashed grey = the 200 m square, drawn grey
+Footprint outline: solid dark red = parcel boundary; dashed grey = the square around the pin, drawn grey
 because it is the lower-confidence shape.
 
 The measurements behind them are already in the workbook (the footprint producer's fp_* columns);
 this draws them. Generalised from the Site 2 exhibit (out/site2_*.py) to any site in a batch:
 
-    footprint  the shape the fp_* columns were measured over - parcel boundary, or the 200 m
-               square around the pin when no parcel resolved (labelled as such on the figure)
+    footprint  the shape the fp_* columns were measured over - parcel boundary, or the square
+               around the pin when no parcel resolved (200 m, or the stated acreage if larger) (labelled as such on the figure)
     imagery    the --basemap provider (basemap.py); default USGS NAIP, ~0.6 m, in the site's UTM zone
     flood      FEMA NFHL L28 zones for the whole frame (one bounding-box query; the producer's
                1 km answer does not reach the frame corners); ground no zone covers is hatched
@@ -70,7 +70,7 @@ VIEWS = ('site', 'regional')
 SITE_FILL = 0.65
 SITE_MIN_H = 60
 RES_M = {'regional': 0.6, 'site': 0.3}                       # requested; the server returns its native best
-FP_COLOUR = {True: '#8b0000', False: '#bdbdbd'}              # footprint line: parcel / 200 m square (grey = lower confidence)
+FP_COLOUR = {True: '#8b0000', False: '#bdbdbd'}              # footprint line: parcel / square around pin (grey = lower confidence)
 FP_LABEL = {True: '#8b0000', False: '#6e6e6e'}
 INTERNAL_MARK = 'INTERNAL - NOT FOR DISTRIBUTION'
 
@@ -298,7 +298,7 @@ def render(d, layer, run, out_dir):
     ax.plot([px_], [py_], marker='o', markersize=3.5, markeredgewidth=.8, color='#ffffff', markeredgecolor='#8b0000', zorder=12)
     pminx, pminy, pmaxx, pmaxy = d['fp_utm'].bounds
     title = (f"SITE PARCEL\n{num(s.get('fp_acres'), 2)} ac" if is_parcel
-             else f"{footprint.SQUARE_M} m SQUARE AROUND PIN\n(no parcel) {num(s.get('fp_acres'), 2)} ac")
+             else f"{s['fp_basis'].upper()} AROUND PIN\n(no parcel) {num(s.get('fp_acres'), 2)} ac")
     # site view: the footprint fills the frame, so the label sits in the top margin, not above the shape
     at, va = (((pminx + pmaxx) / 2, maxy - 0.025 * hspan), 'top') if d['view'] == 'site' else \
              (((pminx + pmaxx) / 2, pmaxy + 0.06 * hspan), 'bottom')
@@ -382,7 +382,7 @@ def render(d, layer, run, out_dir):
     y -= .004
     pn.add_patch(Rectangle((.06, y - .020), .075, .020, transform=T, fc='none', ec=FP_COLOUR[is_parcel] if is_parcel else '#8a8a8a', lw=1.2,
                            ls='-' if is_parcel else '--'))
-    pn.text(.15, y - .004, 'Site parcel boundary' if is_parcel else f'{footprint.SQUARE_M} m square around the pin (not a parcel)',
+    pn.text(.15, y - .004, 'Site parcel boundary' if is_parcel else f"{s['fp_basis']} around the pin (not a parcel)",
             ha='left', va='top', fontsize=6.3, transform=T); y -= .028
     for col, lw, ls, lab in [('#ff9d2e', 2.6, '-', 'Interstate / primary road'), ('#ffd24d', 2.2, '-', 'Secondary / arterial road'),
                              ('#f6e6b4', 1.0, '-', 'Local road'), ('#3a3a3a', 1.1, (0, (5, 3)), 'Railroad'),
@@ -434,7 +434,7 @@ def render(d, layer, run, out_dir):
     pn.text(.05, y, 'SOURCES', ha='left', va='top', fontsize=8, fontweight='bold', transform=T); y -= .020
     qz = d['log']['queries']
     parcel_src = (f"Parcel: {s.get('parcel_service_name')}; owner check: {s.get('parcel_owner_check') or 'n/a'}\n"
-                  if is_parcel else f"Footprint: no parcel resolved; {footprint.SQUARE_M} m square centred on the pin\n")
+                  if is_parcel else f"Footprint: no parcel resolved; {s['fp_basis']} centred on the pin\n")
     data_src = (f"Flood zones: FEMA NFHL MapServer L28 (hazards.fema.gov),\nqueried {(qz['zones']['fetched_at'] or '')[:10]}\n"
                 if layer == 'flood' else
                 f"Wetlands: USFWS National Wetlands Inventory Wetlands\nMapServer, queried {(qz['nwi']['fetched_at'] or '')[:10]}\n")
@@ -447,7 +447,7 @@ def render(d, layer, run, out_dir):
     fig.text(.005, .045, f"{kind}  |  {sid}  {s.get('address') or ''} {place}  |  {run['run_at'][:10]} batch  |  "
              f"Prepared {datetime.now().date().isoformat()}", fontsize=7.5, color='#222', ha='left', va='center')
     caveat = ('Parcel geometry is a county/state cadastral layer, not a boundary survey.' if is_parcel else
-              f'No parcel boundary: the {footprint.SQUARE_M} m square describes the ground around the pin, not the site parcel.')
+              f"No parcel boundary: the {s['fp_basis']} describes the ground around the pin, not the site parcel.")
     disclaim = ('Derived from the FEMA NFHL web service for planning screening only. Not a FIRM, not a LOMA/LOMR determination, '
                 'and no substitute for the effective printed FIRM panel or an elevation certificate. ' if layer == 'flood' else
                 'NWI wetlands are photointerpreted from aerial imagery for planning screening only. Not a jurisdictional determination '
@@ -499,7 +499,7 @@ def main():
             print(f'  {sid}: SKIPPED - no footprint in sites.csv (run run.py with the footprint producer first)')
             continue
         t0 = time.time()
-        fp = footprint.shape_at(float(s['lat']), float(s['lng']), Cache(CACHE, offline=True))
+        fp = footprint.shape_at(float(s['lat']), float(s['lng']), Cache(CACHE, offline=True), footprint.row_acres(s))
         if fp['stage'] != 'ok' or fp['basis'] != s['fp_basis']:
             print(f'  {sid}: SKIPPED - footprint no longer matches the workbook ({fp.get("basis") or fp.get("error")}); rerun run.py')
             continue

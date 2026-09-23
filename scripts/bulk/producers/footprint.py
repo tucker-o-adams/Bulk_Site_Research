@@ -7,8 +7,9 @@ area, so a flood sliver or a wetland 60 m from the pin is counted rather than mi
 
   shape     parcel.resolve(): the registered parcel polygon at the pin, the same one the parcel
             columns describe. No polygon (county unregistered or excluded, nothing at the pin)
-            -> a north-aligned 200 m x 200 m square, 40,000 m2 = 9.88 ac, built in a Lambert
-            azimuthal equal-area projection centred on the pin. A *failed* parcel query is a
+            -> a north-aligned square built in a Lambert azimuthal equal-area projection centred on
+            the pin: 200 m x 200 m (9.88 ac), or, when the input's acres_stated is larger, a square of
+            that area (a 100 ac site gets ~636 m), so a big site is not judged on a 10 ac patch. A *failed* parcel query is a
             failure, not a square: rerun rather than guess.
   flood     FEMA NFHL L28 zone polygons intersected with the shape: acres by zone, SFHA acres
             and %, floodway acres, and the acres no zone covers (Area Not Included / no study).
@@ -38,15 +39,16 @@ SQUARE_M = 200
 SOURCE = 'Site footprint (parcel boundary, else 200 m square) x FEMA NFHL + USFWS NWI'
 VINTAGE = None
 AC = 4046.8564224
-BASIS_PARCEL, BASIS_SQUARE = 'parcel boundary', f'{SQUARE_M} m square'
+BASIS_PARCEL, BASIS_SQUARE = 'parcel boundary', f'{SQUARE_M} m square'   # a larger stated acreage gives e.g. '636 m square'
 UNMAPPED_ZONES = {'AREA NOT INCLUDED'}
-METHOD_SHAPE = (f'parcel polygon from the registered parcel service at the pin; if none, a {SQUARE_M} m north-aligned '
-                'square centred on the pin (Lambert azimuthal equal-area, pin-centred); area in that projection')
+METHOD_SHAPE = (f'parcel polygon from the registered parcel service at the pin; if none, a north-aligned square centred on '
+                f'the pin, {SQUARE_M} m a side or the input acres_stated if larger (Lambert azimuthal equal-area, pin-centred); '
+                'area in that projection')
 METHOD_FLOOD = ('NFHL L28 zone polygons (the flood producer\'s 1 km answer, or a bounding-box query when the footprint '
                 'reaches past it) intersected with the footprint; unioned by zone; unmapped = footprint minus all zones')
 METHOD_NWI = ('NWI Wetlands polygons (the wetlands producer\'s 500 m answer, or a bounding-box query when the footprint '
               'reaches past it) intersected with the footprint; unioned by Cowardin wetland type')
-NOTE_SQUARE = (f'{SQUARE_M} m square around the pin stands in for the site - it is not a parcel; its acres describe '
+NOTE_SQUARE = ('the square around the pin stands in for the site - it is not a parcel; its acres describe '
                'the ground around the pin')
 NOTE_NWI = 'NWI is photointerpreted, not a jurisdictional determination'
 
@@ -66,10 +68,23 @@ def projection(la, ln):
             Transformer.from_crs(crs, 'EPSG:4326', always_xy=True).transform)
 
 
-def shape_at(la, ln, cache):
-    """The footprint at a pin. Returns a dict:
+def square_side_m(acres=None):
+    """Side of the stand-in square: SQUARE_M, or the side of a square of the stated acreage when that is larger."""
+    return max(SQUARE_M, round(math.sqrt(acres * AC))) if acres and acres > 0 else SQUARE_M
+
+
+def row_acres(row):
+    """acres_stated from a sites.csv row (kmz.py, figure.py), so they rebuild the same square run.py measured."""
+    try:
+        return float(row.get('acres_stated') or '') or None
+    except ValueError:
+        return None
+
+
+def shape_at(la, ln, cache, acres=None):
+    """The footprint at a pin (acres = the input's acres_stated, which sizes the square). Returns a dict:
         stage   'ok' or 'failed' (parcel lookup failed - no footprint, rerun)
-        basis   'parcel boundary' / '200 m square'
+        basis   'parcel boundary' / '<side> m square'
         why     for a square: why there is no parcel
         ll, m   the shape as a shapely geometry in lng/lat, and in pin-centred metres
         fwd     lng/lat -> metres transform
@@ -85,9 +100,10 @@ def shape_at(la, ln, cache):
         if not g.is_empty and g.area > 0:
             return {'stage': 'ok', 'basis': BASIS_PARCEL, 'why': None, 'll': g, 'm': transform(fwd, g), 'fwd': fwd, 'parcel': r}
         stage = 'empty'
-    h = SQUARE_M / 2
+    side = square_side_m(acres)
+    h = side / 2
     m = box(-h, -h, h, h)
-    return {'stage': 'ok', 'basis': BASIS_SQUARE, 'why': WHY_NO_PARCEL.get(stage, stage), 'll': transform(inv, m), 'm': m,
+    return {'stage': 'ok', 'basis': f'{side} m square', 'side_m': side, 'why': WHY_NO_PARCEL.get(stage, stage), 'll': transform(inv, m), 'm': m,
             'fwd': fwd, 'parcel': r}
 
 
@@ -152,7 +168,7 @@ def breakdown(groups, total_m2):
 
 def run(site, cache):
     la, ln = site.lat, site.lng
-    fp = shape_at(la, ln, cache)
+    fp = shape_at(la, ln, cache, site.acres_stated)
     if fp['stage'] == 'failed':
         return [failed(f, SOURCE, parcel.LYR, METHOD_SHAPE, fp['error'] + '; rerun - a failed lookup is never replaced by the square')
                 for f in FIELDS]
@@ -163,11 +179,13 @@ def run(site, cache):
         src_shape, url_shape = f"{svc.get('name')} ({svc.get('owner')})", svc['base']
         note_shape = 'the parcel the parcel_* columns describe; check parcel_owner_check before relying on it'
     else:
-        src_shape, url_shape = f'Constructed: {SQUARE_M} m square centred on the site pin', ''
-        note_shape = f"{NOTE_SQUARE}; no parcel because: {fp['why']}"
+        src_shape, url_shape = f"Constructed: {fp['basis']} centred on the site pin", ''
+        sized = (f"; sized to the input's acres_stated ({site.acres_stated:,.2f} ac)" if fp['side_m'] > SQUARE_M else
+                 f'; {SQUARE_M} m default' + (f" (acres_stated {site.acres_stated:,.2f} ac is smaller)" if site.acres_stated else ''))
+        note_shape = f"{NOTE_SQUARE}{sized}; no parcel because: {fp['why']}"
     out = [Value('fp_basis', fp['basis'], src_shape, url_shape, METHOD_SHAPE, fetched_at=r['fetched_parcel'] or now_iso(), note=note_shape),
            Value('fp_acres', round(total / AC, 4), src_shape, url_shape, METHOD_SHAPE, fetched_at=r['fetched_parcel'] or now_iso(), note=note_shape)]
-    basis_note = '' if fp['basis'] == BASIS_PARCEL else f' - over the {SQUARE_M} m square, not a parcel'
+    basis_note = '' if fp['basis'] == BASIS_PARCEL else f" - over the {fp['basis']}, not a parcel"
 
     # ---- flood
     feats, fetched, err = overlay_features(fp, la, ln, cache, 'flood', flood.zones_request(la, ln), flood.SFHA_SEARCH_M,

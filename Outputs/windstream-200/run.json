@@ -1,6 +1,6 @@
 {
- "run_at": "2026-09-23T19:59:31+00:00",
- "elapsed_s": 100.0,
+ "run_at": "2026-09-23T20:08:10+00:00",
+ "elapsed_s": 82.9,
  "input": {
   "path": "E:\\Claude\\Projects\\TBDI Modeling\\Mireye\\scripts\\bulk\\fixtures\\windstream_200.csv",
   "sha256": "c77e4bd57d501de85be3249311e2e4dc48983f91906618a07b84b44d9375894a"

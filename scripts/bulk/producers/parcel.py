@@ -45,7 +45,7 @@ on the right parcel; anything else is flagged for a person to look at.
 import math, re, urllib.parse
 from datetime import datetime, timezone
 from cache import coord_key
-from geom import arcgis_query, ring_contains
+from geom import arcgis_query, geojson_polygon_dist_m, ring_contains
 from provenance import Value, absent, failed, now_iso
 import registry
 
@@ -62,6 +62,11 @@ NOTE = ('one point landing in one polygon - confirm the APN against the assessor
 FIELDS = ['parcel_county', 'parcel_county_geoid', 'parcel_source_scope', 'parcel_service_name',
           'parcel_apn', 'parcel_owner', 'parcel_address', 'parcel_acres_gis', 'parcel_acres_stated_by_county',
           'parcel_acres_input', 'parcel_apn_matches_input', 'parcel_owner_check', 'parcel_vertices', 'parcel_status']
+
+# A returned polygon that does not contain the pin is accepted only this close to it (a WMS pixel
+# tolerance: OKMaps returned VIANOK05's parcel 0.6 m off the pin), and says so in its note.
+# Further away it may be the neighbour, so the site stays unresolved rather than guessed.
+NEAR_M = 15
 
 # Regex for the owner a portfolio's parcels should carry; set by run.py --expected-owner.
 # An `expected_owner` column in the input CSV overrides it per site.
@@ -215,10 +220,14 @@ def resolve(la, ln, cache):
         return {**r, 'stage': 'parcel_failed', 'error': e2}
     r['fetched_parcel'] = f2
     feats = features(resp, svc)
-    hits = [f for f in feats if contains(f.get('geometry') or {}, ln, la)] or feats[:1]
-    if not hits:
-        return {**r, 'stage': 'no_polygon'}
-    return {**r, 'stage': 'ok', 'feature': hits[0], 'hits': len(hits)}
+    hits = [f for f in feats if contains(f.get('geometry') or {}, ln, la)]
+    if hits:
+        return {**r, 'stage': 'ok', 'feature': hits[0], 'hits': len(hits), 'near_m': None}
+    near = sorted(((geojson_polygon_dist_m(f.get('geometry'), ln, la), i) for i, f in enumerate(feats)
+                   if (f.get('geometry') or {}).get('coordinates')))
+    if near and near[0][0] <= NEAR_M:
+        return {**r, 'stage': 'ok', 'feature': feats[near[0][1]], 'hits': 1, 'near_m': round(near[0][0], 1)}
+    return {**r, 'stage': 'no_polygon', 'nearest_m': round(near[0][0], 1) if near else None}
 
 
 def run(site, cache):
@@ -262,7 +271,9 @@ def run(site, cache):
         return out + [failed(f, src, url, METHOD, r['error']) for f in FIELDS[2:]]
     fetched = r['fetched_parcel'] or fetched
     if r['stage'] == 'no_polygon':
-        why = f'{svc.get("name")} returned no parcel polygon containing the point'
+        why = f'{svc.get("name")} returned no parcel polygon containing the point' + (
+            f"; the nearest returned polygon is {r['nearest_m']:,.1f} m away (over {NEAR_M} m, so it may be a neighbour - check by hand)"
+            if r.get('nearest_m') is not None else '')
         return out + [absent(f, src, url, METHOD, note=why, vintage=vint) for f in FIELDS[2:-1]] + \
             [mk('parcel_status', 'unresolved: no polygon at the point', src, url, vint, why)]
 
@@ -278,7 +289,9 @@ def run(site, cache):
         stated = float(stated) if stated not in (None, '') else None
     except (TypeError, ValueError):
         stated = None
-    note = NOTE + (f"; {r['hits']} parcels returned for one point" if r['hits'] > 1 else '')
+    note = NOTE + (f"; {r['hits']} parcels returned for one point" if r['hits'] > 1 else '') + (
+        f"; the polygon does not contain the pin - it is {r['near_m']} m away (within the {NEAR_M} m tolerance)"
+        if r.get('near_m') is not None else '')
 
     out += [mk('parcel_source_scope', scope, src, url, vint, note),
             mk('parcel_service_name', svc.get('name'), src, url, vint, note),

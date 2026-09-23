@@ -10,7 +10,7 @@ workbook was computed from. Folders, in the Windstream layout:
     A. Sites                       one pin per site; split into `group` subfolders only when the
                                    input CSV has a group column; popup = key values + sources   (off)
     A2. Site footprints            the shape the fp_* columns were measured over: parcel boundary
-                                   (green) or, with no parcel, the 200 m square around the pin (blue)  (off)
+                                   (green) or, with no parcel, the square around the pin (blue)  (off)
     B. Transmission within 5 km    HIFLD segments by voltage band               (off)
     C. Nearest line per site       the identified segment, and a site -> line connector  (off)
     D. Substations within 5 km     points by voltage band                      (off)
@@ -272,16 +272,15 @@ def main():
     if any(s.get('fp_basis') for s in sites):
         offline = Cache(CACHE, offline=True)
         for s in sites:
-            fp = footprint.shape_at(float(s['lat']), float(s['lng']), offline)
+            fp = footprint.shape_at(float(s['lat']), float(s['lng']), offline, footprint.row_acres(s))
             if fp['stage'] == 'ok':
                 fps[s['site_id']] = fp
         A2 = folder(doc, 'A2. Site footprints', visible=False, description=(
             f'The shape each site\'s footprint figures (fp_*) were measured over. Green = parcel boundary from the registered '
-            f'county/state parcel service. Blue = no parcel resolved, so a north-aligned {footprint.SQUARE_M} m square centred on '
-            'the pin stands in for the site - it is not a parcel.'))
-        for basis, style, label in ((footprint.BASIS_PARCEL, 'fpParcel', 'Parcel boundaries'),
-                                    (footprint.BASIS_SQUARE, 'fpSquare', f'{footprint.SQUARE_M} m squares (no parcel)')):
-            ids = [sid_ for sid_, fp in fps.items() if fp['basis'] == basis]
+            f'county/state parcel service. Blue = no parcel resolved, so a north-aligned square centred on the pin '
+            f'({footprint.SQUARE_M} m, or the stated acreage if larger) stands in for the site - it is not a parcel.'))
+        for is_parcel, style, label in ((True, 'fpParcel', 'Parcel boundaries'), (False, 'fpSquare', 'Squares around the pin (no parcel)')):
+            ids = [sid_ for sid_, fp in fps.items() if (fp['basis'] == footprint.BASIS_PARCEL) == is_parcel]
             ff = folder(A2, f'{label} ({len(ids)})')
             for s in (x for x in sites if x['site_id'] in ids):
                 add_poly_pm(ff, f"{s['site_id']} — {fmt(s.get('fp_acres'))} ac", style, site_desc(s, srcs), mapping(fps[s['site_id']]['ll']))
