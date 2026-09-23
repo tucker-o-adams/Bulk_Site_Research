@@ -67,6 +67,15 @@ def esri_point(lat, lng):
     return urllib.parse.quote(json.dumps({'x': lng, 'y': lat, 'spatialReference': {'wkid': 4326}}))
 
 
+def arcgis_envelope_query(layer_url, bbox, out_fields='*', fmt='geojson', precision=6, max_offset_m=2):
+    """ArcGIS REST query URL: features intersecting a lng/lat box (xmin, ymin, xmax, ymax), with geometry."""
+    env = urllib.parse.quote(json.dumps({'xmin': bbox[0], 'ymin': bbox[1], 'xmax': bbox[2], 'ymax': bbox[3],
+                                         'spatialReference': {'wkid': 4326}}))
+    return (f'{layer_url}/query?f={fmt}&outFields={urllib.parse.quote(out_fields)}&returnGeometry=true'
+            f'&geometryType=esriGeometryEnvelope&inSR=4326&outSR=4326&spatialRel=esriSpatialRelIntersects'
+            f'&geometry={env}&geometryPrecision={precision}&maxAllowableOffset={max_offset_m / 111320:.8f}')
+
+
 def arcgis_query(layer_url, lat, lng, out_fields='*', distance_m=None, geometry=False, where=None, fmt='json',
                  precision=None, max_offset_m=None):
     """Build an ArcGIS REST query URL: features intersecting the point (or a

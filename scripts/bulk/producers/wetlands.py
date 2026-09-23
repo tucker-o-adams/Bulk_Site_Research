@@ -42,14 +42,19 @@ def _attr(props, suffix):
     return None
 
 
+def near_request(la, ln):
+    """(cache key suffix, URL) of the polygons-within-500-m answer; footprint.py and kmz.py read the same one.
+    Geometry simplified to ~2 m: a riverine polygon (e.g. the Ohio River) otherwise comes back at 100+ MB."""
+    return f'near{SEARCH_M}', arcgis_query(WET, la, ln, '*', distance_m=SEARCH_M, geometry=True,
+                                           fmt='geojson', precision=6, max_offset_m=2)
+
+
 def run(site, cache):
     la, ln = site.lat, site.lng
     st, f1, e1 = cache.get_json(NAME, coord_key(la, ln, 'status'), arcgis_query(STATUS, la, ln, 'STATUS'))
     iy, f2, e2 = cache.get_json(NAME, coord_key(la, ln, 'imgyr'), arcgis_query(IMGYR, la, ln, 'PROJECT_NAME,IMAGE_YR'))
-    # geometry simplified to ~2 m: a riverine polygon (e.g. the Ohio River) otherwise comes back at 100+ MB
-    near, f3, e3 = cache.get_json(NAME, coord_key(la, ln, f'near{SEARCH_M}'),
-                                  arcgis_query(WET, la, ln, '*', distance_m=SEARCH_M, geometry=True,
-                                               fmt='geojson', precision=6, max_offset_m=2))
+    key, url = near_request(la, ln)
+    near, f3, e3 = cache.get_json(NAME, coord_key(la, ln, key), url)
     fetched = f3 or now_iso()
     if e3:
         return [failed(f, SOURCE, WET, METHOD, e3) for f in FIELDS]

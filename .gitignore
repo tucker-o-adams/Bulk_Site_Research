@@ -28,3 +28,6 @@ scripts/**/__pycache__/
 
 # --- raw service-response cache: on disk only (see LOCAL_ONLY.md); NWI responses can exceed 100 MB ---
 data/cache/
+
+# --- site exhibit PNGs (figure.py): 10-14 MB each, regenerated from data/cache on demand ---
+Outputs/**/figures/*.png

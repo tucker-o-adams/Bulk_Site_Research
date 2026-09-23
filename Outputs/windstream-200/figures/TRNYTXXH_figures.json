@@ -1,0 +1,96 @@
+{
+ "site_id": "TRNYTXXH",
+ "epsg": 32615,
+ "views_utm": {
+  "regional": [
+   269826.96915243805,
+   3415186.811607681,
+   271130.33184439776,
+   3416052.3915889952
+  ],
+  "site": [
+   270402.6903126921,
+   3415569.155458866,
+   270554.6106841437,
+   3415670.0477378103
+  ]
+ },
+ "query_frame_ll": [
+  -95.40708140448018,
+  30.847550952711437,
+  -95.39326742423863,
+  30.85560715468993
+ ],
+ "buffer_m": 400,
+ "basis": "parcel boundary",
+ "queries": {
+  "zones": {
+   "url": "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28/query?f=geojson&outFields=FLD_ZONE%2CZONE_SUBTY%2CSFHA_TF%2CSTATIC_BFE%2CDFIRM_ID&returnGeometry=true&geometryType=esriGeometryEnvelope&inSR=4326&outSR=4326&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A%20-95.40708140448018%2C%20%22ymin%22%3A%2030.847550952711437%2C%20%22xmax%22%3A%20-95.39326742423863%2C%20%22ymax%22%3A%2030.85560715468993%2C%20%22spatialReference%22%3A%20%7B%22wkid%22%3A%204326%7D%7D&geometryPrecision=6&maxAllowableOffset=0.00001797",
+   "fetched_at": "2026-09-23T15:07:57+00:00",
+   "error": null
+  },
+  "nwi": {
+   "url": "https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services/Wetlands/MapServer/0/query?f=geojson&outFields=%2A&returnGeometry=true&geometryType=esriGeometryEnvelope&inSR=4326&outSR=4326&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A%20-95.40708140448018%2C%20%22ymin%22%3A%2030.847550952711437%2C%20%22xmax%22%3A%20-95.39326742423863%2C%20%22ymax%22%3A%2030.85560715468993%2C%20%22spatialReference%22%3A%20%7B%22wkid%22%3A%204326%7D%7D&geometryPrecision=6&maxAllowableOffset=0.00001797",
+   "fetched_at": "2026-09-23T15:07:58+00:00",
+   "error": null
+  },
+  "roads_primary": {
+   "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Transportation/MapServer/2/query?f=geojson&outFields=NAME%2CMTFCC&returnGeometry=true&geometryType=esriGeometryEnvelope&inSR=4326&outSR=4326&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A%20-95.40708140448018%2C%20%22ymin%22%3A%2030.847550952711437%2C%20%22xmax%22%3A%20-95.39326742423863%2C%20%22ymax%22%3A%2030.85560715468993%2C%20%22spatialReference%22%3A%20%7B%22wkid%22%3A%204326%7D%7D&geometryPrecision=6&maxAllowableOffset=0.00001797",
+   "fetched_at": "2026-09-23T15:07:58+00:00",
+   "error": null
+  },
+  "roads_secondary": {
+   "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Transportation/MapServer/6/query?f=geojson&outFields=NAME%2CMTFCC&returnGeometry=true&geometryType=esriGeometryEnvelope&inSR=4326&outSR=4326&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A%20-95.40708140448018%2C%20%22ymin%22%3A%2030.847550952711437%2C%20%22xmax%22%3A%20-95.39326742423863%2C%20%22ymax%22%3A%2030.85560715468993%2C%20%22spatialReference%22%3A%20%7B%22wkid%22%3A%204326%7D%7D&geometryPrecision=6&maxAllowableOffset=0.00001797",
+   "fetched_at": "2026-09-23T15:07:58+00:00",
+   "error": null
+  },
+  "roads_local": {
+   "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Transportation/MapServer/8/query?f=geojson&outFields=NAME%2CMTFCC&returnGeometry=true&geometryType=esriGeometryEnvelope&inSR=4326&outSR=4326&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A%20-95.40708140448018%2C%20%22ymin%22%3A%2030.847550952711437%2C%20%22xmax%22%3A%20-95.39326742423863%2C%20%22ymax%22%3A%2030.85560715468993%2C%20%22spatialReference%22%3A%20%7B%22wkid%22%3A%204326%7D%7D&geometryPrecision=6&maxAllowableOffset=0.00001797",
+   "fetched_at": "2026-09-23T15:07:58+00:00",
+   "error": null
+  },
+  "railroads": {
+   "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Transportation/MapServer/9/query?f=geojson&outFields=NAME%2CMTFCC&returnGeometry=true&geometryType=esriGeometryEnvelope&inSR=4326&outSR=4326&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A%20-95.40708140448018%2C%20%22ymin%22%3A%2030.847550952711437%2C%20%22xmax%22%3A%20-95.39326742423863%2C%20%22ymax%22%3A%2030.85560715468993%2C%20%22spatialReference%22%3A%20%7B%22wkid%22%3A%204326%7D%7D&geometryPrecision=6&maxAllowableOffset=0.00001797",
+   "fetched_at": "2026-09-23T15:07:58+00:00",
+   "error": null
+  },
+  "hydro_linear": {
+   "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Hydro/MapServer/0/query?f=geojson&outFields=NAME%2CMTFCC&returnGeometry=true&geometryType=esriGeometryEnvelope&inSR=4326&outSR=4326&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A%20-95.40708140448018%2C%20%22ymin%22%3A%2030.847550952711437%2C%20%22xmax%22%3A%20-95.39326742423863%2C%20%22ymax%22%3A%2030.85560715468993%2C%20%22spatialReference%22%3A%20%7B%22wkid%22%3A%204326%7D%7D&geometryPrecision=6&maxAllowableOffset=0.00001797",
+   "fetched_at": "2026-09-23T15:07:59+00:00",
+   "error": null
+  },
+  "hydro_areal": {
+   "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Hydro/MapServer/1/query?f=geojson&outFields=NAME%2CMTFCC&returnGeometry=true&geometryType=esriGeometryEnvelope&inSR=4326&outSR=4326&spatialRel=esriSpatialRelIntersects&geometry=%7B%22xmin%22%3A%20-95.40708140448018%2C%20%22ymin%22%3A%2030.847550952711437%2C%20%22xmax%22%3A%20-95.39326742423863%2C%20%22ymax%22%3A%2030.85560715468993%2C%20%22spatialReference%22%3A%20%7B%22wkid%22%3A%204326%7D%7D&geometryPrecision=6&maxAllowableOffset=0.00001797",
+   "fetched_at": "2026-09-23T15:07:59+00:00",
+   "error": null
+  }
+ },
+ "basemaps": {
+  "site": {
+   "provider": "naip",
+   "audience": "external",
+   "scene": {
+    "OBJECTID": 181215,
+    "Name": "m_3009513_ne_15_060_20220912",
+    "Year": 2022,
+    "acquisition_date": 1662940800000,
+    "resolution_value": 0.6
+   },
+   "acquired": "2022-09-12",
+   "service": "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer"
+  },
+  "regional": {
+   "provider": "naip",
+   "audience": "external",
+   "scene": {
+    "OBJECTID": 181215,
+    "Name": "m_3009513_ne_15_060_20220912",
+    "Year": 2022,
+    "acquisition_date": 1662940800000,
+    "resolution_value": 0.6
+   },
+   "acquired": "2022-09-12",
+   "service": "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer"
+  }
+ }
+}

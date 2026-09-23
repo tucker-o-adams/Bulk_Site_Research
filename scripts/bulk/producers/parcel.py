@@ -181,20 +181,59 @@ def owner_check(site, svc, owner, apn, mk):
     return mk('different owner - review', why + '; the pin may be on a neighbouring parcel')
 
 
-def run(site, cache):
-    la, ln = site.lat, site.lng
-    fetched = now_iso()
+def resolve(la, ln, cache):
+    """County -> registered service -> the parcel polygon at the point, through the shared cache.
+
+    `run` turns every stage into Values; `footprint.py`, `kmz.py` and `figure.py` need only the
+    polygon, and must get the very one the workbook measured. `stage` is one of
+    county_failed, no_county, unregistered, excluded, parcel_failed, no_polygon, ok."""
+    r = {'stage': None, 'error': None, 'county': None, 'svc': None, 'scope': None, 'entry': None,
+         'exclusion': None, 'feature': None, 'hits': 0, 'fetched_county': None, 'fetched_parcel': None}
 
     # ---- 1. county
     cty, f1, e1 = cache.get_json(NAME, coord_key(la, ln, 'county'), arcgis_query(TIGER, la, ln, 'GEOID,NAME,STATE,COUNTY'))
     if e1:
-        return [failed(f, SOURCE, TIGER, METHOD, f'TIGERweb county query: {e1}') for f in FIELDS]
+        return {**r, 'stage': 'county_failed', 'error': e1}
     feats = (cty or {}).get('features') or []
     if not feats:
+        return {**r, 'stage': 'no_county'}
+    r['county'] = feats[0]['attributes']
+    r['fetched_county'] = f1
+    geoid, sfips = r['county'].get('GEOID'), r['county'].get('STATE')
+
+    # ---- 2. parcel service from the registry
+    svc, scope, entry = registry.for_county(geoid, sfips)
+    r.update(svc=svc, scope=scope, entry=entry)
+    if not svc:
+        return {**r, 'stage': 'unregistered'}
+    # A statewide layer can carry counties we may not use (TxGIO's licensed CAD datasets).
+    excl = (svc.get('exclude') or {}).get(str(geoid)) if scope == 'statewide' else None
+    if excl:
+        return {**r, 'stage': 'excluded', 'exclusion': excl}
+    resp, f2, e2 = cache.get_json(NAME, coord_key(la, ln, f"parcel_{scope}"), request_url(svc, la, ln))
+    if e2:
+        return {**r, 'stage': 'parcel_failed', 'error': e2}
+    r['fetched_parcel'] = f2
+    feats = features(resp, svc)
+    hits = [f for f in feats if contains(f.get('geometry') or {}, ln, la)] or feats[:1]
+    if not hits:
+        return {**r, 'stage': 'no_polygon'}
+    return {**r, 'stage': 'ok', 'feature': hits[0], 'hits': len(hits)}
+
+
+def run(site, cache):
+    la, ln = site.lat, site.lng
+    fetched = now_iso()
+    r = resolve(la, ln, cache)
+
+    # ---- 1. county
+    if r['stage'] == 'county_failed':
+        return [failed(f, SOURCE, TIGER, METHOD, f"TIGERweb county query: {r['error']}") for f in FIELDS]
+    if r['stage'] == 'no_county':
         return [absent(f, SOURCE, TIGER, METHOD, note='no US county contains this point', vintage='2025') for f in FIELDS]
-    a = feats[0]['attributes']
-    geoid, cname, sfips = a.get('GEOID'), a.get('NAME'), a.get('STATE')
-    fetched = f1 or fetched
+    a = r['county']
+    geoid, cname = a.get('GEOID'), a.get('NAME')
+    fetched = r['fetched_county'] or fetched
 
     def mk(fld, val, src, url, vint, note=NOTE):
         return Value(fld, val, src, url, METHOD, vintage=vint, fetched_at=fetched, note=note)
@@ -203,17 +242,14 @@ def run(site, cache):
            mk('parcel_county_geoid', geoid, 'Census TIGERweb Counties', TIGER, '2025', 'county by spatial query, not inferred from coordinates')]
 
     # ---- 2. parcel service from the registry
-    svc, scope, entry = registry.for_county(geoid, sfips)
-    if not svc:
+    svc, scope, entry = r['svc'], r['scope'], r['entry']
+    if r['stage'] == 'unregistered':
         why = (f'no parcel service registered for {cname} County ({geoid}); run '
                f'scripts/bulk/reference/discover_parcel_service.py --geoid {geoid} and review the proposal')
         return out + [absent(f, SOURCE, LYR, METHOD, note=why, vintage='2025') for f in FIELDS[2:-1]] + \
             [mk('parcel_status', 'unresolved: no registered service', SOURCE, LYR, '2025', why)]
-
-    # A statewide layer can carry counties we may not use (TxGIO's licensed CAD datasets).
-    excl = (svc.get('exclude') or {}).get(str(geoid)) if scope == 'statewide' else None
-    if excl:
-        why = f"{svc.get('name')} excludes {cname} County ({geoid}): {excl.get('reason')}"
+    if r['stage'] == 'excluded':
+        why = f"{svc.get('name')} excludes {cname} County ({geoid}): {r['exclusion'].get('reason')}"
         return out + [absent(f, SOURCE, LYR, METHOD, note=why, vintage='2025') for f in FIELDS[2:-1]] + \
             [mk('parcel_status', 'unresolved: county excluded from the statewide layer', SOURCE, LYR, '2025', why)]
 
@@ -222,18 +258,15 @@ def run(site, cache):
     # Iowa 2017 snapshot reviewed in 2026 must not carry a 2026 vintage.
     vint = svc.get('data_vintage') or entry.get('reviewed') or svc.get('reviewed')
     src = f"{svc.get('name')} ({svc.get('owner')})"
-    resp, f2, e2 = cache.get_json(NAME, coord_key(la, ln, f"parcel_{scope}"), request_url(svc, la, ln))
-    if e2:
-        return out + [failed(f, src, url, METHOD, e2) for f in FIELDS[2:]]
-    fetched = f2 or fetched
-    feats = features(resp, svc)
-    hits = [f for f in feats if contains(f.get('geometry') or {}, ln, la)] or feats[:1]
-    if not hits:
+    if r['stage'] == 'parcel_failed':
+        return out + [failed(f, src, url, METHOD, r['error']) for f in FIELDS[2:]]
+    fetched = r['fetched_parcel'] or fetched
+    if r['stage'] == 'no_polygon':
         why = f'{svc.get("name")} returned no parcel polygon containing the point'
         return out + [absent(f, src, url, METHOD, note=why, vintage=vint) for f in FIELDS[2:-1]] + \
             [mk('parcel_status', 'unresolved: no polygon at the point', src, url, vint, why)]
 
-    f = hits[0]
+    f = r['feature']
     g = f.get('geometry') or {}
     p = f.get('properties') or {}
     vint = as_date(registry.pick(p, svc, 'vintage')) or vint
@@ -245,7 +278,7 @@ def run(site, cache):
         stated = float(stated) if stated not in (None, '') else None
     except (TypeError, ValueError):
         stated = None
-    note = NOTE + (f'; {len(hits)} parcels returned for one point' if len(hits) > 1 else '')
+    note = NOTE + (f"; {r['hits']} parcels returned for one point" if r['hits'] > 1 else '')
 
     out += [mk('parcel_source_scope', scope, src, url, vint, note),
             mk('parcel_service_name', svc.get('name'), src, url, vint, note),

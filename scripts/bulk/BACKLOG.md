@@ -21,6 +21,7 @@ Last reviewed 2026-09-21.
 | ~~9~~ | `excel` **built 2026-09-21** (`excel.py`) | — | — |
 | ~~9a~~ | `kmz` **built 2026-09-21** (`kmz.py`) | — | — |
 | 9b | `flags` (**deferred** until Michael weighs in on thresholds, 2026-09-21) | rules as JSON | — |
+| 9c | **Sharper imagery for site exhibits** (agreed 2026-09-23). NAIP is 60 cm in most states, so `figure.py`'s site view of a sub-acre parcel is pixelated — the source's limit, not ours (the site view already requests its own frame). Plug in free state ortho where it beats NAIP, per state, NAIP as the fallback | **KY:** KyFromAbove 3–6 in, free, Cloud-Optimized GeoTIFFs on AWS Open Data (`registry.opendata.aws/kyfromabove`); the state ImageServer `Ky_KYAPED_Imagery` is only 2012–14 and errored on one test export. **TX:** no — free statewide is 0.5–1 m; the 6-in Texas Imagery Service is limited to TX governments and their contractors. Check each new batch state. Record each source's licence before a sold report (NAIP is public domain). Google Earth / Maps is **not** an option for the pipeline: paid API, and commercial use is prohibited under Google's Geo Guidelines | NAIP (current) |
 | 10 | Demand / generation / congestion (Mike's method) | EIA-860 generators + EIA Energy Atlas substations; ISO queue data (PJM, MISO, SPP, ERCOT publish CSVs) | needs Mike's method first |
 
 ## Fallbacks for producers already built
@@ -91,6 +92,12 @@ Every workbook now carries a frozen **`basis`** column — `parcel boundary` or 
 legend saying what each means, and every KMZ site popup says the same. Windstream 200: 58 parcel
 boundary, 142 point only. A "point only" site still has its flood zone, wetland distance, power,
 metro and neighbour values; it simply has no acreage and no parcel-clipped figure, and says so.
+
+**Footprint (built 2026-09-23, Tucker's direction: don't block on parcels).** Every site now gets an
+area to measure over: the parcel where one resolves, otherwise a 200 m square centred on the pin
+(`producers/footprint.py`, `fp_*` columns). The `basis` column reads `parcel boundary` / `200 m square`.
+KMZ folder A2 draws the shapes; `figure.py --only` makes PNG exhibits for chosen sites. When more
+counties are registered, a rerun turns their squares into parcels with no other change.
 
 Not deliverable as originally scoped: **there is no free national building-footprint service** to
 estimate buildable area from — every Hub hit is a single county or city layer, and Microsoft's

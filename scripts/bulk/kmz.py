@@ -8,14 +8,16 @@ producers scored) or from the CMS reference files, so the map shows what the
 workbook was computed from. Folders, in the Windstream layout:
 
     A. Sites                       one pin per site, styled by `group`; popup = key values + sources
+    A2. Site footprints            the shape the fp_* columns were measured over: parcel boundary
+                                   (green) or, with no parcel, the 200 m square around the pin (blue)
     B. Transmission within 5 km    HIFLD segments by voltage band
     C. Nearest line per site       the identified segment, and a site -> line connector
     D. Substations within 5 km     points by voltage band                      (off)
     E. Flood: SFHA within 1 km     FEMA A/AE/AH/AO/V polygons                  (off)
     F. Wetlands within 500 m       NWI polygons                                 (off)
     G. Neighbors within 1 mi       schools, places of worship, nursing homes, hospitals (off)
-    H. Site-by-site verification   group -> state -> site: pin, nearest line, connector,
-                                   nearest substation, fly-to                  (off)
+    H. Site-by-site verification   group -> state -> site: pin, footprint, nearest line,
+                                   connector, nearest substation, fly-to       (off)
 """
 import argparse, csv, html, json, math, os, sys, zipfile
 import xml.etree.ElementTree as ET
@@ -23,9 +25,10 @@ from collections import defaultdict
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from cache import coord_key, _safe                       # noqa: E402
+from cache import Cache, coord_key, _safe                # noqa: E402
 from geom import point_dist_m, geojson_polygon_dist_m    # noqa: E402
 from shapely.geometry import shape, box, mapping           # noqa: E402
+from producers import footprint                            # noqa: E402
 
 CLIP_M = 1500     # polygons in E/F are clipped to this box around the site they were fetched for
 
@@ -166,13 +169,30 @@ def fmt(v, unit=''):
     return s + unit
 
 
+def basis_text(s):
+    """What the site's area figures rest on. fp_basis when the footprint producer ran; the parcel status otherwise."""
+    if s.get('fp_basis') == footprint.BASIS_PARCEL or (not s.get('fp_basis') and s.get('parcel_status') == 'ok'):
+        return 'parcel boundary'
+    if s.get('fp_basis'):
+        return (f"{esc(s['fp_basis'])} around the pin - no parcel for {esc(s.get('parcel_county') or 'this county')}; "
+                'footprint figures describe the square, not a parcel')
+    return 'point only - no parcel service registered for ' + esc(s.get('parcel_county') or 'this county') + '; values are measured at the pin'
+
+
 def site_desc(s, srcs):
     """Popup: key values by producer, with the source name."""
     def m(v):
         return '—' if v in (None, '') else f'{float(v):,.0f} m ({float(v) / MI:.2f} mi)'
     rows = [
         ('Site', f"<b>{esc(s['site_id'])}</b> {esc(s.get('name'))}<br/>{esc(s.get('address'))} {esc(s.get('city') or '')} {esc(s.get('state'))}<br/>group: {esc(s.get('group'))}"
-                 + (f"<br/><i>basis: {'parcel boundary' if s.get('parcel_status') == 'ok' else 'point only - no parcel service registered for ' + esc(s.get('parcel_county') or 'this county') + '; values are measured at the pin'}</i>" if s.get('parcel_status') else '')),
+                 + (f"<br/><i>basis: {basis_text(s)}</i>" if s.get('fp_basis') or s.get('parcel_status') else '')),
+    ]
+    if s.get('fp_basis'):
+        rows.append(('Footprint', f"{esc(s.get('fp_basis'))}, {fmt(s.get('fp_acres'))} ac<br/>"
+                                  f"flood: {esc(s.get('fp_flood_zones')) or 'no FEMA determination'}; SFHA <b>{fmt(s.get('fp_sfha_acres'))} ac</b> "
+                                  f"({fmt(s.get('fp_sfha_pct'))}%), floodway {fmt(s.get('fp_floodway_acres'))} ac, unmapped {fmt(s.get('fp_flood_unmapped_acres'))} ac<br/>"
+                                  f"NWI wetlands: <b>{fmt(s.get('fp_nwi_acres'))} ac</b> ({fmt(s.get('fp_nwi_pct'))}%) {esc(s.get('fp_nwi_types'))}"))
+    rows += [
         (srcs.get('transmission', 'Transmission'), f"nearest line {m(s.get('tx_nearest_m'))} — {fmt(s.get('tx_voltage_kv'), ' kV')} [{esc(s.get('tx_voltage_basis'))}] {esc(s.get('tx_owner'))}<br/>"
                                                     f"nearest ≥100 kV {m(s.get('tx_100kv_nearest_m'))} — {fmt(s.get('tx_100kv_voltage_kv'), ' kV')}"),
         (srcs.get('substations', 'Substations'), f"nearest {m(s.get('sub_nearest_m'))} — {esc(s.get('sub_nearest_name'))} {fmt(s.get('sub_nearest_max_kv'), ' kV')} ({esc(s.get('sub_nearest_type'))}, kV inferred={esc(s.get('sub_nearest_kv_inferred'))})<br/>"
@@ -226,6 +246,9 @@ def main():
     for sid, line, fill in (('sfha', 'ffd06f1f', '66d06f1f'), ('nwi', 'ff1cc37f', '551cc37f')):
         st = sub(doc, 'Style', id=sid); ls = sub(st, 'LineStyle'); sub(ls, 'color', line); sub(ls, 'width', '2')
         ps = sub(st, 'PolyStyle'); sub(ps, 'color', fill); sub(ps, 'fill', '1'); sub(ps, 'outline', '1')
+    for sid, line in (('fpParcel', 'ff00ff00'), ('fpSquare', 'ffffc864')):      # outline only: imagery shows through
+        st = sub(doc, 'Style', id=sid); ls = sub(st, 'LineStyle'); sub(ls, 'color', line); sub(ls, 'width', '2.5')
+        ps = sub(st, 'PolyStyle'); sub(ps, 'fill', '0'); sub(ps, 'outline', '1')
 
     # ---- A. Sites
     A = folder(doc, f'A. Sites ({len(sites)})', open_=True)
@@ -236,6 +259,28 @@ def main():
         gf = folder(A, f'{g} ({len(by_group[g])})')
         for s in by_group[g]:
             add_point_pm(gf, s['site_id'], f'site_{i}', site_desc(s, srcs), float(s['lng']), float(s['lat']))
+
+    # ---- A2. Site footprints: the very shape the fp_* columns were measured over (offline: cache only)
+    fps = {}
+    if any(s.get('fp_basis') for s in sites):
+        offline = Cache(CACHE, offline=True)
+        for s in sites:
+            fp = footprint.shape_at(float(s['lat']), float(s['lng']), offline)
+            if fp['stage'] == 'ok':
+                fps[s['site_id']] = fp
+        A2 = folder(doc, 'A2. Site footprints', description=(
+            f'The shape each site\'s footprint figures (fp_*) were measured over. Green = parcel boundary from the registered '
+            f'county/state parcel service. Blue = no parcel resolved, so a north-aligned {footprint.SQUARE_M} m square centred on '
+            'the pin stands in for the site - it is not a parcel.'))
+        for basis, style, label in ((footprint.BASIS_PARCEL, 'fpParcel', 'Parcel boundaries'),
+                                    (footprint.BASIS_SQUARE, 'fpSquare', f'{footprint.SQUARE_M} m squares (no parcel)')):
+            ids = [sid_ for sid_, fp in fps.items() if fp['basis'] == basis]
+            ff = folder(A2, f'{label} ({len(ids)})')
+            for s in (x for x in sites if x['site_id'] in ids):
+                add_poly_pm(ff, f"{s['site_id']} — {fmt(s.get('fp_acres'))} ac", style, site_desc(s, srcs), mapping(fps[s['site_id']]['ll']))
+        missing = [s['site_id'] for s in sites if s['site_id'] not in fps]
+        if missing:
+            print(f'  A2: no footprint for {len(missing)} sites (parcel lookup failed or not cached): {", ".join(missing[:10])}')
 
     # ---- B, C: transmission from the cache
     seen, tiers, nearest = set(), defaultdict(list), {}
@@ -432,6 +477,10 @@ def main():
                 look = sub(site_f, 'LookAt'); sub(look, 'longitude', ln); sub(look, 'latitude', la); sub(look, 'altitude', '0')
                 sub(look, 'heading', '0'); sub(look, 'tilt', '0'); sub(look, 'range', str(max(400.0, dist * 4.0))); sub(look, 'altitudeMode', 'relativeToGround')
                 add_point_pm(site_f, f"{s['site_id']} (site)", 'verifySite', site_desc(s, srcs), ln, la)
+                fp = fps.get(s['site_id'])
+                if fp:
+                    add_poly_pm(site_f, f"footprint — {fp['basis']}, {fmt(s.get('fp_acres'))} ac",
+                                'fpParcel' if fp['basis'] == footprint.BASIS_PARCEL else 'fpSquare', '', mapping(fp['ll']))
                 if nb:
                     d, fp, p, parts = nb
                     add_line_pm(site_f, f"nearest line — {f'{v:g} kV' if v else 'kV n/p'} @ {d:,.0f} m", 'nearLine', f"ID {esc(p.get('ID'))}; owner {esc(p.get('OWNER'))}", parts)

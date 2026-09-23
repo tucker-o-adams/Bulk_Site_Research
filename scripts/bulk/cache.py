@@ -26,8 +26,9 @@ def _safe(key: str) -> str:
 
 
 class Cache:
-    def __init__(self, root: str):
+    def __init__(self, root: str, offline: bool = False):
         self.root = root
+        self.offline = offline      # a miss returns an error instead of fetching (kmz.py: map what was measured)
         self.hits = 0
         self.misses = 0
 
@@ -44,6 +45,8 @@ class Cache:
             self.hits += 1
             return rec['response'], rec['fetched_at'], None
         self.misses += 1
+        if self.offline:
+            return None, None, 'not in cache (offline)'
         err = None
         for i in range(tries):
             try:

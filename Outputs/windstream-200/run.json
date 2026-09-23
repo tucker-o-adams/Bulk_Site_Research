@@ -1,6 +1,6 @@
 {
- "run_at": "2026-09-22T21:29:42+00:00",
- "elapsed_s": 39.4,
+ "run_at": "2026-09-23T14:32:14+00:00",
+ "elapsed_s": 93.8,
  "input": {
   "path": "E:\\Claude\\Projects\\TBDI Modeling\\Mireye\\scripts\\bulk\\fixtures\\windstream_200.csv",
   "sha256": "221d226bfd053d1567f5bb78718bbb7ccc46428aa352fd520ed99924948e5f5d"
@@ -252,10 +252,31 @@
     "ok": 1648,
     "absent": 1152
    }
+  },
+  "footprint": {
+   "source": "Site footprint (parcel boundary, else 200 m square) x FEMA NFHL + USFWS NWI",
+   "url": null,
+   "vintage": null,
+   "fields": [
+    "fp_basis",
+    "fp_acres",
+    "fp_flood_zones",
+    "fp_sfha_acres",
+    "fp_sfha_pct",
+    "fp_floodway_acres",
+    "fp_flood_unmapped_acres",
+    "fp_nwi_acres",
+    "fp_nwi_pct",
+    "fp_nwi_types"
+   ],
+   "status_counts": {
+    "ok": 1769,
+    "absent": 231
+   }
   }
  },
  "cache": {
-  "hits": 3155,
+  "hits": 4088,
   "misses": 0
  }
 }

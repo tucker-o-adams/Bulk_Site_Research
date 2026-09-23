@@ -67,12 +67,42 @@ file + sha256, run time, counts, rejected rows, status meanings). Distances stay
 
 Writes `<Title>.kmz` in the batch folder, entirely from `data/cache` and the CMS reference files (no
 network), so the map shows exactly what the workbook was computed from. Folders: **A** sites by
-`group` with a full popup; **B** HIFLD transmission within 5 km by voltage; **C** nearest line per
+`group` with a full popup; **A2** site footprints — parcel boundary (green) or 200 m square (blue),
+the shape the `fp_*` columns were measured over; **B** HIFLD transmission within 5 km by voltage; **C** nearest line per
 site + connector; **D** substations within 5 km; **E** FEMA SFHA polygons within 1 km; **F** NWI
 polygons within 500 m; **G** schools / places of worship / nursing homes / hospitals within 1 mi;
 **H** site-by-site verification (group → state → site, fly-to). D–H ship switched off. E/F polygons
 are clipped to 1.5 km around each site (a whole-river polygon otherwise dominates the file).
 Windstream 200: 4.5 MB, 6,307 placemarks; folder C matches `Combined_3` on all 198 sites.
+
+## Figures (chosen sites only)
+
+```
+.venv_fema/Scripts/python.exe scripts/bulk/figure.py Outputs/<batch>/ --only SITE_ID,SITE_ID [--layers flood,wetlands] [--views site,regional] [--buffer-m 400]
+```
+
+Four PNGs per named site, generalised from `out/site2_*.py`: **flood** (FEMA NFHL zones, unmapped
+ground hatched) and **wetlands** (NWI polygons in greens/earth tones — never blue, which flood owns; Census water bodies
+are outline-only on both) — always separate, because
+riverine wetlands sit inside the floodplain and one layer hides the other — each at two zooms:
+**site** (footprint fills ~65 % of the frame, never under 60 m tall) and **regional** (footprint + 400 m).
+NAIP imagery and TIGERweb roads/hydro underneath. Footprint: solid dark red = parcel; dashed grey = the
+200 m square (grey = lower confidence). Each acreage panel prints the workbook's `fp_*` values. Writes
+`<batch>/figures/<site_id>_{fema_flood,nwi_wetlands}_{site,regional}.png` (4800 × 2700, 300 dpi) and
+`<site_id>_figures.json` (every query URL). NAIP is ~0.6 m, so the site view of a sub-acre parcel is
+visibly pixelated — that is the imagery's limit, not a rendering fault.
+
+**Basemap and audience.** The imagery is a pluggable provider (`basemap.py`); the overlays are identical
+on any of them. `--basemap naip` (default; public domain, cleared for external use). `--audience external`
+(default) refuses any provider not cleared for external use — so an internal-only source cannot reach a
+sold report; `--audience internal` stamps "INTERNAL - NOT FOR DISTRIBUTION" on the map and footer and
+writes `*_internal.png`. Every figure prints its provider's attribution. To add a source (e.g. KyFromAbove,
+or a licensed internal one), write a fetch function and add a `Provider` to `basemap.PROVIDERS`.
+Google Maps/Earth cannot be a provider: automated retrieval isn't permitted outside the paid Maps
+Platform. The internal Google route is manual: open the batch KMZ in Google Earth Pro.
+~20–120 s a site on first run (FEMA + NAIP), seconds from cache. Not for whole batches — the numbers are
+already in the workbook; the picture is for the sites someone will look at. The map is drawn in UTM, so
+the true-north square can sit a degree or two off the grid (grid convergence).
 
 ## Producers
 
@@ -85,6 +115,7 @@ Windstream 200: 4.5 MB, 6,307 placemarks; folder C matches `Combined_3` on all 1
 | `metro` | `metro_urban_area_at_point, metro_urban_area_at_point_pop, metro_250k_nearest_name/m/pop, metro_1m_nearest_name/m/pop` | Census TIGERweb 2020 Urban Areas with POP100. Straight-line to the urban-area boundary (0 inside), not driving time; urban areas are built-up footprints, not MSAs. 300 km search. | geographic sanity checks (Sugar Land inside Houston 0 km, Baldwin GA 41 km to Atlanta, Riverside TX rural) |
 | `datacenter` | `dc_nearest_m/name/city/state/networks/peeringdb_url, dc_hub_nearest_m/name/city/networks, dc_count_within_25km/50km, dc_max_networks_within_50km` | PeeringDB facility list (`Reference/peeringdb.kmz`, 1,353 US facilities), local, no network. Registered colo/IX facilities only — hyperscale and enterprise data centers are not listed. Hub = >= 20 networks (114 facilities). | geographic sanity checks |
 | `parcel` | `parcel_county, parcel_county_geoid, parcel_source_scope, parcel_service_name, parcel_apn, parcel_owner, parcel_address, parcel_acres_gis, parcel_acres_stated_by_county, parcel_acres_input, parcel_apn_matches_input, parcel_owner_check, parcel_vertices, parcel_status` | Census TIGERweb county at the point, then the county (or statewide) parcel service from `data/reference/parcel-services.json`: statewide OH, FL, VA, IA (2017), TX (TxGIO StratMap, via `identify`), AR, OK (OKMaps WMS), plus reviewed counties. There is no national parcel layer: an unregistered county returns `unresolved` naming the county, and `reference/discover_parcel_service.py` writes a reviewable proposal (OpenAddresses and NSGIC first, then searches). `parcel_owner_check` compares the owner of record with `--expected-owner`. Logic ported from tbdi-pasa `pasa_geo.core.parcel_at_point` / `pasa_geo.county`. | **29/29 acreages match** the Aug 2026 county-GIS results; Windstream 200: 130 resolved, 78 with the expected owner |
+| `footprint` | `fp_basis, fp_acres, fp_flood_zones, fp_sfha_acres, fp_sfha_pct, fp_floodway_acres, fp_flood_unmapped_acres, fp_nwi_acres, fp_nwi_pct, fp_nwi_types` | The site shape — the parcel polygon from `parcel.resolve()` where one resolves, otherwise a north-aligned **200 m × 200 m square** (9.88 ac) centred on the pin — intersected with FEMA NFHL zones and USFWS NWI polygons. Reuses the flood/wetlands producers' cached answers (no new calls unless a parcel reaches past 1 km / 500 m). Areas in a pin-centred Lambert equal-area projection. A failed parcel lookup is `failed`, never silently a square. Unmapped flood ground is reported as unmapped, never as Zone X. | Windstream 200: 130 parcel / 70 square; parcel `fp_acres` within 0.37 % of `parcel_acres_gis` (spherical vs ellipsoidal area); squares 200.00 m a side (geodesic check); finds SFHA in 13 footprints whose pin is outside it, NWI in 12 |
 | `housing` | `hu_block_at_point, pop_block_at_point, block_at_point_acres, hu_within_0_5mi, pop_within_0_5mi, hu_within_1mi, pop_within_1mi, blocks_within_1mi` | Census TIGERweb 2020 Blocks (HU100, POP100). Blocks counted whole when their Census internal point is within the radius; rural blocks are large, so rural sums are coarse. Raw counts only — no density class until thresholds are agreed. | sanity checks |
 | `schools` | `school_nearest_m/name/type/city, schools_within_0_5mi/1mi, public_schools_within_1mi, private_schools_within_1mi` | NCES EDGE public 2024-25 + private 2023-24 school points (K-12 only). 5 km search. | sanity checks (Nordonia Middle 122 m from NRFDOHXA) |
 | `worship` | `worship_nearest_m/name/city, worship_within_0_5mi/1mi` | HIFLD All Places of Worship, third-party ArcGIS mirror (fragile), geocoded from IRS filings — may be a mailing address. 5 km search. | sanity checks |

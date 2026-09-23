@@ -58,12 +58,18 @@ def _q(cache, lat, lng, key, url):
     return [f for f in (resp.get('features') or [])], fetched, None
 
 
+ZONE_FIELDS = 'FLD_ZONE,ZONE_SUBTY,SFHA_TF,STATIC_BFE,DFIRM_ID'
+
+
+def zones_request(la, ln):
+    """(cache key suffix, URL) of the zones-within-1-km answer; footprint.py and kmz.py read the same one."""
+    return f'zones{SFHA_SEARCH_M}', arcgis_query(f'{NFHL}/28', la, ln, ZONE_FIELDS, distance_m=SFHA_SEARCH_M,
+                                                 geometry=True, fmt='geojson', precision=6, max_offset_m=2)
+
+
 def run(site, cache):
     la, ln = site.lat, site.lng
-    feats, f1, e1 = _q(cache, la, ln, f'zones{SFHA_SEARCH_M}',
-                       arcgis_query(f'{NFHL}/28', la, ln, 'FLD_ZONE,ZONE_SUBTY,SFHA_TF,STATIC_BFE,DFIRM_ID',
-                                    distance_m=SFHA_SEARCH_M, geometry=True, fmt='geojson',
-                                    precision=6, max_offset_m=2))
+    feats, f1, e1 = _q(cache, la, ln, *zones_request(la, ln))
     fetched = f1 or now_iso()
     if e1:   # no zone answer at all: nothing below can be trusted
         return [failed(f, SOURCE, NFHL, METHOD, e1) for f in FIELDS]

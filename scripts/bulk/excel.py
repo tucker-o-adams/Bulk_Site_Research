@@ -27,7 +27,8 @@ BAND_TITLES = {
     'transmission': 'Transmission (HIFLD)', 'substations': 'Substations (HIFLD)', 'flood': 'Flood (FEMA NFHL)',
     'wetlands': 'Wetlands (USFWS NWI)', 'metro': 'Metro (Census urban areas)', 'datacenter': 'Data centers (PeeringDB)',
     'housing': 'Housing (Census 2020 blocks)', 'schools': 'Schools (NCES)', 'worship': 'Places of worship (HIFLD)',
-    'healthcare': 'Nursing homes & hospitals (CMS)',
+    'healthcare': 'Nursing homes & hospitals (CMS)', 'parcel': 'Parcel (county / state GIS)',
+    'footprint': 'Site footprint: parcel, else 200 m square (FEMA, NWI)',
 }
 BAND_COLORS = ['1F3864', '2E5A46', '7A4A00', '4A235A', '0B5345', '6E2C00', '1B4F72', '4D5656', '5B2C6F', '145A32']
 
@@ -82,18 +83,26 @@ def main():
     ws = wb.active; ws.title = 'Sites'
     site_cols = ['site_id', 'lat', 'lng'] + [c for c in OPTIONAL if any(s.get(c) for s in sites)]
     # G: every row says which basis its answers rest on. A site with no parcel boundary is not a
-    # blank row - its values are real, they are just measured at the pin rather than over a parcel.
-    has_parcel = any('parcel_status' in s for s in sites)
+    # blank row - its values are real, measured over the 200 m square around the pin (footprint
+    # producer) or, in a batch run without it, at the pin.
+    has_fp = any(s.get('fp_basis') for s in sites)
+    has_parcel = has_fp or any('parcel_status' in s for s in sites)
     if has_parcel:
         for s in sites:
-            s['basis'] = 'parcel boundary' if s.get('parcel_status') == 'ok' else 'point only'
+            s['basis'] = (s.get('fp_basis') or 'no footprint - rerun') if has_fp else \
+                'parcel boundary' if s.get('parcel_status') == 'ok' else 'point only'
         site_cols.insert(1, 'basis')
     prod_fields = [f for p in producers.values() for f in p['fields']]
     extra_cols = [c for c in sites[0].keys() if c not in site_cols and c not in prod_fields and c not in OPTIONAL]
     bands = [('Site', site_cols + extra_cols)] + [(BAND_TITLES.get(n, n), p['fields']) for n, p in producers.items()]
     legend = (f'{name} — {len(sites)} sites — run {run["run_at"][:16].replace("T", " ")} UTC — distances in metres '
               '(1 mi = 1,609 m) — grey = source confirmed nothing there (absent), red = source failed (see Gaps)')
-    if has_parcel:
+    if has_fp:
+        legend += ('   |   basis: "parcel boundary" = a parcel polygon resolved; the fp_* footprint columns (flood zones, SFHA, '
+                   'floodway, wetland acres) are measured over that parcel. "200 m square" = no parcel resolved, so the fp_* '
+                   'columns are measured over a 200 m x 200 m square (9.88 ac) centred on the pin - ground around the site, '
+                   'not a parcel, and no parcel acreage is claimed. Point columns (fema_*, nwi_*) are always at the pin.')
+    elif has_parcel:
         legend += ('   |   basis: "parcel boundary" = a parcel polygon resolved, so acreage and any parcel-clipped '
                    'figure describe the site; "point only" = no parcel service is registered for that county, so every '
                    'value is measured at the pin (flood zone at the pin, nearest wetland from the pin) and no acreage is claimed')
