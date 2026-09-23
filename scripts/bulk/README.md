@@ -71,7 +71,7 @@ network), so the map shows exactly what the workbook was computed from. Folders:
 the shape the `fp_*` columns were measured over; **B** HIFLD transmission within 5 km by voltage; **C** nearest line per
 site + connector; **D** substations within 5 km; **E** FEMA SFHA polygons within 1 km; **F** NWI
 polygons within 500 m; **G** schools / places of worship / nursing homes / hospitals within 1 mi;
-**H** site-by-site verification (group → state → site, fly-to). D–H ship switched off. E/F polygons
+**H** site-by-site verification ([group →] state → site, fly-to). E, F and G (flood, wetlands, neighbours) open switched on; A, A2, B, C, D and H open switched off — tick a folder to show it. E/F polygons
 are clipped to 1.5 km around each site (a whole-river polygon otherwise dominates the file).
 Windstream 200: 4.5 MB, 6,307 placemarks; folder C matches `Combined_3` on all 198 sites.
 

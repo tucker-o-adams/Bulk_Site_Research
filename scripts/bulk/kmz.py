@@ -8,17 +8,20 @@ producers scored) or from the CMS reference files, so the map shows what the
 workbook was computed from. Folders, in the Windstream layout:
 
     A. Sites                       one pin per site; split into `group` subfolders only when the
-                                   input CSV has a group column; popup = key values + sources
+                                   input CSV has a group column; popup = key values + sources   (off)
     A2. Site footprints            the shape the fp_* columns were measured over: parcel boundary
-                                   (green) or, with no parcel, the 200 m square around the pin (blue)
-    B. Transmission within 5 km    HIFLD segments by voltage band
-    C. Nearest line per site       the identified segment, and a site -> line connector
+                                   (green) or, with no parcel, the 200 m square around the pin (blue)  (off)
+    B. Transmission within 5 km    HIFLD segments by voltage band               (off)
+    C. Nearest line per site       the identified segment, and a site -> line connector  (off)
     D. Substations within 5 km     points by voltage band                      (off)
-    E. Flood: SFHA within 1 km     FEMA A/AE/AH/AO/V polygons                  (off)
-    F. Wetlands within 500 m       NWI polygons                                 (off)
-    G. Neighbors within 1 mi       schools, places of worship, nursing homes, hospitals (off)
+    E. Flood: SFHA within 1 km     FEMA A/AE/AH/AO/V polygons                  (ON)
+    F. Wetlands within 500 m       NWI polygons                                 (ON)
+    G. Neighbors within 1 mi       schools, places of worship, nursing homes, hospitals (ON)
     H. Site-by-site verification   [group ->] state -> site: pin, footprint, nearest line,
                                    connector, nearest substation, fly-to       (off)
+
+A folder that ships off has every folder and placemark inside it off too, so Google Earth's
+checkboxes agree with what is drawn; ticking the folder turns its contents on.
 """
 import argparse, csv, html, json, math, os, sys, zipfile
 import xml.etree.ElementTree as ET
@@ -252,7 +255,7 @@ def main():
         ps = sub(st, 'PolyStyle'); sub(ps, 'fill', '0'); sub(ps, 'outline', '1')
 
     # ---- A. Sites
-    A = folder(doc, f'A. Sites ({len(sites)})', open_=True)
+    A = folder(doc, f'A. Sites ({len(sites)})', visible=False, open_=True)
     by_group = defaultdict(list)
     for s in sites:
         by_group[s.get('group') or 'Sites'].append(s)
@@ -270,7 +273,7 @@ def main():
             fp = footprint.shape_at(float(s['lat']), float(s['lng']), offline)
             if fp['stage'] == 'ok':
                 fps[s['site_id']] = fp
-        A2 = folder(doc, 'A2. Site footprints', description=(
+        A2 = folder(doc, 'A2. Site footprints', visible=False, description=(
             f'The shape each site\'s footprint figures (fp_*) were measured over. Green = parcel boundary from the registered '
             f'county/state parcel service. Blue = no parcel resolved, so a north-aligned {footprint.SQUARE_M} m square centred on '
             'the pin stands in for the site - it is not a parcel.'))
@@ -308,7 +311,7 @@ def main():
                 best = (dmin, fp, p, parts)
         if best:
             nearest[s['site_id']] = best
-    B = folder(doc, f'B. Transmission within 5 km of any site ({len(seen)} segments, HIFLD mirror)')
+    B = folder(doc, f'B. Transmission within 5 km of any site ({len(seen)} segments, HIFLD mirror)', visible=False)
     for sid, _, _, _, label in KV_STYLES:
         items = tiers.get(sid) or []
         if not items:
@@ -318,7 +321,7 @@ def main():
             nm = ' - '.join(x for x in ((p.get('SUB_1') or '').strip(), (p.get('SUB_2') or '').strip()) if x and not x.upper().startswith(('UNKNOWN', 'NOT AVAIL'))) or f"line {p.get('ID')}"
             add_line_pm(tf, nm, sid, f"ID {esc(p.get('ID'))}<br/>Voltage {esc(p.get('VOLTAGE'))} kV ({esc(p.get('VOLT_CLASS'))})<br/>Owner {esc(p.get('OWNER'))}<br/>"
                                      f"Type {esc(p.get('TYPE'))}; Status {esc(p.get('STATUS'))}; attrs inferred {esc(p.get('INFERRED'))}", parts)
-    C = folder(doc, f'C. Nearest transmission line per site ({len(nearest)})')
+    C = folder(doc, f'C. Nearest transmission line per site ({len(nearest)})', visible=False)
     Cs, Cc = folder(C, f'Identified nearest segments ({len(nearest)})'), folder(C, f'Site → line connectors ({len(nearest)})')
     site_by = {s['site_id']: s for s in sites}
     for sid_, (d, fp, p, parts) in sorted(nearest.items()):
@@ -362,7 +365,7 @@ def main():
     D.find(NS + 'name').text = f'D. Substations within 5 km of any site ({len(seen_s)}, HIFLD mirror 2021)'
 
     # ---- E. Flood SFHA within 1 km
-    E = folder(doc, 'E. Flood: FEMA SFHA polygons within 1 km of any site', visible=False,
+    E = folder(doc, 'E. Flood: FEMA SFHA polygons within 1 km of any site',
                description=f'Special Flood Hazard Area zones (A, AE, AH, AO, AR, A99, V, VE) from the NFHL responses scored for each site. Geometry simplified ~2 m and clipped to {CLIP_M} m around each site.')
     seen_z = set(); nz = 0
     for s in sites:
@@ -386,7 +389,7 @@ def main():
     E.find(NS + 'name').text += f' ({nz})'
 
     # ---- F. Wetlands within 500 m
-    F = folder(doc, 'F. Wetlands: NWI polygons within 500 m of any site', visible=False,
+    F = folder(doc, 'F. Wetlands: NWI polygons within 500 m of any site',
                description=f'USFWS National Wetlands Inventory polygons from the responses scored for each site, clipped to {CLIP_M} m around each site. Photointerpreted; not a jurisdictional determination.')
     seen_w = set(); nw = 0
     for s in sites:
@@ -410,7 +413,7 @@ def main():
     F.find(NS + 'name').text += f' ({nw})'
 
     # ---- G. Neighbors within 1 mi
-    G = folder(doc, 'G. Neighbors within 1 mi of any site', visible=False)
+    G = folder(doc, 'G. Neighbors within 1 mi of any site')
     def points_from_cache(producer, suffix, style, label_fn, desc_fn, fold):
         seen_p = set(); n = 0
         for s in sites:
@@ -493,6 +496,17 @@ def main():
                     d, p, x, y = ns_
                     add_point_pm(site_f, f"nearest substation — {(p.get('NAME') or '').strip() or p.get('ID')} @ {d:,.0f} m", 'substation',
                                  f"MAX_VOLT {esc(p.get('MAX_VOLT'))} (inferred {esc(p.get('MAX_INFER'))}); {esc(p.get('TYPE'))}; source {esc(p.get('SOURCE'))}", x, y)
+
+    # A folder that ships off: switch off everything inside it too, so its checkboxes match
+    for top in doc.findall(NS + 'Folder'):
+        v = top.find(NS + 'visibility')
+        if v is not None and v.text == '0':
+            for el in top.iter():
+                if el is not top and el.tag in (NS + 'Folder', NS + 'Placemark'):
+                    vis = el.find(NS + 'visibility')
+                    if vis is None:
+                        vis = ET.Element(NS + 'visibility'); el.insert(1, vis)   # after <name>, per the KML schema order
+                    vis.text = '0'
 
     out = os.path.join(b, f'{name}.kmz')
     data = ET.tostring(kml, encoding='utf-8', xml_declaration=True)
