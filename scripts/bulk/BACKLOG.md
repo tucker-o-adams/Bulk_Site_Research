@@ -16,7 +16,8 @@ the parcel tail (handled separately).
 **Stale-wetland-mapping handling.** Found at BEREKYXA: an NWI `PUBHh` "Freshwater Pond" (0.50 ac,
 diked/impounded) drawn over what is now Berea College's tennis courts — NWI there is photointerpreted
 from **1984** imagery (`nwi_image_year`) and never re-mapped. NWI vintage is often decades old.
-1. **Workbook flag:** add `nwi_mapping_age_years` (run year − `nwi_image_year`) to the wetlands producer,
+1. **Built 2026-09-23** (cut-off 2000, `wetlands.STALE_BEFORE`; Windstream 200: 110 of 197 dated sites stale,
+   8 of them with NWI inside the footprint). **Workbook flag:** add `nwi_mapping_age_years` (run year − `nwi_image_year`) to the wetlands producer,
    and a stale-mapping note on every NWI value when older than a set cut-off (e.g. pre-2000 imagery), so
    it filters easily.
 2. **Screening rule** (goes into the per-portfolio thresholds, 9b): a wetland hit from stale mapping is

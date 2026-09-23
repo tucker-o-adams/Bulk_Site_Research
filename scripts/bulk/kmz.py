@@ -32,7 +32,7 @@ sys.path.insert(0, HERE)
 from cache import Cache, coord_key, _safe                # noqa: E402
 from geom import point_dist_m, geojson_polygon_dist_m    # noqa: E402
 from shapely.geometry import shape, box, mapping           # noqa: E402
-from producers import footprint                            # noqa: E402
+from producers import footprint, wetlands                  # noqa: E402
 
 CLIP_M = 1500     # polygons in E/F are clipped to this box around the site they were fetched for
 
@@ -204,7 +204,9 @@ def site_desc(s, srcs):
         (srcs.get('flood', 'Flood'), f"{esc(s.get('fema_determination'))}: zone <b>{esc(s.get('fema_flood_zone')) or '—'}</b> {esc(s.get('fema_zone_subtype'))}; SFHA={esc(s.get('fema_sfha'))}<br/>"
                                      f"nearest SFHA {m(s.get('fema_nearest_sfha_m'))} (zone {esc(s.get('fema_nearest_sfha_zone')) or '—'}); panel {esc(s.get('fema_firm_panel'))} eff. {esc(s.get('fema_panel_effective'))}"),
         (srcs.get('wetlands', 'Wetlands'), f"NWI at point={esc(s.get('nwi_at_point'))}; nearest {m(s.get('nwi_nearest_m'))} {esc(s.get('nwi_nearest_type'))}; "
-                                           f"{fmt(s.get('nwi_count_within_500m'))} polygons / {fmt(s.get('nwi_polygon_acres_within_500m'))} ac within 500 m; imagery {esc(s.get('nwi_image_year'))}"),
+                                           f"{fmt(s.get('nwi_count_within_500m'))} polygons / {fmt(s.get('nwi_polygon_acres_within_500m'))} ac within 500 m; imagery {esc(s.get('nwi_image_year'))}"
+                                           + (f" — <b>stale mapping ({esc(s.get('nwi_mapping_age_years'))} yr): confirm against current imagery</b>"
+                                              if wetlands.stale_note(int(s['nwi_image_year']) if (s.get('nwi_image_year') or '').isdigit() else None) else '')),
         (srcs.get('metro', 'Metro'), f"in urban area: {esc(s.get('metro_urban_area_at_point')) or 'none (rural)'}; nearest 250k+ {esc(s.get('metro_250k_nearest_name'))} {m(s.get('metro_250k_nearest_m'))}; "
                                      f"nearest 1M+ {esc(s.get('metro_1m_nearest_name'))} {m(s.get('metro_1m_nearest_m'))}"),
         (srcs.get('datacenter', 'Data centers'), f"nearest PeeringDB facility {esc(s.get('dc_nearest_name'))}, {esc(s.get('dc_nearest_city'))} {m(s.get('dc_nearest_m'))} ({fmt(s.get('dc_nearest_networks'))} networks); "

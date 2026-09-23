@@ -207,6 +207,10 @@ def run(site, cache):
         mapped_nwi = bool(not e_st and (st or {}).get('features'))
         note = NOTE_NWI + basis_note + ('' if mapped_nwi else
                                         '; the pin is not in an NWI-mapped area (or the status layer did not answer): zero is not evidence of no wetlands')
+        iy, _, e_iy = cache.get_json('wetlands', coord_key(la, ln, 'imgyr'), arcgis_query(wetlands.IMGYR, la, ln, 'PROJECT_NAME,IMAGE_YR'))
+        stale = None if e_iy else wetlands.stale_note((((iy or {}).get('features') or [{}])[0].get('attributes') or {}).get('IMAGE_YR'))
+        if stale:
+            note = f'{stale}; {note}'
         parts = clip(feats, fp)
         groups = {}
         for p, g in parts:

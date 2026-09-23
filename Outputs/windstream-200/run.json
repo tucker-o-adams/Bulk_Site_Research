@@ -1,6 +1,6 @@
 {
- "run_at": "2026-09-23T17:25:37+00:00",
- "elapsed_s": 68.5,
+ "run_at": "2026-09-23T19:59:31+00:00",
+ "elapsed_s": 100.0,
  "input": {
   "path": "E:\\Claude\\Projects\\TBDI Modeling\\Mireye\\scripts\\bulk\\fixtures\\windstream_200.csv",
   "sha256": "c77e4bd57d501de85be3249311e2e4dc48983f91906618a07b84b44d9375894a"
@@ -94,6 +94,7 @@
    "fields": [
     "nwi_mapping_status",
     "nwi_image_year",
+    "nwi_mapping_age_years",
     "nwi_project",
     "nwi_at_point",
     "nwi_type_at_point",
@@ -106,8 +107,8 @@
     "nwi_polygon_acres_within_500m"
    ],
    "status_counts": {
-    "ok": 1819,
-    "absent": 581
+    "ok": 2016,
+    "absent": 584
    }
   },
   "metro": {
@@ -276,7 +277,7 @@
   }
  },
  "cache": {
-  "hits": 4088,
+  "hits": 4288,
   "misses": 0
  }
 }

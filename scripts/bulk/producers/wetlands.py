@@ -12,7 +12,15 @@ polygons too, so `nwi_mapping_status` travels with every row. Even a mapped
 zero is not a clearance — NWI is photointerpreted and FWS states it is not a
 jurisdictional determination. Acres are the full NWI polygon's acres, not a
 clip to anything.
+
+NWI is often decades old: BEREKYXA's "Freshwater Pond" is Berea College's tennis
+courts, mapped from 1984 imagery and never redone. `nwi_mapping_age_years` is the
+run year minus the imagery year, and every NWI value from imagery before
+STALE_BEFORE carries a stale-mapping note. A wetland hit from stale mapping is a
+REVIEW against current imagery, never a knockout.
 """
+from datetime import date
+
 from geom import arcgis_query, geojson_polygon_dist_m
 from provenance import Value, absent, failed, now_iso
 from cache import coord_key
@@ -29,8 +37,18 @@ SEARCH_M = 500
 METHOD = (f'NWI point queries: Wetlands polygon at the point; nearest Wetlands polygon within {SEARCH_M} m '
           'by exact point-to-polygon distance (geometry simplified to ~2 m); Wetlands_Status for mapping coverage; Data_Source for imagery year')
 NOTE = 'NWI is photointerpreted, not a jurisdictional determination; acres are whole NWI polygons, not clipped'
+STALE_BEFORE = 2000                 # imagery older than this gets the stale-mapping note
 
-FIELDS = ['nwi_mapping_status', 'nwi_image_year', 'nwi_project', 'nwi_at_point', 'nwi_type_at_point',
+
+def stale_note(year):
+    """The stale-mapping caveat for an imagery year, or None when the mapping is recent enough (or undated)."""
+    if isinstance(year, int) and year < STALE_BEFORE:
+        return (f'STALE MAPPING: NWI here is interpreted from {year} imagery (before {STALE_BEFORE}); '
+                'confirm against current imagery before relying on it - review, not a knockout')
+    return None
+
+
+FIELDS = ['nwi_mapping_status', 'nwi_image_year', 'nwi_mapping_age_years', 'nwi_project', 'nwi_at_point', 'nwi_type_at_point',
           'nwi_code_at_point', 'nwi_nearest_m', 'nwi_nearest_type', 'nwi_nearest_code', 'nwi_nearest_acres',
           f'nwi_count_within_{SEARCH_M}m', f'nwi_polygon_acres_within_{SEARCH_M}m']
 
@@ -73,10 +91,13 @@ def run(site, cache):
                mk('nwi_mapping_status', status) if status else
                absent('nwi_mapping_status', SOURCE, STATUS, METHOD, note='no Wetlands_Status polygon at the point (unmapped)'))
     if e2:
-        out += [failed(f, SOURCE, IMGYR, METHOD, e2) for f in ('nwi_image_year', 'nwi_project')]
+        out += [failed(f, SOURCE, IMGYR, METHOD, e2) for f in ('nwi_image_year', 'nwi_mapping_age_years', 'nwi_project')]
     else:
-        out += [mk('nwi_image_year', year) if year else absent('nwi_image_year', SOURCE, IMGYR, METHOD, note='no Data_Source record at the point'),
-                mk('nwi_project', project) if project else absent('nwi_project', SOURCE, IMGYR, METHOD, note='no Data_Source record at the point')]
+        no_rec = 'no Data_Source record at the point'
+        out += [mk('nwi_image_year', year) if year else absent('nwi_image_year', SOURCE, IMGYR, METHOD, note=no_rec),
+                mk('nwi_mapping_age_years', date.today().year - year, note=f'run year {date.today().year} minus imagery year {year}')
+                if isinstance(year, int) else absent('nwi_mapping_age_years', SOURCE, IMGYR, METHOD, note=no_rec),
+                mk('nwi_project', project) if project else absent('nwi_project', SOURCE, IMGYR, METHOD, note=no_rec)]
 
     feats = near.get('features') or []
     scored = []
@@ -104,4 +125,9 @@ def run(site, cache):
     total = sum(float(s[3]) for s in scored if s[3] is not None)
     out += [mk(f'nwi_count_within_{SEARCH_M}m', len(scored), note=unmapped_note or NOTE),
             mk(f'nwi_polygon_acres_within_{SEARCH_M}m', round(total, 3), note=unmapped_note or NOTE)]
+    stale = stale_note(year)
+    if stale:
+        for v in out:
+            if v.status != 'failed':
+                v.note = f'{stale}; {v.note}' if v.note else stale
     return out
