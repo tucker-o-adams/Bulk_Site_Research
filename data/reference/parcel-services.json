@@ -1,6 +1,6 @@
 {
  "registry_version": 1,
- "updated": "2026-09-22",
+ "updated": "2026-09-23",
  "note": "Parcel services per county, and statewide where one exists. A county entry wins over the statewide one. Seeded from tbdi-pasa county-services.json (reviewed entries only). Nothing is auto-registered: discover_parcel_service.py writes a proposal, a person reviews it and adds it here. fields maps our roles to that service's column names.",
  "statewide": {
   "05": {
@@ -251,18 +251,21 @@
   "48113": {
    "county": "Dallas County",
    "state": "TX",
-   "publisher": null,
-   "reviewed": null,
-   "review_notes": null,
+   "publisher": "Dallas Central Appraisal District (maps.dcad.org, its own ArcGIS Server)",
+   "reviewed": "2026-09-23",
+   "review_notes": "Phase 1 wrap-up review. Registered earlier by tbdi-pasa county_register.py with apn only, so owner and address came back blank although the layer carries both - and as a county entry it overrides TxGIO statewide, which has owners. Fields now mapped: owner OWNERNME1, address SITEADDRESS. Probed 2026-09-23: 1400 Young St -> DALLAS CITY OF; 3114 Sombrero Dr -> EMMETT LARRY; 6801 Colwell Blvd returned 3 overlapping accounts (two 99xxxx business-personal-property style ids plus the real-property parcel) - the producer notes \"N parcels returned for one point\"; check the APN there. STATEDAREA and LASTUPDATE are empty, so acreage comes from the geometry and the vintage is the layer name (TaxParcel2025).",
    "service": {
     "base": "https://maps.dcad.org/prdwa/rest/services/Property/ParcelHistory/MapServer",
     "layer": 3,
-    "name": "Dallas County parcel (TaxParcel2025)",
-    "owner": "maps.dcad.org",
+    "name": "Dallas Central Appraisal District parcels (TaxParcel2025)",
+    "owner": "Dallas Central Appraisal District",
     "fields": {
-     "apn": "PARCELID"
+     "apn": "PARCELID",
+     "owner": "OWNERNME1",
+     "address": "SITEADDRESS"
     },
-    "notes": "Registered by county_register.py: passed the gate against tx-dallas-bilindsay parcel 65159958010140000. one feature at the point, covers 100% of the site, id agrees with the run's; 841,621 records"
+    "notes": "Registered by county_register.py: passed the gate against tx-dallas-bilindsay parcel 65159958010140000. one feature at the point, covers 100% of the site, id agrees with the run's; 841,621 records",
+    "data_vintage": "2025"
    }
   },
   "34011": {
@@ -270,7 +273,7 @@
    "state": "NJ",
    "publisher": null,
    "reviewed": null,
-   "review_notes": null,
+   "review_notes": "Phase 1 wrap-up, 2026-09-23: NOT reviewed for use. The service is the New Jersey statewide composite (NJOGIS, 3.48M records, all counties), registered here for Cumberland only by tbdi-pasa county_register.py. Probe: 2 of 5 NJ test points returned a parcel (Vineland 3938 S Main Rd, 12.85 ac CALC_ACRE); OWNER_NAME was blank at both. Before a New Jersey batch: probe coverage properly, then register it statewide (apn PAMS_PIN, address PROP_LOC, acres CALC_ACRE) or not. No TBDI site is in NJ today.",
    "service": {
     "base": "https://services2.arcgis.com/XVOqAjTOJ5P6ngMu/arcgis/rest/services/Parcels_Composite_NJ_WM/FeatureServer",
     "layer": 0,

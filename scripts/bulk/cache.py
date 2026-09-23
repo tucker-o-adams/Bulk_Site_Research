@@ -56,6 +56,14 @@ class Cache:
                 if isinstance(resp, dict) and 'error' in resp:
                     err = f"service error: {str(resp['error'])[:160]}"
                     break                      # a real answer from the service; don't hammer it
+                # ArcGIS caps a query at the layer's maxRecordCount and flags it; a capped answer would
+                # undercount (schools within 5 km in a metro) or miss the true nearest, so it is a failure,
+                # never cached. Windstream's rural 200 never hit it; a dense-metro batch might.
+                if isinstance(resp, dict) and (resp.get('exceededTransferLimit') or
+                                               (resp.get('properties') or {}).get('exceededTransferLimit')):
+                    err = ('result truncated at the service record limit (exceededTransferLimit) - '
+                           'counts and nearest values would be wrong; needs paging or a smaller radius')
+                    break
                 fetched = datetime.now(timezone.utc).isoformat(timespec='seconds')
                 with open(p, 'w', encoding='utf-8') as f:
                     json.dump({'fetched_at': fetched, 'url': url, 'response': resp}, f,
