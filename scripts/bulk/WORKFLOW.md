@@ -32,4 +32,7 @@ before any site in the batch is looked at** — never tuned to the batch's own n
 1. Does step 2 happen per portfolio or per broker batch (Ozinga may send several)?
 2. Who owns step 3 when Mike is unavailable — do we screen with provisional thresholds marked as such, or wait?
 3. Is the step 10 note one page per batch, or per shortlisted site?
-4. For the new-sites test: skip step 3 approval (thresholds provisional, flagged) to exercise the pipeline, or hold for Mike?
+4. ~~For the new-sites test: skip step 3 approval (thresholds provisional, flagged), or hold for Mike?~~
+   **Decided 2026-09-23 (Tucker): wait for Mike.** The test runs steps 1 and 4–6 only (intake, input,
+   sources, run, workbook/KMZ). No screening — no GO / REVIEW / NO-GO, no provisional thresholds — until
+   Mike approves thresholds.
