@@ -7,11 +7,15 @@ site's own operator. Sources come from the 2026-09-22 prior-art research recorde
 in scripts/bulk/BACKLOG.md (statewide TX/AR/OK layers, Schneider's open WFS host,
 OpenAddresses parcel sources, regional-commission hosts).
 
-    .venv_fema/Scripts/python.exe scripts/bulk/reference/probe_remaining_parcels.py Outputs/windstream-200
+    .venv_fema/Scripts/python.exe scripts/bulk/reference/probe_remaining_parcels.py Outputs/<batch> [--expected-owner REGEX]
+
+The operator pattern defaults to the batch's own `expected_owner` in run.json (the one run.py was given);
+with neither, `operator_owner` is left blank.
 """
+import argparse
 import csv
+import json
 import re
-import sys
 from pathlib import Path
 
 import requests
@@ -60,7 +64,7 @@ CAVEAT = {
     ('GA', 'Wilcox County'): 'Heart of Georgia Altamaha RC, TaxParcels_25: geometry and acres only, no parcel id or owner',
     ('GA', 'White County'): 'City of Cleveland water map (2023), city parcels only; TAX_CLASS U = utility',
 }
-OPERATOR = re.compile(r'windstream|kinetic|\bcsl\b|valor tele|telephone|alltel|allied tele|white river tel|arcco|public utility|-PU$', re.I)
+OPERATOR = None       # set in main(): --expected-owner, else the batch's run.json expected_owner
 OWNER_KEY = re.compile(r'^(owner|owners|owner_?name|ownername|name_?1?|lastname|own_?name)$', re.I)
 PID_KEY = re.compile(r'^(parcel_?(no|id|num)?|parcelid|parcelno|pin|prop_id|pid)$', re.I)
 
@@ -115,7 +119,13 @@ def sources(state, county):
         yield f'{county} layer', url, lambda a, b: arcgis_query(url, a, b)
 
 
-def main(batch):
+def main(batch, expected_owner=None):
+    global OPERATOR
+    if not expected_owner:
+        run = Path(batch) / 'run.json'
+        expected_owner = json.load(open(run, encoding='utf-8')).get('expected_owner') if run.exists() else None
+    OPERATOR = re.compile(expected_owner, re.I) if expected_owner else None
+    print(f'operator pattern: {expected_owner or "(none - operator_owner left blank)"}')
     rows = list(csv.DictReader(open(Path(batch) / 'sites.csv', encoding='utf-8-sig')))
     todo = [r for r in rows if r['parcel_status'] != 'ok']
     out = []
@@ -135,7 +145,7 @@ def main(batch):
                 rec['result'] = 'no polygon at point'
                 continue
             rec.update(result='hit', parcel_id=pick(a, PID_KEY), owner=pick(a, OWNER_KEY))
-            rec['operator_owner'] = 'yes' if OPERATOR.search(rec['owner'] + ' ' + rec['parcel_id']) else ''
+            rec['operator_owner'] = 'yes' if OPERATOR and OPERATOR.search(rec['owner'] + ' ' + rec['parcel_id']) else ''
             break
         out.append(rec)
         print(st, co, r['site_id'], rec['result'], rec['owner'][:40], rec['operator_owner'])
@@ -157,4 +167,8 @@ def main(batch):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1])
+    ap = argparse.ArgumentParser()
+    ap.add_argument('batch')
+    ap.add_argument('--expected-owner', default=None, help="regex; default: the batch's run.json expected_owner")
+    a = ap.parse_args()
+    main(a.batch, a.expected_owner)

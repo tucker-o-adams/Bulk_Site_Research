@@ -16,12 +16,17 @@ that. So this checks for *change*, not age:
   * the source's own data vintage, against what the producer claims
   * the fields the producer reads, still present by name
 
+Also covered: the specific FEMA NFHL layers the flood producer queries (28 zones, 3 panels), the
+figure's NAIP ImageServer and TIGERweb context layers, and the local reference files - the PeeringDB
+export (present, export date, US facility count) and the CMS files (row counts against their meta, and
+whether CMS has published a newer release since they were built).
+
 `data/reference/source-baseline.json` holds the last recorded state. `--record`
 writes it (do that when the drift has been reviewed and is expected). Without
 `--record`, nothing is written and the exit code is 1 if anything drifted, so
 this can gate a batch.
 """
-import argparse, importlib, json, os, sys, urllib.request
+import argparse, csv, importlib, json, os, sys, urllib.request
 from datetime import datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -84,6 +89,48 @@ def check_wms(base, layer, point, want_fields=()):
             'fields_missing': [f for f in want_fields if f and f not in props], 'field_count': len(props)}
 
 
+def check_service(url):
+    """An ImageServer (NAIP): reachable and still the same service; no record count to read."""
+    m = g(url + '?f=json')
+    if m.get('__error__') or m.get('error'):
+        return {'ok': False, 'error': m.get('__error__') or str(m['error'])[:140]}
+    return {'ok': True, 'name': m.get('name'), 'vintage': None, 'records': None, 'fields_missing': [],
+            'field_count': 0}
+
+
+def check_peeringdb():
+    """Reference/peeringdb.kmz: present, its export date, and the US facility count the producer reads."""
+    from producers import datacenter
+    if not os.path.exists(datacenter.KMZ):
+        return {'ok': False, 'error': f'missing {datacenter.KMZ}'}
+    datacenter._load()
+    return {'ok': True, 'name': 'peeringdb.kmz (local)', 'vintage': datacenter._VINTAGE,
+            'records': len(datacenter._FACILITIES), 'fields_missing': [], 'field_count': 0}
+
+
+def check_cms(kind, csv_name):
+    """A local CMS reference file: rows match its meta, and CMS's own 'modified' date for the dataset -
+    a later date upstream means a newer release exists (rebuild with reference/fetch_cms_reference.py)."""
+    ref = os.path.join(ROOT, 'data', 'reference')
+    meta_p, csv_p = os.path.join(ref, 'cms_reference.meta.json'), os.path.join(ref, csv_name)
+    if not (os.path.exists(meta_p) and os.path.exists(csv_p)):
+        return {'ok': False, 'error': f'missing {csv_name} or cms_reference.meta.json'}
+    meta = json.load(open(meta_p, encoding='utf-8'))[kind]
+    with open(csv_p, encoding='utf-8', newline='') as f:
+        rows = sum(1 for _ in csv.reader(f)) - 1
+    up = g(f"https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/{meta['dataset']}")
+    r = {'ok': True, 'name': f"{meta['title']} (local)", 'vintage': meta['modified'], 'records': rows,
+         'fields_missing': [], 'field_count': 0}
+    want = meta.get('with_coordinates', meta['rows'])       # the file keeps only rows with coordinates
+    if rows != want:
+        r['fields_missing'] = [f"rows {rows} != meta {want}"]
+    if up.get('__error__'):
+        r['note'] = f"CMS metastore unreachable: {up['__error__']}"
+    elif up.get('modified') and up['modified'] > meta['modified']:
+        r['newer_upstream'] = up['modified']
+    return r
+
+
 def targets():
     """Every layer the pipeline reads, from the producers themselves and the registry."""
     out = []
@@ -100,9 +147,29 @@ def targets():
                 urls.append((attr, u))
         for attr, u in urls:
             if not u.rstrip('/').split('/')[-1].isdigit():
-                u = u.rstrip('/') + '/0' if 'MapServer' not in u else u
+                if u.rstrip('/').endswith('MapServer'):
+                    continue            # a MapServer root has no records; its layers are listed explicitly below
+                u = u.rstrip('/') + '/0'
             out.append({'key': f'{n}:{attr}', 'url': u, 'source': getattr(mod, 'SOURCE', ''),
                         'claimed_vintage': getattr(mod, 'VINTAGE', None)})
+    from producers import flood
+    for lyr, why in ((28, 'flood zones'), (3, 'FIRM panels')):
+        out.append({'key': f'flood:L{lyr}', 'url': f'{flood.NFHL}/{lyr}', 'source': f'{flood.SOURCE} - {why}',
+                    'claimed_vintage': None})
+    try:                                   # figure.py's sources; its imaging libraries may not be installed
+        import figure
+        for name, svc, lyr in figure.CONTEXT:
+            out.append({'key': f'figure:{name}', 'url': f'{figure.TIGER}/{svc}/MapServer/{lyr}',
+                        'source': 'Census TIGERweb (figure context)', 'claimed_vintage': None})
+        out.append({'key': 'figure:naip', 'url': figure.basemap.NAIP, 'source': 'USGS NAIP ImageServer',
+                    'claimed_vintage': None, 'kind': 'service'})
+    except ImportError as e:
+        out.append({'key': 'figure', 'error': f'figure.py sources not checked: {e} (pip install -r requirements-bulk.txt)'})
+    out.append({'key': 'datacenter:peeringdb.kmz', 'kind': 'peeringdb', 'url': 'Reference/peeringdb.kmz'})
+    out.append({'key': 'healthcare:nursing_homes', 'kind': 'cms', 'cms': ('nursing_homes', 'cms_nursing_homes.csv'),
+                'url': 'data/reference/cms_nursing_homes.csv'})
+    out.append({'key': 'healthcare:hospitals', 'kind': 'cms', 'cms': ('hospitals', 'cms_hospitals.csv'),
+                'url': 'data/reference/cms_hospitals.csv'})
     reg = registry.load()
     for st, e in (reg.get('statewide') or {}).items():
         s = e['service']
@@ -116,7 +183,13 @@ def targets():
         out.append({'key': f'parcel:county:{geoid} {e.get("county", "")}', 'url': f"{s['base']}/{s['layer']}",
                     'source': s.get('name'), 'claimed_vintage': e.get('reviewed'),
                     'want_fields': [v for v in (s.get('fields') or {}).values()]})
-    return out
+    seen, uniq = set(), []                 # a layer read by two producers is checked once
+    for t in out:
+        if t.get('url') and t['url'] in seen:
+            continue
+        seen.add(t.get('url'))
+        uniq.append(t)
+    return uniq
 
 
 def main():
@@ -130,8 +203,12 @@ def main():
         k = t['key']
         if t.get('error'):
             drift.append((k, t['error'])); print(f'  FAIL {k}: {t["error"]}'); continue
-        r = check_wms(t['url'], *t['wms'], t.get('want_fields') or ()) if t.get('wms') else \
-            check_layer(t['url'], t.get('want_fields') or ())
+        kind = t.get('kind')
+        r = (check_wms(t['url'], *t['wms'], t.get('want_fields') or ()) if t.get('wms') else
+             check_service(t['url']) if kind == 'service' else
+             check_peeringdb() if kind == 'peeringdb' else
+             check_cms(*t['cms']) if kind == 'cms' else
+             check_layer(t['url'], t.get('want_fields') or ()))
         now[k] = {**r, 'url': t['url'], 'checked_at': datetime.now(timezone.utc).isoformat(timespec='seconds')}
         b = base.get(k) or {}
         flags = []
@@ -148,6 +225,9 @@ def main():
                 flags.append(f'VINTAGE {b["vintage"]} -> {r["vintage"]}')
             if b.get('name') and r.get('name') and b['name'] != r['name']:
                 flags.append(f'LAYER RENAMED {b["name"]!r} -> {r["name"]!r}')
+            if r.get('newer_upstream'):
+                flags.append(f'NEWER RELEASE upstream ({r["newer_upstream"]} > {r["vintage"]}): '
+                             'rebuild with reference/fetch_cms_reference.py')
         status = 'DRIFT' if flags else ('new ' if not b else 'ok  ')
         if flags:
             drift.append((k, '; '.join(flags)))
