@@ -6,6 +6,9 @@ paid APIs.
 
 ## Running a batch, end to end
 
+The commands below are the mechanics; the full sequence around them (product definition, thresholds
+approved before any site is scored, screening, survivor review) is in **WORKFLOW.md** (draft).
+
 ```
 # 0. only if the list has addresses but no coordinates
 .venv_fema/Scripts/python.exe scripts/bulk/geocode.py <raw.csv> <in.csv>
