@@ -7,7 +7,8 @@ No network: every geometry is read from data/cache (the exact responses the
 producers scored) or from the CMS reference files, so the map shows what the
 workbook was computed from. Folders, in the Windstream layout:
 
-    A. Sites                       one pin per site, styled by `group`; popup = key values + sources
+    A. Sites                       one pin per site; split into `group` subfolders only when the
+                                   input CSV has a group column; popup = key values + sources
     A2. Site footprints            the shape the fp_* columns were measured over: parcel boundary
                                    (green) or, with no parcel, the 200 m square around the pin (blue)
     B. Transmission within 5 km    HIFLD segments by voltage band
@@ -16,7 +17,7 @@ workbook was computed from. Folders, in the Windstream layout:
     E. Flood: SFHA within 1 km     FEMA A/AE/AH/AO/V polygons                  (off)
     F. Wetlands within 500 m       NWI polygons                                 (off)
     G. Neighbors within 1 mi       schools, places of worship, nursing homes, hospitals (off)
-    H. Site-by-site verification   group -> state -> site: pin, footprint, nearest line,
+    H. Site-by-site verification   [group ->] state -> site: pin, footprint, nearest line,
                                    connector, nearest substation, fly-to       (off)
 """
 import argparse, csv, html, json, math, os, sys, zipfile
@@ -184,7 +185,7 @@ def site_desc(s, srcs):
     def m(v):
         return '—' if v in (None, '') else f'{float(v):,.0f} m ({float(v) / MI:.2f} mi)'
     rows = [
-        ('Site', f"<b>{esc(s['site_id'])}</b> {esc(s.get('name'))}<br/>{esc(s.get('address'))} {esc(s.get('city') or '')} {esc(s.get('state'))}<br/>group: {esc(s.get('group'))}"
+        ('Site', f"<b>{esc(s['site_id'])}</b> {esc(s.get('name'))}<br/>{esc(s.get('address'))} {esc(s.get('city') or '')} {esc(s.get('state'))}" + (f"<br/>group: {esc(s.get('group'))}" if s.get('group') else '')
                  + (f"<br/><i>basis: {basis_text(s)}</i>" if s.get('fp_basis') or s.get('parcel_status') else '')),
     ]
     if s.get('fp_basis'):
@@ -255,8 +256,9 @@ def main():
     by_group = defaultdict(list)
     for s in sites:
         by_group[s.get('group') or 'Sites'].append(s)
+    grouped = any(s.get('group') for s in sites)     # no group column: no group level, pins straight under A
     for i, g in enumerate(groups):
-        gf = folder(A, f'{g} ({len(by_group[g])})')
+        gf = folder(A, f'{g} ({len(by_group[g])})') if grouped else A
         for s in by_group[g]:
             add_point_pm(gf, s['site_id'], f'site_{i}', site_desc(s, srcs), float(s['lng']), float(s['lat']))
 
@@ -463,7 +465,7 @@ def main():
                description='One folder per site: pin, identified nearest transmission line, connector, nearest substation. Tick one at a time; double-click to fly to it. '
                            'HIFLD geometry is national-scale and may sit 20-50 m off the visible towers.')
     for i, g in enumerate(groups):
-        gf = folder(H, f'{g} ({len(by_group[g])})')
+        gf = folder(H, f'{g} ({len(by_group[g])})') if grouped else H
         by_state = defaultdict(list)
         for s in by_group[g]:
             by_state[s.get('state') or '??'].append(s)

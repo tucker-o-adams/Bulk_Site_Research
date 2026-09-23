@@ -134,8 +134,8 @@ A producer never raises on a bad source answer: it returns `absent`/`failed` val
 ## Regression fixture
 
 `fixtures/windstream_200.csv` — the 200 Windstream COs in the input format
-(built by `fixtures/make_windstream_fixture.py` from the broker workbook + KMZ;
-`group` = Interesting / Other).
+(built by `fixtures/make_windstream_fixture.py` from the broker workbook; no `group` column since
+2026-09-23 — the broker's Interesting / Other split is no longer used, so the KMZ is one flat site list).
 
 `fixtures/check_windstream_transmission.py Outputs/windstream-200/sites.csv` compares the
 transmission producer against `Outputs/Excel outputs/WS_Top200_Transmission_Distance.csv`
