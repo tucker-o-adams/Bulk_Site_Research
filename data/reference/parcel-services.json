@@ -209,6 +209,23 @@
     },
     "notes": "Covers all 133 Virginia localities from one service, which is why it is statewide rather than per-county. Carries no address field: an address-to-parcel match is one geocode landing in one polygon and must be confirmed against the assessor. A county-level entry, if one is ever registered, wins over this."
    }
+  },
+  "34": {
+   "state": "NJ",
+   "reviewed": "2026-09-23",
+   "service": {
+    "base": "https://services2.arcgis.com/XVOqAjTOJ5P6ngMu/arcgis/rest/services/Parcels_Composite_NJ_WM/FeatureServer",
+    "layer": 0,
+    "name": "New Jersey Parcels Composite (NJOGIS)",
+    "owner": "New Jersey Office of GIS (NJOGIS), from county/municipal tax parcel data",
+    "data_vintage": "2026-08-18",
+    "fields": {
+     "apn": "PAMS_PIN",
+     "address": "PROP_LOC",
+     "acres": "CALC_ACRE"
+    },
+    "notes": "Reviewed 2026-09-23 (Phase 1 left-for-later). Replaces a Cumberland-only county entry registered by tbdi-pasa county_register.py. 3,481,240 records; per-county counts cover all 21 NJ counties (403,260 records carry no COUNTY value). Data last edited 2026-08-18. NO OWNER NAMES: OWNER_NAME is empty on every record statewide (0 of 3.48M), so parcel_owner_check reads \"not checkable\". CALC_ACRE present on 2.65M records. Parcels exclude road right-of-way: 8 of 10 Census-geocoded NJ addresses fell in the street with the right parcel 1-16 m away (Bloomfield: the nearest was the neighbour) - geocoded sites need BACKLOG approach D. 2 Moore Rd / 1 Riverfront Plz returned their parcels at the pin. A county entry, if registered, wins."
+   }
   }
  },
  "counties": {
@@ -266,23 +283,6 @@
     },
     "notes": "Registered by county_register.py: passed the gate against tx-dallas-bilindsay parcel 65159958010140000. one feature at the point, covers 100% of the site, id agrees with the run's; 841,621 records",
     "data_vintage": "2025"
-   }
-  },
-  "34011": {
-   "county": "Cumberland County",
-   "state": "NJ",
-   "publisher": null,
-   "reviewed": null,
-   "review_notes": "Phase 1 wrap-up, 2026-09-23: NOT reviewed for use. The service is the New Jersey statewide composite (NJOGIS, 3.48M records, all counties), registered here for Cumberland only by tbdi-pasa county_register.py. Probe: 2 of 5 NJ test points returned a parcel (Vineland 3938 S Main Rd, 12.85 ac CALC_ACRE); OWNER_NAME was blank at both. Before a New Jersey batch: probe coverage properly, then register it statewide (apn PAMS_PIN, address PROP_LOC, acres CALC_ACRE) or not. No TBDI site is in NJ today.",
-   "service": {
-    "base": "https://services2.arcgis.com/XVOqAjTOJ5P6ngMu/arcgis/rest/services/Parcels_Composite_NJ_WM/FeatureServer",
-    "layer": 0,
-    "name": "Cumberland County parcel (Cad_parcel_mod4)",
-    "owner": "NJOGIS",
-    "fields": {
-     "apn": "PAMS_PIN"
-    },
-    "notes": "Registered by county_register.py: passed the gate against nj-cumberland-fairfield-township parcel None. one feature at the point, covers 98% of the site, no independent id; 3,481,240 records"
    }
   },
   "37159": {

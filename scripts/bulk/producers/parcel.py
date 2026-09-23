@@ -63,10 +63,12 @@ FIELDS = ['parcel_county', 'parcel_county_geoid', 'parcel_source_scope', 'parcel
           'parcel_apn', 'parcel_owner', 'parcel_address', 'parcel_acres_gis', 'parcel_acres_stated_by_county',
           'parcel_acres_input', 'parcel_apn_matches_input', 'parcel_owner_check', 'parcel_vertices', 'parcel_status']
 
-# A returned polygon that does not contain the pin is accepted only this close to it (a WMS pixel
-# tolerance: OKMaps returned VIANOK05's parcel 0.6 m off the pin), and says so in its note.
-# Further away it may be the neighbour, so the site stays unresolved rather than guessed.
-NEAR_M = 15
+# A returned polygon that does not contain the pin is accepted only this close to it - a WMS pixel
+# tolerance (OKMaps returned VIANOK05's parcel 0.6 m off the pin; a GetFeatureInfo pixel is ~1 m) -
+# and says so in its note. Not more: a geocoded pin sits on the street centreline, and in NJ testing
+# the nearest parcel to "2 Broad St, Bloomfield" (13 m) was the neighbour, the right one 15.9 m away.
+# Street-centreline pins need an address match (BACKLOG parcel approach D), not a bigger radius.
+NEAR_M = 2
 
 # Regex for the owner a portfolio's parcels should carry; set by run.py --expected-owner.
 # An `expected_owner` column in the input CSV overrides it per site.

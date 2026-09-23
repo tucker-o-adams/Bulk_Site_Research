@@ -34,7 +34,7 @@ from **1984** imagery (`nwi_image_year`) and never re-mapped. NWI vintage is oft
 | ~~5~~ | `healthcare` (nursing homes) **built 2026-09-21** | CMS Provider Data Catalog "Provider Information" (id `4pq5-n9py`, ~14k, monthly, has `latitude`/`longitude` + `geocoding_footnote`). Download CSV once per run, query locally. | OSM `amenity=nursing_home` / `social_facility`; state licensing lists + Census geocoder |
 | ~~6~~ | `healthcare` (hospitals) **built 2026-09-21**; 85 % geocoded, the rest need a second geocoder pass | **No live free point layer** (HIFLD hub 404, `Hospitals_WFL1` needs a token, NASA NCCS mirror unresolvable). Plan: CMS "Hospital General Information" (id `xubh-q36u`, ~5k, addresses only) + **Census batch geocoder** (free, 10k addresses/request). | OSM `amenity=hospital`; HHS/ASPR emPOWER or state hospital lists + geocoder |
 | ~~7~~ | `baxtel` — **dropped as a producer 2026-09-23.** Mike's plan does not allow export, so Baxtel data will not be used directly in the pipeline or its outputs. Where it helps, a person opens the Baxtel map on the Baxtel site during review — that is a workflow step (9d), not a producer. Earlier notes kept for the record: | **Manual entry only — Michael's free account has no export (confirmed 2026-09-21).** A person reads the map per survivor site and types the nearby facilities into `baxtel_*` columns of the input CSV; the pipeline carries them with `status: manual` and the Baxtel citation. A regional snapshot for a batch's area is the practical unit, not per-site counts at 200 sites. Prior note: Baxtel terms prohibit scraping and commercial use of the Map Tool without written consent; data may be shared when Baxtel is cited. Mike exports the region's CSV (statuses: Operational, Construction, Planned, Prospective, Expansion, Land Bank, In Doubt, Withdrawn, Decommissioned; MW), file goes in `Reference/`, producer runs locally with `status: manual` and the citation. Open: confirm Mike's plan covers export; ask Baxtel in writing about data-room use. | none — this is proprietary data |
-| ~~8~~ | `parcel` **built 2026-09-22**; registry now covers 7 states statewide (OH, FL, VA, IA, TX, AR, OK) plus county entries — Windstream 200: 130 resolve. The remaining tail is under "Parcel registry coverage" below | County/state ArcGIS parcel services via a registry (tbdi-pasa `county-services.json` pattern). Ozinga expected to supply APN + acreage. | statewide services where they exist (VA, others); OSM has no parcels; mark `manual` with the county assessor URL |
+| ~~8~~ | `parcel` **built 2026-09-22**; registry now covers 8 states statewide (OH, FL, VA, IA, TX, AR, OK, NJ) plus county entries — Windstream 200: 130 resolve. The remaining tail is under "Parcel registry coverage" below | County/state ArcGIS parcel services via a registry (tbdi-pasa `county-services.json` pattern). Ozinga expected to supply APN + acreage. | statewide services where they exist (VA, others); OSM has no parcels; mark `manual` with the county assessor URL |
 | ~~9~~ | `excel` **built 2026-09-21** (`excel.py`) | — | — |
 | ~~9a~~ | `kmz` **built 2026-09-21** (`kmz.py`) | — | — |
 | 9b | `flags` (**deferred** until Michael weighs in on thresholds, 2026-09-21). **Process rule (2026-09-23): thresholds are set per portfolio from the product requirement (target MW, product type, minimum size) and approved before any site is assessed — never tuned to the batch's own distribution.** `flags.py` refuses to run without an approved thresholds file for the batch and records its version in `run.json`. Portfolios differ: Windstream COs (median 0.35 ac, few-MW edge — distribution-voltage service, so nearest substation of any voltage + feeder headroom matter more than ≥100 kV) vs Ozinga (≥2 ac, mostly 2–20 ac, some 100–200+ ac, per Mike's Teams message) | rules as JSON, one per portfolio, approved before use | — |
@@ -46,22 +46,24 @@ from **1984** imagery (`nwi_image_year`) and never re-mapped. NWI vintage is oft
 ## Phase 1 scan — done 2026-09-23, and what was left for later
 
 Done: input header aliases and lenient acreage (`sites.py`); `geocode.py` command line; the stand-in
-square sized from `acres_stated`; parcel near-miss bounded to 15 m with a note (was: first feature,
+square sized from `acres_stated`; parcel near-miss bounded to 2 m (a WMS pixel) with a note (was: first feature,
 silently); Dallas DCAD reviewed with owner/address mapped; capped ArcGIS answers (`exceededTransferLimit`)
 fail instead of caching an undercount; thread-safe reference loading (healthcare, datacenter); PeeringDB
 vintage from the KMZ's own export date; `requirements-bulk.txt` completed; transmission fixture frozen in
 `fixtures/`; `mireye-screen-10` regenerated with all producers; README run sequence, input rules, checks; workbook band colours; root README and `Outputs/README.md`.
 
-Left for later (small, none blocks a test batch):
-- **NJ statewide parcels**: `Parcels_Composite_NJ_WM` (NJOGIS) is registered for Cumberland only and not
-  reviewed; probe coverage and owner fields before any NJ batch (see its `review_notes`).
-- **Cache keys ignore the service URL** (`cache.coord_key`): replacing a registered parcel service keeps
-  serving the old service's cached answers until those files are deleted. Add a URL hash to the key.
-- **`check_sources.py` gaps**: checks the NFHL root twice; skips PeeringDB, the CMS files, NAIP and the
-  figure's TIGERweb context layers.
-- **Paging**: a capped ArcGIS answer now fails loudly; if a dense-metro batch ever hits it (Manhattan did
-  not: 924 worship points, 1,032 blocks), page the query rather than shrink the radius.
-- `reference/probe_remaining_parcels.py` hard-codes the Windstream owner regex; make it a flag if reused.
+Left for later, then done the same day (2026-09-23):
+- **NJ statewide parcels registered** (`statewide.34`, NJOGIS composite, all 21 counties, no owner names
+  anywhere); the Cumberland-only entry removed.
+- **Cache reuse is endpoint-aware**: a cached answer from a different service endpoint (host + path) is
+  refetched; query-string drift still hits.
+- **Paging** for capped ArcGIS answers (`resultOffset`), verified equal to single requests on three services.
+- **`check_sources.py`** now covers NFHL layers 28/3, the figure's TIGERweb and NAIP, PeeringDB and the CMS
+  files (including a newer CMS release upstream); 43 sources, baseline re-recorded.
+- **`probe_remaining_parcels.py --expected-owner`**, defaulting to the batch's run.json pattern.
+- Found on the way: **geocoded pins sit in the street** and NJ parcels stop at the right-of-way, so the
+  near-miss tolerance is now 2 m (it was 15 m, which picked a neighbour in testing) and approach D
+  (address match) matters for any address-only list — see D below.
 
 ## Fallbacks for producers already built
 
@@ -74,11 +76,11 @@ Left for later (small, none blocks a test batch):
 | `metro` | Census TIGERweb 2020 Urban Areas | Census TIGER/Line urban-area shapefile + gazetteer (local) |
 | `datacenter` | PeeringDB KMZ in `Reference/` (registered colo/IX only) | PeeringDB API (free, rate-limited) for a fresh export; Baxtel export (manual) for hyperscale/enterprise |
 
-## Parcel registry coverage (reviewed 2026-09-22)
+## Parcel registry coverage (reviewed 2026-09-22; NJ added 2026-09-23)
 
 Statewide: **OH** (Ohio Statewide Parcels, 6.3M), **FL** (FDOR Cadastral 2025, 10.8M, edited 2026-09-16,
 carries OWN_NAME), **VA** (VGIN), **IA** (2017 snapshot), and since 2026-09-22 **TX** (TxGIO StratMap, 21
-licensed counties excluded), **AR** (state GIS office), **OK** (OKMaps WMS). Counties: 13.
+licensed counties excluded), **AR** (state GIS office), **OK** (OKMaps WMS), and since 2026-09-23 **NJ** (NJOGIS composite, no owner names). Counties: 12.
 **Windstream 200: 130 resolve** (was 98) — see "Built 2026-09-22" under the prior-art research below.
 The table that follows is the 2026-09-22 morning state, kept as the record of the sweep.
 
@@ -298,7 +300,7 @@ Northwest, CSRA, Southwest and Atlanta RC publish none. The Georgia GIS Clearing
 | A | **Register TX, AR, OK statewide** after review. `parcel.py` needs two small modes: MapServer `identify` (TX) and WMS `GetFeatureInfo` (OK). AR is a plain query. | 35 sites now; every future batch in those states | small | probe: 35/38 hit, 32 operator owner |
 | B | **Seed discovery from OpenAddresses + NSGIC** instead of AGOL search alone: for a county, read OA's `sources/us/<st>/<county>.json` parcels URL and the NSGIC portal row first, probe them, then fall back to the existing discovery. OA is a person-curated list, so it also beats our scoring guards on false positives. | GA/AL/KY/TX counties OA lists; status for all 3,000+ | small | OA URLs alone returned a parcel for 7 of our GA counties (one is the Charlton CoreLogic copy), Wagoner OK, Bullitt and Madison KY, and both AL counties |
 | C | **Add known multi-county hosts** to host enumeration: `wfs.schneidercorp.com`, `sgrcmaps.com/alma`, the GA regional AGOL org, `maps.crc.ga.gov`, `map11.incog.org`, KCS `webN`/`al<NN>portal`. Schneider depends on the terms decision. | the GA/KY/AL counties on them | small | 5 GA + 3 KY sites came from the Schneider host alone (Habersham 3, Franklin, Grady; Bullitt 2, Hardin) |
-| D | **Near-miss fallback**: when the point hits no parcel (or a road), take parcels within ~60 m and accept one only if its owner or situs address matches the site. Otherwise stay `point only`. | ROW-coordinate sites (Crossett AR) | small | 1 confirmed case |
+| D | **Near-miss fallback**: when the point hits no parcel (or a road), take parcels within ~60 m and accept one only if its owner or situs address matches the site. Otherwise stay `point only`. **More important than it looked (2026-09-23):** any `geocode.py` pin sits on the street centreline, outside every parcel - NJ test: 8 of 10 geocoded addresses hit no parcel, all with parcels 1-16 m away, and the nearest was sometimes the neighbour. So an address-only broker list resolves few parcels until D exists; a distance rule alone picks wrong parcels (the plain near-miss tolerance is 2 m for that reason). | ROW-coordinate sites (Crossett AR); every geocoded site | small | Crossett; 8/10 NJ geocoded addresses |
 | E | **Operator-owner check as a review aid**: for portfolio batches the owner field self-validates the parcel (49/60 hits). Flag hits whose owner is not the operator for a person to look at. | every portfolio batch | trivial | Dalark AR and Moore TX would be flagged |
 | F | **Kentucky: ask DOR** for the statewide layer (108/120 counties already aggregated) — one email from Tucker. A formal records request needs a KY resident/business requester (HB 312). | up to 23 KY sites | an email | GIS council minutes |
 | G | **GA qPublic-only tail**: survivor-only. Ask the county board of assessors for the parcel shapefile under O.C.G.A. 50-18-71 (native format, 3 business days) for the counties a flags cut leaves, or accept `point only`. | ≤16 GA sites | per-county email + possible fee | statute; economics above |
