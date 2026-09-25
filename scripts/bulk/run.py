@@ -20,7 +20,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from sites import load_sites, REQUIRED, OPTIONAL          # noqa: E402
 from cache import Cache                                     # noqa: E402
-from provenance import PROVENANCE_COLUMNS, now_iso          # noqa: E402
+from provenance import PROVENANCE_COLUMNS, now_iso, not_assessable   # noqa: E402
+import tiers                                                # noqa: E402
 
 ALL_PRODUCERS = ['transmission', 'substations', 'flood', 'wetlands', 'metro', 'datacenter',
                  'housing', 'schools', 'worship', 'healthcare', 'parcel', 'footprint']   # footprint reuses flood/wetlands/parcel answers
@@ -73,7 +74,14 @@ def main():
         row.update(s.extra)
         prov = []
         for p in producers:
-            vals = p.run(s, cache)
+            if not tiers.allowed(s, p.NAME):
+                vals = [not_assessable(f, p.SOURCE, getattr(p, 'LYR', ''), 'skipped: location precision (tiers.py)', tiers.reason(s)) for f in p.FIELDS]
+            else:
+                vals = p.run(s, cache)
+                extra = tiers.approx_note(s, p.NAME)
+                if extra:
+                    for v in vals:
+                        v.note = f'{v.note}; {extra}' if v.note else extra
             got = [v.field for v in vals]
             if got != list(p.FIELDS):
                 raise SystemExit(f'{p.NAME} returned fields {got} != FIELDS {list(p.FIELDS)} for {s.site_id}')

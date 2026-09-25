@@ -35,6 +35,7 @@ BAND_COLORS = ['1F3864', '2E5A46', '7A4A00', '4A235A', '0B5345', '6E2C00', '1B4F
 
 FILL_ABSENT = PatternFill('solid', fgColor='E7E6E6')
 FILL_FAILED = PatternFill('solid', fgColor='F8CBAD')
+FILL_NA = PatternFill('solid', fgColor='DDEBF7')          # not_assessable: location too rough for this field
 FILL_HDR = PatternFill('solid', fgColor='D9D9D9')
 THIN = Side(style='thin', color='BFBFBF')
 FONT_HDR = Font(bold=True)
@@ -99,7 +100,8 @@ def main():
     extra_cols = [c for c in sites[0].keys() if c not in site_cols and c not in prod_fields and c not in OPTIONAL]
     bands = [('Site', site_cols + extra_cols)] + [(BAND_TITLES.get(n, n), p['fields']) for n, p in producers.items()]
     legend = (f'{name} — {len(sites)} sites — run {run["run_at"][:16].replace("T", " ")} UTC — distances in metres '
-              '(1 mi = 1,609 m) — grey = source confirmed nothing there (absent), red = source failed (see Gaps)')
+              '(1 mi = 1,609 m) — grey = source confirmed nothing there (absent), red = source failed (see Gaps), '
+              'blue = not assessable: the site is located only to a landmark, ZIP or county (location_tier L3-L5)')
     if has_fp:
         legend += ('   |   basis: "parcel boundary" = a parcel polygon resolved; the fp_* footprint columns (flood zones, SFHA, '
                    'floodway, wetland acres) are measured over that parcel. "<n> m square" = no parcel resolved, so the fp_* '
@@ -133,6 +135,8 @@ def main():
                     cell.fill = FILL_ABSENT
                 elif st['status'] == 'failed':
                     cell.fill = FILL_FAILED
+                elif st['status'] == 'not_assessable':
+                    cell.fill = FILL_NA
             if isinstance(v, float):
                 cell.number_format = '#,##0.0'
             elif isinstance(v, int) and not isinstance(v, bool) and f not in ('lat', 'lng'):
@@ -160,7 +164,7 @@ def main():
 
     # ------------------------------------------------------------------ Sources
     so = wb.create_sheet('Sources')
-    so.append(['producer', 'source', 'source_url', 'vintage', 'method', 'fields', 'ok', 'absent', 'failed', 'manual', 'note'])
+    so.append(['producer', 'source', 'source_url', 'vintage', 'method', 'fields', 'ok', 'absent', 'failed', 'manual', 'not_assessable', 'note'])
     for cell in so[1]:
         cell.font = FONT_HDR; cell.fill = FILL_HDR
     by_prod = defaultdict(list)
@@ -173,7 +177,7 @@ def main():
         notes = Counter(r['note'] for r in rows if r['note'] and r['status'] == 'ok').most_common(1)
         sc = p['status_counts']
         so.append([n, p['source'], p['url'], p.get('vintage') or (vint[0][0] if vint else ''), method[0][0] if method else '',
-                   ', '.join(p['fields']), sc.get('ok', 0), sc.get('absent', 0), sc.get('failed', 0), sc.get('manual', 0),
+                   ', '.join(p['fields']), sc.get('ok', 0), sc.get('absent', 0), sc.get('failed', 0), sc.get('manual', 0), sc.get('not_assessable', 0),
                    notes[0][0] if notes else ''])
     for row in so.iter_rows(min_row=2):
         for cell in row:

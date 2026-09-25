@@ -31,3 +31,10 @@ data/cache/
 
 # --- site exhibit PNGs (figure.py): 10-14 MB each, regenerated from data/cache on demand ---
 Outputs/**/figures/*.png
+
+# --- test batch 1: confidential broker list under NDA, and its outputs and notes; not in git ---
+Inputs/
+TPDS site data/
+Outputs/tpds-texas-test1/
+test_1_results.md
+design_incomplete_inputs.md

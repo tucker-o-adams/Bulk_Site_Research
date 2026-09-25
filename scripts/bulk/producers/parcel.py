@@ -61,7 +61,7 @@ NOTE = ('one point landing in one polygon - confirm the APN against the assessor
 
 FIELDS = ['parcel_county', 'parcel_county_geoid', 'parcel_source_scope', 'parcel_service_name',
           'parcel_apn', 'parcel_owner', 'parcel_address', 'parcel_acres_gis', 'parcel_acres_stated_by_county',
-          'parcel_acres_input', 'parcel_apn_matches_input', 'parcel_owner_check', 'parcel_vertices', 'parcel_status']
+          'parcel_acres_input', 'parcel_apn_matches_input', 'parcel_owner_check', 'parcel_vertices', 'parcel_use', 'parcel_status']
 
 # A returned polygon that does not contain the pin is accepted only this close to it - a WMS pixel
 # tolerance (OKMaps returned VIANOK05's parcel 0.6 m off the pin; a GetFeatureInfo pixel is ~1 m) -
@@ -188,12 +188,27 @@ def owner_check(site, svc, owner, apn, mk):
     return mk('different owner - review', why + '; the pin may be on a neighbouring parcel')
 
 
+INTERNAL_ONLY = 'INTERNAL USE ONLY (licensed county)'
+
+
+def internal_note(r, cname=None):
+    """'; INTERNAL USE ONLY ...' for a parcel from a county the statewide layer's licence excludes, else ''."""
+    if not r.get('exclusion'):
+        return ''
+    cname = cname or (r.get('county') or {}).get('NAME') or r['exclusion'].get('county')
+    cname = cname if str(cname).endswith('County') else f'{cname} County'
+    return (f"; INTERNAL USE ONLY: {cname} is a licensed dataset in {r['svc'].get('name')} (its licence does "
+            f"not extend to TBDI); used for internal screening by decision 2026-09-23 - not for external "
+            f"deliverables; register the county appraisal district's own service before this parcel leaves TBDI")
+
+
 def resolve(la, ln, cache):
     """County -> registered service -> the parcel polygon at the point, through the shared cache.
 
     `run` turns every stage into Values; `footprint.py`, `kmz.py` and `figure.py` need only the
     polygon, and must get the very one the workbook measured. `stage` is one of
-    county_failed, no_county, unregistered, excluded, parcel_failed, no_polygon, ok."""
+    county_failed, no_county, unregistered, parcel_failed, no_polygon, ok. `exclusion` is set when the
+    county is on the statewide layer's exclude list: the parcel is still used, marked internal-only (internal_note)."""
     r = {'stage': None, 'error': None, 'county': None, 'svc': None, 'scope': None, 'entry': None,
          'exclusion': None, 'feature': None, 'hits': 0, 'fetched_county': None, 'fetched_parcel': None}
 
@@ -213,10 +228,11 @@ def resolve(la, ln, cache):
     r.update(svc=svc, scope=scope, entry=entry)
     if not svc:
         return {**r, 'stage': 'unregistered'}
-    # A statewide layer can carry counties we may not use (TxGIO's licensed CAD datasets).
+    # A statewide layer can carry counties whose licence does not extend to us (TxGIO's licensed CAD
+    # datasets). Tucker, 2026-09-23: use the shape when the service returns it, for internal work only -
+    # the exclusion rides along on the result so every value and figure is marked INTERNAL USE ONLY.
     excl = (svc.get('exclude') or {}).get(str(geoid)) if scope == 'statewide' else None
-    if excl:
-        return {**r, 'stage': 'excluded', 'exclusion': excl}
+    r['exclusion'] = excl
     resp, f2, e2 = cache.get_json(NAME, coord_key(la, ln, f"parcel_{scope}"), request_url(svc, la, ln))
     if e2:
         return {**r, 'stage': 'parcel_failed', 'error': e2}
@@ -259,11 +275,6 @@ def run(site, cache):
                f'scripts/bulk/reference/discover_parcel_service.py --geoid {geoid} and review the proposal')
         return out + [absent(f, SOURCE, LYR, METHOD, note=why, vintage='2025') for f in FIELDS[2:-1]] + \
             [mk('parcel_status', 'unresolved: no registered service', SOURCE, LYR, '2025', why)]
-    if r['stage'] == 'excluded':
-        why = f"{svc.get('name')} excludes {cname} County ({geoid}): {r['exclusion'].get('reason')}"
-        return out + [absent(f, SOURCE, LYR, METHOD, note=why, vintage='2025') for f in FIELDS[2:-1]] + \
-            [mk('parcel_status', 'unresolved: county excluded from the statewide layer', SOURCE, LYR, '2025', why)]
-
     url = svc['base'] if svc.get('protocol') == 'wms' else f"{svc['base']}/{svc['layer']}"
     # The vintage on a value is the data's, not the day a person reviewed the service: an
     # Iowa 2017 snapshot reviewed in 2026 must not carry a 2026 vintage.
@@ -293,7 +304,7 @@ def run(site, cache):
         stated = None
     note = NOTE + (f"; {r['hits']} parcels returned for one point" if r['hits'] > 1 else '') + (
         f"; the polygon does not contain the pin - it is {r['near_m']} m away (within the {NEAR_M} m tolerance)"
-        if r.get('near_m') is not None else '')
+        if r.get('near_m') is not None else '') + internal_note(r, cname)
 
     out += [mk('parcel_source_scope', scope, src, url, vint, note),
             mk('parcel_service_name', svc.get('name'), src, url, vint, note),
@@ -317,5 +328,6 @@ def run(site, cache):
         out.append(absent('parcel_apn_matches_input', 'input CSV', '', METHOD, note='no apn in the input CSV to check against'))
     out.append(owner_check(site, svc, owner, apn, lambda val, why: mk('parcel_owner_check', val, src, url, vint, why)))
     out += [mk('parcel_vertices', vertices(g), src, url, vint, note),
+            mk('parcel_use', INTERNAL_ONLY if r.get('exclusion') else 'open', src, url, vint, note),
             mk('parcel_status', 'ok', src, url, vint, note)]
     return out

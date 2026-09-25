@@ -1,7 +1,7 @@
 # scripts/bulk — bulk site research pipeline
 
-CSV of sites in → per-site fields with provenance out, then a workbook, a Google Earth KMZ and,
-for chosen sites, PNG exhibits. Free/public sources only, by decision (2026-09-21): no Mireye, no
+CSV of sites in → per-site fields with provenance out, then a workbook, a Google Earth KMZ, two internal
+Word memos (location confirmation, portfolio summary: MEMOS.md) and, for chosen sites, PNG exhibits. Free/public sources only, by decision (2026-09-21): no Mireye, no
 paid APIs.
 
 ## Running a batch, end to end
@@ -23,6 +23,30 @@ approved before any site is scored, screening, survivor review) is in **WORKFLOW
 .venv_fema/Scripts/python.exe scripts/bulk/figure.py Outputs/<batch>/ --only SITE_ID,SITE_ID
 ```
 
+### A broker list with free text or missing coordinates (EXTRACTION.md)
+
+Most broker lists arrive as a workbook of free-text cells, often without a coordinate per site. Then the input CSV
+is built, not hand-made:
+
+```
+# column map drafted by Claude, checked by Tucker: <Portfolio> site data/column_map.json
+.venv_fema/Scripts/python.exe scripts/bulk/extract_cells.py "<Portfolio> site data/column_map.json" --out Outputs/<batch>/input/
+#   Claude reads input/cells.csv in session -> input/broker_evidence.csv + input/location_clues.csv
+.venv_fema/Scripts/python.exe scripts/bulk/extract_check.py Outputs/<batch>/input/        # must pass: every quote verbatim
+.venv_fema/Scripts/python.exe scripts/bulk/locate.py Outputs/<batch>/input/ --state TX     # -> input/sites_in.csv, a tier per site
+.venv_fema/Scripts/python.exe scripts/bulk/run.py --sites Outputs/<batch>/input/sites_in.csv --out Outputs/<batch>/
+.venv_fema/Scripts/python.exe scripts/bulk/excel.py Outputs/<batch>/ --name <Title>
+.venv_fema/Scripts/python.exe scripts/bulk/kmz.py Outputs/<batch>/ --name <Title>
+#   Claude writes input/memo_narrative.md (facts only)
+.venv_fema/Scripts/python.exe scripts/bulk/memo.py Outputs/<batch>/ --name <Title>         # -> <Title>_confirmation_memo.docx, <Title>_summary_memo.docx, broker_summary.csv
+```
+
+**Location tiers** (`locate.py`, `tiers.py`): L1 parcel (APN), L2 point on the site (coordinate or geocoded
+address), L3 near a named existing substation, road intersection or landmark (±2 km), L4 within a ZIP, L5 within a
+county. `run.py` runs only the producers a tier supports and writes `not_assessable` for the rest (blue in the
+workbook; the KMZ draws L3-L5 sites as grey pins with an uncertainty circle and no flood, wetland or neighbour layers).
+A CSV with its own coordinates and no `location_tier` column runs exactly as before (treated as L2).
+
 `run.py` options: `--producers transmission,flood,...` (default all, in the order of the Producers
 table), `--only SITE_ID,...` (a subset; an unknown id is reported), `--workers N` (default 6),
 `--expected-owner REGEX` (below). A run overwrites the batch folder's `sites.csv`, `provenance.csv`
@@ -37,7 +61,7 @@ One CSV, one row per site.
 | `site_id` | yes | unique key; Windstream uses the CLLI. Also read from `id` / `site` |
 | `lat`, `lng` | yes | WGS84 decimal degrees; rows outside the US are rejected (lat/lng swapped?). Also read from `Latitude` / `Longitude` / `lon` / `long` / `x`,`y`. A row with no coordinates is rejected with "run geocode.py first" |
 | `acres_stated` | no | the broker's acreage; also read from `acres` / `acreage`. Read leniently: `25`, `25 ac`, `±25 acres`, `1,200` parse; a range or text (`20-30`, `TBD`) leaves it empty and keeps the words in `acres_stated_text` — never a rejection. Sizes the stand-in square when no parcel resolves (footprint) |
-| `name`, `address`, `apn`, `state`, `county`, `group`, `notes` | no | understood and carried through; `group` drives KMZ folder splits; `state` drives the KMZ verification folders (omit it and they are flat) |
+| `name`, `address`, `apn`, `state`, `county`, `group`, `notes` | no | understood and carried through; `state` drives the KMZ subfolders (omit it and they are flat); `group` splits them only with `kmz.py --group-folders`. **Rule:** states are the only subfolders unless the user asks otherwise, so a converter never fills `group` on its own judgement |
 | anything else | no | passed through untouched to `sites.csv`, never interpreted |
 
 Rejected rows are listed with a reason in the console and in `run.json`, never dropped silently.
@@ -58,7 +82,15 @@ keep blank coordinates, and run.py lists them as rejected.
 | *(none in the batch folder)* | raw service responses go to **`data/cache/<producer>/<lat_lng[_subquery]>.json`**, shared across batches and keyed by coordinate, so any location fetched once is never fetched again. A failed query is never cached; an answer capped at the service's record limit is paged to completion (or fails if the service cannot page); a cached answer from a different service endpoint is refetched. Delete a file or folder to refresh from source. |
 
 `status` is one of `ok`, `absent` (source confirmed nothing there — an answer, not an error),
-`failed` (source unreachable; value null), `manual` (supplied by a person).
+`failed` (source unreachable; value null), `manual` (supplied by a person), `not_assessable` (the site's
+location tier is too rough for this field; not a gap in the source, not a finding about the site).
+
+With the broker-text route, the batch folder also holds `input/` (column-map cells, Claude's checked reading,
+located sites), `broker_summary.csv` (key broker-stated facts per site with confidence tags, never merged with our
+values) and the two memos specified in `MEMOS.md`: `<Title>_confirmation_memo.docx` (each site's location status -
+confirmed, confirmed as a carve-out or multi-parcel site, needs confirmation, not locatable, no site yet - and a question
+only where a person can settle it) and `<Title>_summary_memo.docx` (narrative, portfolio at a glance, one block per site
+with broker says / we found, data-handling notes, method and sources). No scores until thresholds are approved.
 
 ## Portfolio owner check
 
@@ -95,11 +127,11 @@ file + sha256, run time, counts, rejected rows, status meanings). Distances stay
 
 Writes `<Title>.kmz` in the batch folder, entirely from `data/cache` and the CMS reference files (no
 network), so the map shows exactly what the workbook was computed from. Folders: **A** sites by
-`group` with a full popup; **A2** site footprints — parcel boundary (green) or the square around the pin (blue),
+state (or by `group` with `--group-folders`) with a full popup; **A2** site footprints — parcel boundary (green) or the square around the pin (blue),
 the shape the `fp_*` columns were measured over; **B** HIFLD transmission within 5 km by voltage; **C** nearest line per
 site + connector; **D** substations within 5 km; **E** FEMA SFHA polygons within 1 km; **F** NWI
 polygons within 500 m; **G** schools / places of worship / nursing homes / hospitals within 1 mi;
-**H** site-by-site verification ([group →] state → site, fly-to). E, F and G (flood, wetlands, neighbours) open switched on; A, A2, B, C, D and H open switched off — tick a folder to show it. E/F polygons
+**H** site-by-site verification (state → site, or group → state → site with `--group-folders`; fly-to). E, F and G (flood, wetlands, neighbours) open switched on; A, A2, B, C, D and H open switched off — tick a folder to show it. E/F polygons
 are clipped to 1.5 km around each site (a whole-river polygon otherwise dominates the file).
 Windstream 200: 4.7 MB, 6,707 placemarks; folder C matches `Combined_3` on all 198 sites.
 
@@ -117,7 +149,7 @@ riverine wetlands sit inside the floodplain and one layer hides the other — ea
 NAIP imagery and TIGERweb roads/hydro underneath. Footprint: solid dark red = parcel; dashed grey = the
 square around the pin (grey = lower confidence). Each acreage panel prints the workbook's `fp_*` values. Writes
 `<batch>/figures/<site_id>_{fema_flood,nwi_wetlands}_{site,regional}.png` (4800 × 2700, 300 dpi) and
-`<site_id>_figures.json` (every query URL). NAIP is ~0.6 m, so the site view of a sub-acre parcel is
+`<site_id>_figures.json` (every query URL). **Parcel check** (`--layers parcels`, `parcel_check.py`), for sites located to a point: a headline banner in the location status colour (`location_status.py`: the status, the broker's stated acreage vs the parcel under the pin, the assessment), a band quoting what the broker says about location verbatim (`broker_text.py`), the broker's pin as a red dot only when the coordinate is precise, the identified parcel in dark red (thick outline), neighbours labelled with acres and owner. A precise pin is trusted: a matching parcel is the site, a much larger one a carve-out (stated or probable), a smaller one part of a multi-parcel site. An approximate pin whose parcel does not match gets a candidate search (`candidates.py`: every parcel within 15 % of the stated size near the pin and near a substation the broker says it adjoins), drawn in orange and lettered as in the memo's question. The substation check tests the broker's 'adjacent to X substation' (or '~1 mi') against the HIFLD point and the substation's own parcel: within 150 m adjacent, 150-400 m near (check imagery), beyond that not consistent. No combinations of parcels are guessed. Sites placed only near a named substation or intersection get a candidate search when the broker says the tract is identified and states its acreage (`<site_id>_candidates.json`), and a **location map** (anchor, search area, candidates, the broker's ZIP boundary) only when that leaves 1-5 candidates to ask about; ZIP- and county-level and no-site rows get none. Writes `<site_id>_parcels_{site,regional}.png` + `<site_id>_parcel_check.json` (with the verdict and status `memo.py` uses) or `<site_id>_location.png`. Owner names make these internal: run with `--audience internal`. NAIP is ~0.6 m, so the site view of a sub-acre parcel is
 visibly pixelated — that is the imagery's limit, not a rendering fault.
 
 **Basemap and audience.** The imagery is a pluggable provider (`basemap.py`); the overlays are identical
@@ -142,7 +174,7 @@ the true-north square can sit a degree or two off the grid (grid convergence).
 | `wetlands` | `nwi_mapping_status, nwi_image_year, nwi_mapping_age_years, nwi_project, nwi_at_point, nwi_type_at_point, nwi_code_at_point, nwi_nearest_m, nwi_nearest_type, nwi_nearest_code, nwi_nearest_acres, nwi_count_within_500m, nwi_polygon_acres_within_500m` | USFWS National Wetlands Inventory: Wetlands, Wetlands_Status, Data_Source. Photointerpreted, not jurisdictional; acres are whole NWI polygons, not clipped. Unmapped areas carry a note on every zero. **Stale mapping:** `nwi_mapping_age_years` = run year − imagery year; when the imagery predates `STALE_BEFORE` (2000), every NWI value — and the footprint's `fp_nwi_*` — carries a `STALE MAPPING` note and the KMZ popup says so. A wetland hit from stale mapping is REVIEW against current imagery, never a knockout (BEREKYXA's 1984 "pond" is now tennis courts). Windstream 200: 110 of 197 dated sites are stale. | in use; no independent known answer yet |
 | `metro` | `metro_urban_area_at_point, metro_urban_area_at_point_pop, metro_250k_nearest_name/m/pop, metro_1m_nearest_name/m/pop` | Census TIGERweb 2020 Urban Areas with POP100. Straight-line to the urban-area boundary (0 inside), not driving time; urban areas are built-up footprints, not MSAs. 300 km search. | geographic sanity checks (Sugar Land inside Houston 0 km, Baldwin GA 41 km to Atlanta, Riverside TX rural) |
 | `datacenter` | `dc_nearest_m/name/city/state/networks/peeringdb_url, dc_hub_nearest_m/name/city/networks, dc_count_within_25km/50km, dc_max_networks_within_50km` | PeeringDB facility list (`Reference/peeringdb.kmz`, 1,353 US facilities), local, no network. Registered colo/IX facilities only — hyperscale and enterprise data centers are not listed. Hub = >= 20 networks (114 facilities). | geographic sanity checks |
-| `parcel` | `parcel_county, parcel_county_geoid, parcel_source_scope, parcel_service_name, parcel_apn, parcel_owner, parcel_address, parcel_acres_gis, parcel_acres_stated_by_county, parcel_acres_input, parcel_apn_matches_input, parcel_owner_check, parcel_vertices, parcel_status` | Census TIGERweb county at the point, then the county (or statewide) parcel service from `data/reference/parcel-services.json`: statewide OH, FL, VA, IA (2017), TX (TxGIO StratMap, via `identify`; Dallas via DCAD), AR, OK (OKMaps WMS), NJ (NJOGIS composite, no owner names), plus county entries (each carries `reviewed` and `review_notes`). A returned polygon that does not contain the pin is used only within 2 m (a WMS pixel), with the distance in the note; a geocoded pin on the street centreline usually resolves nothing, because parcels stop at the right-of-way (BACKLOG approach D, address match, is the fix). There is no national parcel layer: an unregistered county returns `unresolved` naming the county, and `reference/discover_parcel_service.py` writes a reviewable proposal (OpenAddresses and NSGIC first, then searches). `parcel_owner_check` compares the owner of record with `--expected-owner`. Logic ported from tbdi-pasa `pasa_geo.core.parcel_at_point` / `pasa_geo.county`. | **29/29 acreages match** the Aug 2026 county-GIS results; Windstream 200: 130 resolved, 78 with the expected owner |
+| `parcel` | `parcel_county, parcel_county_geoid, parcel_source_scope, parcel_service_name, parcel_apn, parcel_owner, parcel_address, parcel_acres_gis, parcel_acres_stated_by_county, parcel_acres_input, parcel_apn_matches_input, parcel_owner_check, parcel_vertices, parcel_use, parcel_status` | Census TIGERweb county at the point, then the county (or statewide) parcel service from `data/reference/parcel-services.json`: statewide OH, FL, VA, IA (2017), TX (TxGIO StratMap, via `identify`; Dallas via DCAD), AR, OK (OKMaps WMS), NJ (NJOGIS composite, no owner names), plus county entries. Counties on a statewide layer's `exclude` list (TxGIO's 21 licensed counties, released only to Texas government entities) are still used when the service returns a polygon — Tucker, 2026-09-23, internal use only — with `parcel_use` = `INTERNAL USE ONLY (licensed county)` and the reason on every parcel and footprint value; the KMZ labels the shape, and `figure.py --audience external` refuses it. Register the county's own service before such a parcel goes into an external deliverable. Otherwise, county entries (each carries `reviewed` and `review_notes`). A returned polygon that does not contain the pin is used only within 2 m (a WMS pixel), with the distance in the note; a geocoded pin on the street centreline usually resolves nothing, because parcels stop at the right-of-way (BACKLOG approach D, address match, is the fix). There is no national parcel layer: an unregistered county returns `unresolved` naming the county, and `reference/discover_parcel_service.py` writes a reviewable proposal (OpenAddresses and NSGIC first, then searches). `parcel_owner_check` compares the owner of record with `--expected-owner`. Logic ported from tbdi-pasa `pasa_geo.core.parcel_at_point` / `pasa_geo.county`. | **29/29 acreages match** the Aug 2026 county-GIS results; Windstream 200: 130 resolved, 78 with the expected owner |
 | `footprint` | `fp_basis, fp_acres, fp_flood_zones, fp_sfha_acres, fp_sfha_pct, fp_floodway_acres, fp_flood_unmapped_acres, fp_nwi_acres, fp_nwi_pct, fp_nwi_types` | The site shape — the parcel polygon from `parcel.resolve()` where one resolves, otherwise a north-aligned square centred on the pin: **200 m × 200 m** (9.88 ac), or a square of the input's `acres_stated` when that is larger (100 ac → 636 m), so a large site is not judged on a 10 ac patch; `fp_basis` names the size (`636 m square`) — intersected with FEMA NFHL zones and USFWS NWI polygons. Reuses the flood/wetlands producers' cached answers (no new calls unless a parcel reaches past 1 km / 500 m). Areas in a pin-centred Lambert equal-area projection. A failed parcel lookup is `failed`, never silently a square. Unmapped flood ground is reported as unmapped, never as Zone X. | Windstream 200: 130 parcel / 70 square; parcel `fp_acres` within 0.37 % of `parcel_acres_gis` (spherical vs ellipsoidal area); squares 200.00 m a side (geodesic check); finds SFHA in 13 footprints whose pin is outside it, NWI in 12 |
 | `housing` | `hu_block_at_point, pop_block_at_point, block_at_point_acres, hu_within_0_5mi, pop_within_0_5mi, hu_within_1mi, pop_within_1mi, blocks_within_1mi` | Census TIGERweb 2020 Blocks (HU100, POP100). Blocks counted whole when their Census internal point is within the radius; rural blocks are large, so rural sums are coarse. Raw counts only — no density class until thresholds are agreed. | sanity checks |
 | `schools` | `school_nearest_m/name/type/city, schools_within_0_5mi/1mi, public_schools_within_1mi, private_schools_within_1mi` | NCES EDGE public 2024-25 + private 2023-24 school points (K-12 only). 5 km search. | sanity checks (Nordonia Middle 122 m from NRFDOHXA) |

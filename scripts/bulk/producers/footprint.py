@@ -177,7 +177,7 @@ def run(site, cache):
     if fp['basis'] == BASIS_PARCEL:
         svc = r['svc']
         src_shape, url_shape = f"{svc.get('name')} ({svc.get('owner')})", svc['base']
-        note_shape = 'the parcel the parcel_* columns describe; check parcel_owner_check before relying on it'
+        note_shape = 'the parcel the parcel_* columns describe; check parcel_owner_check before relying on it' + parcel.internal_note(r)
     else:
         src_shape, url_shape = f"Constructed: {fp['basis']} centred on the site pin", ''
         sized = (f"; sized to the input's acres_stated ({site.acres_stated:,.2f} ac)" if fp['side_m'] > SQUARE_M else

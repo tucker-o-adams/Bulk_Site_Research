@@ -74,7 +74,7 @@ def fetch_bytes(url, tries=3, timeout=300):
 
 # ---------------------------------------------------------------- NAIP
 NAIP = 'https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer'
-TILE_MAX = 3200          # NAIP exportImage caps at 4000 px a side
+TILE_MAX = 2400          # NAIP exportImage caps at 4000 px a side, and in practice 500s on tiles near 8 M px (a test-batch site, 2026-09-24)
 
 
 def naip_scene(lat, lng, cache):

@@ -72,7 +72,7 @@ def load_sites(path: str):
             if sid in seen:
                 rejected.append((n, sid, 'duplicate site_id')); continue
             if not r.get('lat') or not r.get('lng'):
-                rejected.append((n, sid, 'no coordinates (address-only row? run geocode.py first)')); continue
+                rejected.append((n, sid, 'no coordinates' + (f" ({r['notes']})" if r.get('notes') else '') + ': run locate.py on the broker clues, or geocode.py for an address list')); continue
             try:
                 lat, lng = float(r['lat']), float(r['lng'])
             except ValueError:

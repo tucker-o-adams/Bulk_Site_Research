@@ -1,0 +1,18 @@
+{
+ "note": "County parcel services that can be searched by owner name (ArcGIS /query with a where clause), used by candidates.search_owner to find a tract the broker names only by its owner or tract name. Separate from parcel-services.json, which answers point lookups: a county can keep a statewide layer for points (TxGIO StratMap, identify-only, no owner search) and add its own service here. Reviewed by a person before it is added, like parcel-services.json. fields maps our roles to the service's columns.",
+ "counties": {
+  "48029": {
+   "county": "Bexar County",
+   "state": "TX",
+   "reviewed": "2026-09-25",
+   "review_notes": "From the discovery proposal parcel-proposals/48029.json (maps.bexar.org, score 105). Checked 2026-09-25: /query accepts UPPER(Owner) LIKE and an envelope, returns GeoJSON in EPSG:4326. Zip is the owner's mailing ZIP, not the parcel's: filter by geometry, never by that field. Added at Tucker's request (test batch 1 tract search).",
+   "service": {
+    "base": "https://maps.bexar.org/arcgis/rest/services/Parcels/MapServer",
+    "layer": 0,
+    "name": "Bexar County Parcels (maps.bexar.org)",
+    "owner": "Bexar County",
+    "fields": {"apn": "AcctNumb", "owner": "Owner", "acres": "Acres", "address": "Situs", "legal": "LglDesc"}
+   }
+  }
+ }
+}

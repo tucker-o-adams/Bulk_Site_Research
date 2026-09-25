@@ -7,17 +7,20 @@ No network: every geometry is read from data/cache (the exact responses the
 producers scored) or from the CMS reference files, so the map shows what the
 workbook was computed from. Folders:
 
-    A. Sites                       one pin per site; split into `group` subfolders only when the
-                                   input CSV has a group column; popup = key values + sources   (off)
+    A. Sites                       one pin per site, in state subfolders (group subfolders instead
+                                   only with --group-folders); popup = key values + sources   (off)
     A2. Site footprints            the shape the fp_* columns were measured over: parcel boundary
                                    (green) or, with no parcel, the square around the pin (blue)  (off)
+    A3. Approximate locations      sites located only to a landmark, ZIP or county (location tier L3-L5):
+                                   a circle of the location's uncertainty radius; these sites' pins are
+                                   grey and get no flood, wetland or neighbour layers              (ON)
     B. Transmission within 5 km    HIFLD segments by voltage band               (off)
     C. Nearest line per site       the identified segment, and a site -> line connector  (off)
     D. Substations within 5 km     points by voltage band                      (off)
     E. Flood: SFHA within 1 km     FEMA A/AE/AH/AO/V polygons                  (ON)
     F. Wetlands within 500 m       NWI polygons                                 (ON)
     G. Neighbors within 1 mi       schools, places of worship, nursing homes, hospitals (ON)
-    H. Site-by-site verification   [group ->] state -> site: pin, footprint, nearest line,
+    H. Site-by-site verification   state -> site ([group ->] with --group-folders): pin, footprint, nearest line,
                                    connector, nearest substation, fly-to       (off)
 
 A folder that ships off has every folder and placemark inside it off too, so Google Earth's
@@ -173,10 +176,21 @@ def fmt(v, unit=''):
     return s + unit
 
 
+def approx(s):
+    """Located only to an anchor, a ZIP or a county (locate.py tier L3-L5): the pin is not the site."""
+    return (s.get('location_tier') or '').upper() in ('L3', 'L4', 'L5')
+
+
+def circle(lat, lng, r_m, n=64):
+    k = math.cos(math.radians(lat))
+    ring = [(lng + r_m * math.cos(2 * math.pi * i / n) / (111320 * k), lat + r_m * math.sin(2 * math.pi * i / n) / 110540) for i in range(n + 1)]
+    return {'type': 'Polygon', 'coordinates': [ring]}
+
+
 def basis_text(s):
     """What the site's area figures rest on. fp_basis when the footprint producer ran; the parcel status otherwise."""
     if s.get('fp_basis') == footprint.BASIS_PARCEL or (not s.get('fp_basis') and s.get('parcel_status') == 'ok'):
-        return 'parcel boundary'
+        return 'parcel boundary' + (' - <b>INTERNAL USE ONLY</b> (licensed county parcel data)' if (s.get('parcel_use') or '').startswith('INTERNAL') else '')
     if s.get('fp_basis'):
         return (f"{esc(s['fp_basis'])} around the pin - no parcel for {esc(s.get('parcel_county') or 'this county')}; "
                 'footprint figures describe the square, not a parcel')
@@ -191,6 +205,11 @@ def site_desc(s, srcs):
         ('Site', f"<b>{esc(s['site_id'])}</b> {esc(s.get('name'))}<br/>{esc(s.get('address'))} {esc(s.get('city') or '')} {esc(s.get('state'))}" + (f"<br/>group: {esc(s.get('group'))}" if s.get('group') else '')
                  + (f"<br/><i>basis: {basis_text(s)}</i>" if s.get('fp_basis') or s.get('parcel_status') else '')),
     ]
+    if s.get('location_tier'):
+        rows.append(('Location', f"<b>{esc(s['location_tier'])}</b>: {esc(s.get('location_basis'))} (radius {fmt(s.get('location_radius_m'))} m); {esc(s.get('location_check'))}"
+                                 + ('<br/><b>The pin is not the site.</b> Values below describe the located point; flood, wetland, parcel and neighbour fields are not assessable.' if approx(s) else '')
+                                 + (f"<br/>other clues: {esc(s.get('location_other'))}" if s.get('location_other') else '')
+                                 + (f"<br/>unresolved: {esc(s.get('location_unresolved'))}" if s.get('location_unresolved') else '')))
     if s.get('fp_basis'):
         rows.append(('Footprint', f"{esc(s.get('fp_basis'))}, {fmt(s.get('fp_acres'))} ac<br/>"
                                   f"flood: {esc(s.get('fp_flood_zones')) or 'no FEMA determination'}; SFHA <b>{fmt(s.get('fp_sfha_acres'))} ac</b> "
@@ -223,12 +242,17 @@ def site_desc(s, srcs):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('batch'); ap.add_argument('--name', default=None)
+    ap.add_argument('--group-folders', action='store_true',
+                    help="split folders A and H by the input's group column (default: by state only)")
     a = ap.parse_args()
     b = a.batch.rstrip('/\\'); name = a.name or os.path.basename(b)
     sites = list(csv.DictReader(open(os.path.join(b, 'sites.csv'), encoding='utf-8-sig')))
     run = json.load(open(os.path.join(b, 'run.json'), encoding='utf-8'))
     srcs = {n: p['source'].split(' (')[0] for n, p in run['producers'].items()}
-    groups = sorted({s.get('group') or 'Sites' for s in sites})
+    # States are the only subfolders unless the user asks for group folders (rule, 2026-09-23)
+    use_group = a.group_folders and any(s.get('group') for s in sites)
+    fkey = (lambda s: s.get('group') or 'Sites') if use_group else (lambda s: s.get('state') or 'State not given')
+    groups = sorted({fkey(s) for s in sites})
     ref_nh = list(csv.DictReader(open(os.path.join(REF, 'cms_nursing_homes.csv'), encoding='utf-8'))) if os.path.exists(os.path.join(REF, 'cms_nursing_homes.csv')) else []
     ref_h = list(csv.DictReader(open(os.path.join(REF, 'cms_hospitals.csv'), encoding='utf-8'))) if os.path.exists(os.path.join(REF, 'cms_hospitals.csv')) else []
 
@@ -252,6 +276,10 @@ def main():
     for sid, line, fill in (('sfha', 'ffd06f1f', '66d06f1f'), ('nwi', 'ff1cc37f', '551cc37f')):
         st = sub(doc, 'Style', id=sid); ls = sub(st, 'LineStyle'); sub(ls, 'color', line); sub(ls, 'width', '2')
         ps = sub(st, 'PolyStyle'); sub(ps, 'color', fill); sub(ps, 'fill', '1'); sub(ps, 'outline', '1')
+    st = sub(doc, 'Style', id='siteApprox'); ic = sub(st, 'IconStyle'); sub(ic, 'scale', '1.0'); sub(ic, 'color', 'ffb4b4b4')
+    sub(sub(ic, 'Icon'), 'href', ICON + 'shapes/placemark_circle.png')
+    st = sub(doc, 'Style', id='approxCircle'); ls = sub(st, 'LineStyle'); sub(ls, 'color', 'ffb4b4b4'); sub(ls, 'width', '2')
+    ps = sub(st, 'PolyStyle'); sub(ps, 'color', '22b4b4b4'); sub(ps, 'fill', '1'); sub(ps, 'outline', '1')
     for sid, line in (('fpParcel', 'ff00ff00'), ('fpSquare', 'ffffc864')):      # outline only: imagery shows through
         st = sub(doc, 'Style', id=sid); ls = sub(st, 'LineStyle'); sub(ls, 'color', line); sub(ls, 'width', '2.5')
         ps = sub(st, 'PolyStyle'); sub(ps, 'fill', '0'); sub(ps, 'outline', '1')
@@ -260,18 +288,32 @@ def main():
     A = folder(doc, f'A. Sites ({len(sites)})', visible=False, open_=True)
     by_group = defaultdict(list)
     for s in sites:
-        by_group[s.get('group') or 'Sites'].append(s)
-    grouped = any(s.get('group') for s in sites)     # no group column: no group level, pins straight under A
+        by_group[fkey(s)].append(s)
+    grouped = use_group or any(s.get('state') for s in sites)     # no group or state: pins straight under A
     for i, g in enumerate(groups):
         gf = folder(A, f'{g} ({len(by_group[g])})') if grouped else A
         for s in by_group[g]:
-            add_point_pm(gf, s['site_id'], f'site_{i}', site_desc(s, srcs), float(s['lng']), float(s['lat']))
+            if approx(s):
+                add_point_pm(gf, f"{s['site_id']} (approx. {s['location_tier']}, {fmt(s.get('location_radius_m'))} m)", 'siteApprox', site_desc(s, srcs), float(s['lng']), float(s['lat']))
+            else:
+                add_point_pm(gf, s['site_id'], f'site_{i}', site_desc(s, srcs), float(s['lng']), float(s['lat']))
+    ap_sites = [s for s in sites if approx(s)]
+    if ap_sites:
+        A3 = folder(doc, f'A3. Approximate locations: uncertainty circles ({len(ap_sites)})', description=(
+            'Sites the broker list places only near a named substation, intersection or landmark (L3), within a ZIP (L4) or a county (L5). '
+            'The circle is the uncertainty radius around the located point; the site could be anywhere in it. No flood, wetland or '
+            'neighbour layers are drawn for these sites.'))
+        for s in ap_sites:
+            add_poly_pm(A3, f"{s['site_id']} {s['location_tier']} radius {fmt(s.get('location_radius_m'))} m", 'approxCircle', site_desc(s, srcs),
+                        circle(float(s['lat']), float(s['lng']), float(s.get('location_radius_m') or 1000)))
 
     # ---- A2. Site footprints: the very shape the fp_* columns were measured over (offline: cache only)
     fps = {}
     if any(s.get('fp_basis') for s in sites):
         offline = Cache(CACHE, offline=True)
         for s in sites:
+            if not s.get('fp_basis'):
+                continue                    # footprint not assessable at this location tier
             fp = footprint.shape_at(float(s['lat']), float(s['lng']), offline, footprint.row_acres(s))
             if fp['stage'] == 'ok':
                 fps[s['site_id']] = fp
@@ -283,8 +325,9 @@ def main():
             ids = [sid_ for sid_, fp in fps.items() if (fp['basis'] == footprint.BASIS_PARCEL) == is_parcel]
             ff = folder(A2, f'{label} ({len(ids)})')
             for s in (x for x in sites if x['site_id'] in ids):
-                add_poly_pm(ff, f"{s['site_id']} — {fmt(s.get('fp_acres'))} ac", style, site_desc(s, srcs), mapping(fps[s['site_id']]['ll']))
-        missing = [s['site_id'] for s in sites if s['site_id'] not in fps]
+                internal = ' (INTERNAL USE ONLY - licensed county parcel)' if fps[s['site_id']]['parcel'].get('exclusion') and is_parcel else ''
+                add_poly_pm(ff, f"{s['site_id']} — {fmt(s.get('fp_acres'))} ac{internal}", style, site_desc(s, srcs), mapping(fps[s['site_id']]['ll']))
+        missing = [s['site_id'] for s in sites if s['site_id'] not in fps and s.get('fp_basis')]
         if missing:
             print(f'  A2: no footprint for {len(missing)} sites (parcel lookup failed or not cached): {", ".join(missing[:10])}')
 
@@ -418,6 +461,8 @@ def main():
     def points_from_cache(producer, suffix, style, label_fn, desc_fn, fold):
         seen_p = set(); n = 0
         for s in sites:
+            if approx(s):
+                continue
             la, ln = float(s['lat']), float(s['lng'])
             resp = cached(producer, la, ln, suffix)
             if not resp:
@@ -446,6 +491,8 @@ def main():
     def points_from_ref(rows, style, label_fn, desc_fn, fold):
         seen_p = set(); n = 0
         for s in sites:
+            if approx(s):
+                continue                    # neighbours around an approximate point would be read as the site's
             la, ln = float(s['lat']), float(s['lng'])
             for r in rows:
                 try:
@@ -469,7 +516,7 @@ def main():
                description='One folder per site: pin, identified nearest transmission line, connector, nearest substation. Tick one at a time; double-click to fly to it. '
                            'HIFLD geometry is national-scale and may sit 20-50 m off the visible towers.')
     for i, g in enumerate(groups):
-        gf = folder(H, f'{g} ({len(by_group[g])})') if grouped else H
+        gf = folder(H, f'{g} ({len(by_group[g])})') if use_group else H
         by_state = defaultdict(list)
         for s in by_group[g]:
             by_state[s.get('state') or 'State not given'].append(s)

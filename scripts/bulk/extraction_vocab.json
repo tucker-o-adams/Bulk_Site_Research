@@ -1,0 +1,180 @@
+{
+ "_about": "Controlled vocabulary for broker-text extraction (EXTRACTION.md). extract_check.py rejects any dimension, field, unit, kind or clue type not listed here. Add to it deliberately, not per batch.",
+ "kinds": {
+  "actual": "a stated fact about this site",
+  "target": "an aim or search criterion, not yet a fact (\"~20 ac target\", \"2029 target\")",
+  "range_low": "lower end of a stated range",
+  "range_high": "upper end of a stated range",
+  "text": "wording kept as-is; no number to extract"
+ },
+ "tag_levels": [
+  "confirmed_written",
+  "confirmed_prescreen",
+  "utility_estimate",
+  "broker_estimate",
+  "pending",
+  "untagged"
+ ],
+ "dimensions": {
+  "power_capacity": {
+   "about": "MW deliverable, per the broker",
+   "fields": {
+    "mw": "MW",
+    "mw_initial": "MW",
+    "mw_full": "MW",
+    "mw_expansion": "MW",
+    "kva": "kVA",
+    "detail": "text"
+   }
+  },
+  "power_timing": {
+   "about": "when power is available",
+   "fields": {
+    "available": "text",
+    "initial_available": "text",
+    "full_available": "text",
+    "detail": "text"
+   }
+  },
+  "power_connection": {
+   "about": "how the site connects: utility, substation, voltage, circuits, study stage",
+   "fields": {
+    "utility": "text",
+    "service_level": [
+     "distribution",
+     "transmission",
+     "unknown"
+    ],
+    "substation": "text",
+    "substation_status": [
+     "existing",
+     "new_or_planned",
+     "unknown"
+    ],
+    "voltage_kv": "kV",
+    "circuits": "count",
+    "study_stage": "text",
+    "new_generation_required": [
+     "yes",
+     "no",
+     "pending"
+    ],
+    "detail": "text"
+   }
+  },
+  "grid_constraints": {
+   "about": "upstream limits the broker states: transmission capacity, upgrades gating the date, interruptible service, study thresholds. Client input only; absence is 'not provided', never 'no constraint'",
+   "fields": {
+    "constraint": "text"
+   }
+  },
+  "power_cost": {
+   "about": "all-in power cost",
+   "fields": {
+    "cents_per_kwh": "c/kWh",
+    "basis": "text"
+   }
+  },
+  "fiber": {
+   "about": "carrier quotes or fiber statements; broker-stated, never a proximity metric",
+   "fields": {
+    "status": [
+     "quoted",
+     "not_quoted",
+     "feasibility_only"
+    ],
+    "carrier": "text",
+    "quote_level": "text",
+    "quote_date": "text",
+    "route1_ft": "ft",
+    "route2_ft": "ft",
+    "nrc_usd": "USD",
+    "mrc_usd": "USD/month",
+    "delivery_months": "months",
+    "detail": "text"
+   }
+  },
+  "flood_wetlands": {
+   "about": "any flood or wetland statement by the broker (rare)",
+   "fields": {
+    "claim": "text"
+   }
+  },
+  "acreage": {
+   "about": "site size; kind distinguishes actual vs target; parent tract separately",
+   "fields": {
+    "acres": "ac",
+    "parent_acres": "ac",
+    "detail": "text"
+   }
+  },
+  "zoning_neighbours": {
+   "about": "zoning, permitted use, noise rules, neighbourhood words",
+   "fields": {
+    "jurisdiction": "text",
+    "zoning": "text",
+    "use_permitted": [
+     "yes",
+     "no",
+     "pending",
+     "unknown"
+    ],
+    "noise_rule": "text",
+    "context": "text"
+   }
+  },
+  "site_control": {
+   "about": "deal fact, reported beside the evidence matrix, never inside it",
+   "fields": {
+    "stage": [
+     "under_contract",
+     "loi_or_negotiating",
+     "owner_identified",
+     "tract_identified",
+     "no_site_yet",
+     "no_site_control"
+    ],
+    "owner_type": "text",
+    "detail": "text"
+   }
+  },
+  "schedule": {
+   "about": "the broker's own realism / schedule read",
+   "fields": {
+    "realism": "text",
+    "next_step": "text"
+   }
+  },
+  "market": {
+   "about": "section / market the broker files the site under",
+   "fields": {
+    "market": "text"
+   }
+  },
+  "other": {
+   "about": "anything worth keeping that fits no dimension; say what in the note",
+   "fields": {
+    "detail": "text"
+   }
+  }
+ },
+ "clue_types": {
+  "coordinate": "lat,lng as given",
+  "coordinate_approx": "lat,lng the broker marks approximate",
+  "apn": "parcel / account number",
+  "street_address": "street address with city, state",
+  "intersection": "two roads, with city and state: 'Main St & 2nd St, Town, ST'",
+  "substation_name": "an existing substation named as serving the site",
+  "substation_planned": "a new or planned substation named as serving the site (not in 2021 HIFLD)",
+  "landmark": "a named business, park or feature the site is next to, with city and state",
+  "owner_name": "owner or tract name that may identify the parcel",
+  "corridor": "highway or road corridor",
+  "area_name": "a named district or area, e.g. a base or neighbourhood (context only, never geocoded)",
+  "city": "city name",
+  "zip": "5-digit ZIP",
+  "county": "county name without 'County'",
+  "state": "2-letter state",
+  "utility": "serving utility named",
+  "acreage": "site acres (actual), used to size the stand-in square and to match parcels"
+ }
+}
