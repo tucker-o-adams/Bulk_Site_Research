@@ -7,5 +7,9 @@
 | `parcel-test/` | test | Parcel producer test output (2026-09-22); not a deliverable |
 | `Excel outputs/`, `KMZ outputs/` | **superseded** (Aug 2026) | Before the pipeline: the Mireye site screen workbook, Windstream parcel sizes, power and transmission CSVs, and the Combined KMZs from `scripts/windstream_kmz/`. `WS_Top200_Transmission_Distance.csv` is the transmission regression's origin (a frozen copy lives in `scripts/bulk/fixtures/`) |
 
+Each batch folder keeps only its latest primary outputs (workbook, KMZ, memos) at the top; machine files are in
+`Supporting outputs/`, earlier versions in `Archive/` (scripts/bulk/README.md, "Batch folder layout"). Older batches
+move to this layout the next time they are rebuilt.
+
 Batch outputs are regenerated from `data/cache` by `scripts/bulk/run.py`, `excel.py` and `kmz.py`;
 site exhibit PNGs (`figures/*.png`, 10–14 MB each) are not committed.

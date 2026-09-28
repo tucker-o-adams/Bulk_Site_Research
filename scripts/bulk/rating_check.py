@@ -34,6 +34,12 @@ def parse_adjustments(text):
     return out, errs
 
 
+def row_inputs(r):
+    """A checked ratings.csv row -> (dims, screeners, adjustments) as rating_rules takes them."""
+    dims = {d: (int(r[f'{d}_score']) if r[f'{d}_score'] else None, r[f'{d}_conf']) for d in DIMS}
+    return dims, {key: r[col] for col, key in SCREENERS.items()}, parse_adjustments(r.get('adjustments'))[0]
+
+
 def check_rows(rows, status=None):
     """rows: ratings.csv rows; status: {site_id: current location status} (broker_summary.csv) to catch stale ratings.
     Returns (errors, review): errors ['<site>: <problem>'], review ['<site>: indicated X, assigned Y']."""
@@ -91,10 +97,11 @@ def check_rows(rows, status=None):
 
 if __name__ == '__main__':
     from memo import rd                                                       # noqa: E402
+    from batch_paths import support                                           # noqa: E402
     b = sys.argv[1].rstrip('/\\')
-    summ = os.path.join(b, 'broker_summary.csv')
+    summ = support(b, 'broker_summary.csv')
     status = {r['site_id']: r['location_status'] for r in rd(summ)} if os.path.exists(summ) else None
-    errors, review = check_rows(rd(os.path.join(b, 'ratings.csv')), status)
+    errors, review = check_rows(rd(support(b, 'ratings.csv')), status)
     for e in errors:
         print(f"ERROR {e}")
     for x in review:

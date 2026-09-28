@@ -50,7 +50,7 @@ A CSV with its own coordinates and no `location_tier` column runs exactly as bef
 `run.py` options: `--producers transmission,flood,...` (default all, in the order of the Producers
 table), `--only SITE_ID,...` (a subset; an unknown id is reported), `--workers N` (default 6),
 `--expected-owner REGEX` (below). A run overwrites the batch folder's `sites.csv`, `provenance.csv`
-and `run.json`; everything it fetched stays in `data/cache`, so a rerun is fast and offline.
+and `run.json` (in `Supporting outputs/`); everything it fetched stays in `data/cache`, so a rerun is fast and offline.
 
 ## Input contract
 
@@ -72,9 +72,26 @@ columns or one `address` column ("123 Main St, Town, ST 12345"), using the free 
 check every `Non_Exact` row (it matched Chestnut **St** to Chestnut **Ct** in testing). Unmatched rows
 keep blank coordinates, and run.py lists them as rejected.
 
+## Batch folder layout (`batch_paths.py`)
+
+Only the latest **primary outputs** sit at the top of a batch folder: `<Title>.xlsx`, `<Title>.kmz`,
+`<Title>_confirmation_memo.docx`, `<Title>_summary_memo.docx`. Everything else has its own place:
+
+| Folder | Holds |
+|---|---|
+| `Supporting outputs/` | machine files: `sites.csv`, `provenance.csv`, `run.json`, `broker_summary.csv`, `ratings.csv` |
+| `Archive/` | earlier versions of the primary outputs, named `<name> <modified YYYY-MM-DD HHMM>`; a script moves the old version here before writing a changed one (an unchanged rebuild archives nothing) |
+| `input/` | the session's work: column-map cells, checked extraction, locations, rating readings, memo bullets |
+| `figures/` | exhibits (PNG) and their check results (JSON) |
+
+Every script reads and writes through `batch_paths.py` (`support()` for machine files, `publish()` for primary
+outputs), so the layout holds for every batch. A batch from before the folders still reads; its machine files move into
+`Supporting outputs/` (the old copy to `Archive/`) the next time they are written. A primary output that is open in
+Word or Excel cannot be moved: the new one is written beside it as `<name> (new).<ext>`, and the next run archives both.
+
 ## Outputs (`--out`)
 
-| File | Contents |
+| File (in `Supporting outputs/`) | Contents |
 |---|---|
 | `sites.csv` | one row per site: input columns, then every producer field |
 | `provenance.csv` | one row per site × field: `value, status, source, source_url, vintage, fetched_at, method, note` |
@@ -86,11 +103,11 @@ keep blank coordinates, and run.py lists them as rejected.
 location tier is too rough for this field; not a gap in the source, not a finding about the site).
 
 With the broker-text route, the batch folder also holds `input/` (column-map cells, Claude's checked reading,
-located sites), `broker_summary.csv` (key broker-stated facts per site with confidence tags, never merged with our
-values) and the two memos specified in `MEMOS.md`: `<Title>_confirmation_memo.docx` (each site's location status -
+located sites), `Supporting outputs/broker_summary.csv` and `ratings.csv` (key broker-stated facts per site with confidence tags, never merged with our
+values; the site ratings) and the two memos specified in `MEMOS.md`: `<Title>_confirmation_memo.docx` (each site's location status -
 confirmed, confirmed as a carve-out or multi-parcel site, needs confirmation, not locatable, no site yet - and a question
-only where a person can settle it) and `<Title>_summary_memo.docx` (narrative, portfolio at a glance, one block per site
-with broker says / we found, data-handling notes, method and sources). No scores until thresholds are approved.
+only where a person can settle it) and `<Title>_summary_memo.docx` (fixed sections from priority ratings to caveats, each
+by market with a total; site-by-site, ownership, method and ratings appendices). No GO / NO-GO until thresholds are approved.
 
 ## Portfolio owner check
 

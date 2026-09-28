@@ -260,7 +260,7 @@ def verdict(res):
                                    f"the {ac(ia)} parcel under the pin. Where within it is not stated, so parcel figures (flood, wetlands) describe the whole "
                                    f"parcel.")}
         return {**out, 'status': 'confirmed_partial', 'note': 'spans several parcels', 'match': 'spans',
-                'assessment': (f"Spans several parcels: the {ac(b)} site is larger than the {ac(ia)} parcel under the pin, so it takes in neighbouring "
+                'assessment': (f"Spans several parcels: the {ac(b)} site is larger than the {ac(ia)} parcel under the pin, so it takes in neighboring "
                                f"parcels. Which ones is not stated, so parcel figures describe this parcel only.")}
     # approximate coordinate
     if abs(diff) <= MATCH_TOL and not sub_bad:

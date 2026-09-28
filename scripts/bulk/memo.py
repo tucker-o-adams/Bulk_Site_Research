@@ -28,6 +28,7 @@ sys.path.insert(0, HERE)
 from docx_lite import Doc          # noqa: E402
 from broker_text import broker_words   # noqa: E402
 import location_status as LS       # noqa: E402
+from batch_paths import support, publish   # noqa: E402
 
 TAG = {'confirmed_written': 'confirmed', 'confirmed_prescreen': 'pre-screen', 'utility_estimate': 'utility est.',
        'broker_estimate': 'broker est.', 'pending': 'pending', 'untagged': ''}
@@ -45,6 +46,10 @@ SCORE_FILL = {'5': 'C6EFCE', '4': 'E2EFDA', '3': 'FFF2CC', '2': 'FCE4D6', '1': '
 RATING_DIMS = (('power', 'Power'), ('investment', 'Invest-\nment'), ('land', 'Land'), ('site_control', 'Site\ncontrol'),
                ('community', 'Commu-\nnity'), ('connectivity', 'Connec-\ntivity'), ('market', 'Market'))
 GREY = '595959'
+# American spelling in everything a reader sees (Tucker, 2026-09-28): both memos are scanned for these after writing
+BRITISH = re.compile(r'(?i)\b(\w*(?:centre|neighbour|colour|metre|licence|favour|behaviour|programme|catalogue|judgement)\w*|grey|'
+                     r'(?:normal|organ|recogn|summar|priorit|minim|util|character|standard|categor|final|emphas)is(?:e|ed|es|ing|ation)|'
+                     r'analys(?:e|ed|ing)|labelled|modelled|travelled|whilst|amongst)\b')
 BOX = '☐'
 
 
@@ -149,20 +154,16 @@ class Broker:
 
 
 def save(d, path):
-    """Save, or - when the file is open in Word (locked) - save beside it as '<name> (new).docx' and say so."""
-    try:
-        d.save(path)
-        return path
-    except PermissionError:
-        for i in range(1, 10):
-            alt = path[:-5] + (' (new).docx' if i == 1 else f' (new {i}).docx')
-            try:
-                d.save(alt)
-            except PermissionError:
-                continue
-            print(f'  {os.path.basename(path)} is open (locked): wrote {os.path.basename(alt)} instead; close Word and rerun to replace it')
-            return alt
-        raise
+    """A primary output (batch_paths.publish): the previous version moves to Archive/; when it is open in Word (locked),
+    the new one is written beside it as '<name> (new).docx'."""
+    return publish(os.path.dirname(path), os.path.basename(path), d.save)
+
+
+def british_words(path):
+    """British spellings in a written .docx (BRITISH), for a warning."""
+    import zipfile
+    x = re.sub(r'<[^>]+>', ' ', zipfile.ZipFile(path).read('word/document.xml').decode('utf-8'))
+    return sorted({m.group(0) for m in BRITISH.finditer(x)})
 
 
 def narrative_sections(text):
@@ -189,9 +190,9 @@ def main():
     sites_list = rd(os.path.join(inp, 'site_list.csv'))
     ev = rd(os.path.join(inp, 'evidence_checked.csv'))
     located = {r['site_id']: r for r in rd(os.path.join(inp, 'sites_in.csv'))}
-    run_sites = {r['site_id']: r for r in rd(os.path.join(b, 'sites.csv'))}
-    prov = {(r['site_id'], r['field']): r for r in rd(os.path.join(b, 'provenance.csv'))}
-    run = json.load(open(os.path.join(b, 'run.json'), encoding='utf-8'))
+    run_sites = {r['site_id']: r for r in rd(support(b, 'sites.csv'))}
+    prov = {(r['site_id'], r['field']): r for r in rd(support(b, 'provenance.csv'))}
+    run = json.load(open(support(b, 'run.json'), encoding='utf-8'))
     cells_info = json.load(open(os.path.join(inp, 'extract_cells.json'), encoding='utf-8'))
     check = json.load(open(os.path.join(inp, 'extract_check.json'), encoding='utf-8'))
     if not check.get('ok'):
@@ -277,7 +278,7 @@ def main():
     # ---------------------------------------------------------------- broker_summary.csv
     bs_cols = ['site_id', 'name', 'market', 'site_control', 'mw_headline', 'mw_kind', 'mw_tag', 'timing', 'connection', 'fiber',
                'acres_broker', 'grid_constraints', 'flood_claims', 'location_tier', 'location_basis', 'location_status', 'location_note']
-    with open(os.path.join(b, 'broker_summary.csv'), 'w', newline='', encoding='utf-8-sig') as f:
+    with open(support(b, 'broker_summary.csv', write=True), 'w', newline='', encoding='utf-8-sig') as f:
         w = csv.DictWriter(f, fieldnames=bs_cols); w.writeheader()
         for sid in ids:
             br = B[sid]
@@ -337,7 +338,7 @@ def main():
         d.para([('Notes: ', 'b'), ('_' * 70, '')], color='7F7F7F')
 
     d.heading('How the status is set', 1)
-    for txt in ('A precise broker pin is trusted. When the parcel under it is within 15 % of the stated acreage, it is the site: neighbouring parcels are '
+    for txt in ('A precise broker pin is trusted. When the parcel under it is within 15 % of the stated acreage, it is the site: neighboring parcels are '
                 'not offered instead.',
                 'A stated site much smaller than the parcel under the pin is a carve-out of it (stated or probable); a larger one spans several parcels. '
                 'Both are confirmed, noted as such: nothing contradicts the broker.',
@@ -355,7 +356,7 @@ def main():
     if exhibits:
         d.landscape()
         d.heading('Appendix A: Exhibits', 1)
-        d.para('One page per site with a question. The banner colour is the location status. Parcel maps: the parcel under the broker\'s coordinate in '
+        d.para('One page per site with a question. The banner color is the location status. Parcel maps: the parcel under the broker\'s coordinate in '
                'dark red, candidate parcels of the stated size in orange, lettered as in the question, the substation the broker names as a purple square; '
                'a red dot marks the pin only when the broker gave a precise one. Maps carry owner names: internal.', size=17, color=GREY)
         wl = d.usable_width_in()
@@ -367,12 +368,15 @@ def main():
             sp, spx = small(pmap(sid))
             d.image(sp, min(wl, 8.6), px=spx, caption=f"{os.path.basename(pmap(sid))}: full resolution in figures/")
     out1 = save(d, os.path.join(b, f'{name}_confirmation_memo.docx'))
+    if british_words(out1):
+        print(f"  confirmation memo: British spellings: {', '.join(british_words(out1))}")
 
     # ---------------------------------------------------------------- priority ratings (rate.py -> ratings.csv; rating_check.py); after broker_summary.csv, which rate.py reads
-    rpath = os.path.join(b, 'ratings.csv')
+    rpath = support(b, 'ratings.csv')
     ratings = {r['site_id']: r for r in rd(rpath)} if os.path.exists(rpath) else {}
     if ratings:
-        from rating_check import check_rows
+        from rating_check import check_rows, row_inputs
+        from rating_rules import priority_causes
         errs, review = check_rows(list(ratings.values()), {sid: st[sid]['status'] for sid in ids})
         errs += [f"{sid}: not rated" for sid in ids if sid not in ratings]
         if errs:
@@ -387,28 +391,37 @@ def main():
     # An overview for TBDI of what the portfolio offers. Fixed sections, same order every batch. Each opens with Claude's
     # takeaway (input/memo_narrative.md) and carries one small computed table as its evidence; detail is in the appendices.
     nsec = narrative_sections(narrative)
-    missing_narr = [s_ for s_ in SUMMARY_SECTIONS if s_ not in nsec]
+    missing_narr = [s_ for s_ in SUMMARY_SECTIONS if s_ not in nsec and s_ != 'Priority ratings']   # Priority ratings is all computed
     confirmed = [sid for sid in ids if tier[sid] in SITE_LEVEL and st[sid]['status'] in ('confirmed', 'confirmed_partial')]
     markets = list(by_market)
     n = len(ids)
 
-    def say(section):
-        """The section's takeaway from input/memo_narrative.md: a bold lead sentence, then bullets ('- ' lines)."""
-        txt = nsec.get(section, '').strip()
-        if not txt:
-            d.para(f'(Takeaway not written: add "## {section}" to input/memo_narrative.md in the Claude Code session.)', italic=True, color='7F7F7F')
-            return
-        prose = []
-        for line in txt.splitlines() + ['']:
+    def bullets_of(section):
+        """The '- ' lines of a section in input/memo_narrative.md; any other text is reported and left out (MEMOS.md §5)."""
+        out, loose = [], []
+        for line in nsec.get(section, '').splitlines():
             s_ = line.strip()
-            if s_.startswith(('- ', '* ')) or not s_:
-                if prose:
-                    d.para(' '.join(prose))
-                    prose = []
-                if s_:
-                    d.bullet(s_[2:])
-            else:
-                prose.append(s_)
+            (out if s_.startswith(('- ', '* ')) else loose if s_ else []).append(s_[2:] if s_.startswith(('- ', '* ')) else s_)
+        if loose:
+            print(f"  summary memo: '{section}' has text that is not a bullet; left out (the summary line is computed): {loose[0][:70]}")
+        return out
+
+    def say(section, lead, extra=()):
+        """The section's fixed summary line (computed from a template, MEMOS.md §3) in bold, then its bullets: the session's
+        bullets from input/memo_narrative.md, then any computed ones."""
+        d.para([(lead, 'b')])
+        bl = bullets_of(section) + list(extra)
+        if section not in nsec and not extra:
+            d.para(f'(Bullets not written: add "## {section}" to input/memo_narrative.md in the Claude Code session.)', italic=True, color='7F7F7F')
+        for x in bl:
+            d.bullet(x)
+
+    def of(k, m, what):
+        return f"{k} of {m} {what}"
+
+    def kmr(xs):
+        xs = sorted(x for x in xs if x is not None)
+        return '—' if not xs else f"{xs[0]:,.0f} km" if round(xs[0]) == round(xs[-1]) else f"{xs[0]:,.0f}–{xs[-1]:,.0f} km"
 
     def note(txt):
         d.para(txt, size=16, color=GREY)
@@ -488,7 +501,17 @@ def main():
 
     # ---- Priority ratings (our rating, design_site_rating.md; counts of the assigned priority)
     d.heading('Priority ratings', 2)
-    say('Priority ratings')
+    seg = OrderedDict((p_, defaultdict(list)) for p_ in PRIORITY_ORDER)
+    for sid in ids:
+        if sid in ratings:
+            p_, cs_ = priority_causes(*row_inputs(ratings[sid])); c_ = ' → '.join(cs_)
+            seg[p_][c_].append(sid)
+    ptot = {p_: sum(len(v) for v in seg[p_].values()) for p_ in PRIORITY_ORDER}
+    d.para([(' · '.join(f"{p_}: {ptot[p_]}" for p_ in PRIORITY_ORDER) if ratings else 'Not rated.', 'b')])
+    for p_ in PRIORITY_ORDER:
+        d.bullet([(f"{ptot[p_]} {p_}", 'b')])
+        for c_, ss in sorted(seg[p_].items(), key=lambda kv: -len(kv[1])):
+            d.bullet(f"{len(ss)} {c_}: {', '.join(ss)}", level=1)
     prow = lambda ms: [str(len(ms))] + [cnt(sum(1 for sid in ms if (ratings.get(sid) or {}).get('assigned') == p_)) for p_ in PRIORITY_ORDER]
     rows = by_msa(prow, prow)
     cells = {(i, 2 + j): PRIORITY_FILL[p_] for i in range(len(rows)) for j, p_ in enumerate(PRIORITY_ORDER)}
@@ -496,14 +519,15 @@ def main():
             [1.6, 0.5, 0.8, 0.8, 0.8, 1.1, 0.95], size=15, shade_cells=cells)
     if ratings:
         note(f"Our rating (method {', '.join(rvers)}, as of {', '.join(ras_of)}; design_site_rating.md). Power sets the ceiling; weak important "
-             f"dimensions step it down; caps and named adjustments follow. Counts are the assigned priority; {len(review)} site(s) where it differs "
-             f"from the indicated one go to a second review. Scores by site: Appendix D; evidence and confidence for every score: ratings.csv.")
+             f"dimensions step it down; caps and named adjustments follow. Counts are the assigned priority; under each, sites are grouped by every "
+             f"step that moved them, in order. {len(review)} site(s) where the assigned priority differs from the indicated one go to a second review. "
+             f"Scores by site: Appendix D; evidence and confidence for every score: ratings.csv.")
     else:
         note('Not rated for this batch: run rate.py, then memo.py again.')
 
     # ---- Location confidence (brief)
     d.heading('Location confidence', 2)
-    say('Location confidence')
+    say('Location confidence', of(sum(1 for sid in ids if st[sid]['status'] in ('confirmed', 'confirmed_partial')), n, 'rows confirmed on the map.'))
     keys = list(LS.STATUS)
     rows = by_msa(lambda ms: [str(len(ms))] + [cnt(sum(1 for sid in ms if st[sid]['status'] == k_)) for k_ in keys],
                   lambda ms: [str(len(ms))] + [cnt(sum(1 for sid in ms if st[sid]['status'] == k_)) for k_ in keys])
@@ -513,7 +537,7 @@ def main():
 
     # ---- Power
     d.heading('Power', 2)
-    say('Power')
+    say('Power', f"{g(mw_conf + mw_other) or 0} MW stated available ({g(mw_conf) or 0} confirmed in writing); {g(mw_req) or 0} MW requested.")
 
     def power_row(ms):
         c = mw_split(ms)
@@ -525,7 +549,7 @@ def main():
 
     # ---- Fiber
     d.heading('Fiber', 2)
-    say('Fiber')
+    say('Fiber', 'Quoted on ' + of(sum(1 for sid in ids if fiber_q(sid)), n, 'rows.'))
 
     def fiber_row(ms):
         q = [sid for sid in ms if fiber_q(sid)]
@@ -537,32 +561,42 @@ def main():
 
     # ---- Proximity (our check; every row, measured from the placed point where the site is not confirmed)
     d.heading('Proximity', 2)
-    say('Proximity')
+    kmc = lambda f: [num(R(sid, f)) / 1000 for sid in confirmed if R(sid, f) != '']
+    say('Proximity', f"Confirmed sites: {kmr(kmc('metro_1m_nearest_m'))} from a 1M+ metro and {kmr(kmc('dc_nearest_m'))} from the nearest data center."
+        if confirmed else 'No confirmed sites: distances are from placed points only.')
 
     def prox_row(ms):
         kmv = lambda sid, f: num(R(sid, f)) / 1000 if R(sid, f) != '' else None
         return [str(len(ms)), f"{sum(1 for sid in ms if sid in confirmed)} / {sum(1 for sid in ms if sid not in confirmed)}",
                 rng([kmv(sid, 'metro_1m_nearest_m') for sid in ms], km), rng([kmv(sid, 'dc_nearest_m') for sid in ms], km),
                 rng([kmv(sid, 'dc_hub_nearest_m') for sid in ms], km), rng([num(R(sid, 'dc_count_within_50km')) for sid in ms])]
-    d.table(['Market', 'Rows', 'From site /\nplaced point', 'To 1M+ metro', 'Nearest data\ncentre', 'Nearest hub\n(20+ networks)', 'Data centres\nwithin 50 km'],
+    d.table(['Market', 'Rows', 'From site /\nplaced point', 'To 1M+ metro', 'Nearest data\ncenter', 'Nearest hub\n(20+ networks)', 'Data centers\nwithin 50 km'],
             by_msa(prox_row, prox_row), [1.6, 0.5, 0.9, 1.05, 1.05, 1.05, 0.85], size=15)
-    note('Our check: Census 2020 urban areas (distance to the edge; "inside" = within it); PeeringDB data-centre facilities. For rows without a confirmed '
-         'site the distance is from where the site was placed (a named substation, an intersection or a ZIP centre): market context, not a site measure.')
+    note('Our check: Census 2020 urban areas (distance to the edge; "inside" = within it); PeeringDB data-center facilities. For rows without a confirmed '
+         'site the distance is from where the site was placed (a named substation, an intersection or a ZIP center): market context, not a site measure.')
 
     # ---- Neighbors (our check, confirmed sites only; no table)
     d.heading('Neighbors', 2)
-    say('Neighbors')
+    say('Neighbors', of(sum(1 for sid in confirmed if (num(R(sid, 'hu_within_1mi')) or 0) > 100), len(confirmed),
+                        'confirmed sites have more than 100 homes within 1 mile.'))
     note('Our check on the confirmed sites: Census 2020 housing, NCES schools, HIFLD places of worship, CMS hospitals and nursing homes. Per-site figures in Appendix A.')
 
     # ---- Flood (our check, confirmed sites only; no table)
     d.heading('Flood', 2)
-    say('Flood')
+    say('Flood', of(sum(1 for sid in confirmed if (num(R(sid, 'fp_sfha_pct')) or 0) > 0), len(confirmed),
+                    'confirmed sites have part of the parcel in the FEMA flood zone.'))
     note('Our check on the confirmed sites (FEMA NFHL, USFWS NWI): screening layers, not determinations. For a carve-out or multi-parcel site the figures '
          'describe the parcel under the pin. Per-site figures in Appendix A.')
 
     # ---- Ownership (site control)
     d.heading('Ownership', 2)
-    say('Ownership')
+    pk = [sid for sid in confirmed if B[sid].stage() in ('under_contract', 'loi_or_negotiating') and mw_rows[sid][1] == 'actual'
+          and mw_rows[sid][2] == 'confirmed_written' and fiber_q(sid)]
+    if not any(x.startswith('**Partial control:**') for x in bullets_of('Ownership')):
+        print("  summary memo: Ownership needs a '- **Partial control:** ...' bullet (or '... None.') in input/memo_narrative.md")
+    say('Ownership', of(sum(1 for sid in ids if B[sid].stage() in ('under_contract', 'loi_or_negotiating')), n,
+                        'rows are under contract or at LOI / negotiating.'),
+        [f"**Complete packages** (confirmed site, contract or LOI, MW confirmed in writing, fiber quote): {', '.join(pk) or 'None'}."])
     stg = list(STAGE)
     orow = lambda ms: [str(len(ms))] + [cnt(sum(1 for sid in ms if B[sid].stage() == s_)) for s_ in stg]
     d.table(['Market', 'Rows', 'Under\ncontract', 'LOI /\nnegotiating', 'Owner\nidentified', 'Tract\nidentified', 'No site yet', 'No site\ncontrol'],
@@ -571,7 +605,8 @@ def main():
 
     # ---- Caveats and other
     d.heading('Caveats and other', 2)
-    say('Caveats and other')
+    kc = len(bullets_of('Caveats and other'))
+    say('Caveats and other', f"{kc} caveat{'' if kc == 1 else 's'} affect{'s' if kc == 1 else ''} the headline figures.")
     note('Every broker statement behind these is in Appendix A.')
 
     # ================================================================ appendices
@@ -641,7 +676,7 @@ def main():
              f"({cells_info['cells_copied']} cells are identical across sites: market-level, not site-level, evidence).")
     d.bullet(f"{check['evidence_rows']} evidence rows and {check['clue_rows']} location clues extracted in-session; every quote was verified "
              f"word for word against its source cell (extract_check.py, {len(check['errors'])} errors, {len(check['warnings'])} warnings).")
-    d.bullet('Confidence tags normalised to one scale: confirmed in writing > confirmed at pre-screen > utility estimate (verbal) > broker estimate > pending.')
+    d.bullet('Confidence tags normalized to one scale: confirmed in writing > confirmed at pre-screen > utility estimate (verbal) > broker estimate > pending.')
     d.bullet('Locations: coordinates as given; named existing substations looked up in HIFLD; intersections computed from Census TIGER roads; '
              'landmarks from OpenStreetMap; ZIP and county centroids otherwise. Each candidate is checked against the stated county and ZIP.')
     d.heading('Sources (free / public)', 2)
@@ -650,7 +685,7 @@ def main():
     d.heading('Not in this tool', 2)
     for t in ('Deliverable MW / power availability: proximity facts only; capacity is a utility study.',
               'Jurisdictional wetland or flood determinations: NWI and FEMA NFHL are screening layers.',
-              'County politics, incentives, moratoriums; planned data-centre developments (Baxtel is context only, not copied).',
+              'County politics, incentives, moratoriums; planned data-center developments (Baxtel is context only, not copied).',
               'Screening verdicts: none until thresholds for this portfolio are approved. The priority ratings (Appendix D) are our '
               'internal rating, not a screen against approved thresholds.'):
         d.bullet(t)
@@ -687,7 +722,9 @@ def main():
     else:
         note('Not rated for this batch: run rate.py, then memo.py again.')
     out2 = save(d, os.path.join(b, f'{name}_summary_memo.docx'))
-    print(f"wrote {out1} ({len(ask)} questions, {len(exhibits)} exhibits), {out2} and {os.path.join(b, 'broker_summary.csv')}")
+    if british_words(out2):
+        print(f"  summary memo: British spellings: {', '.join(british_words(out2))}")
+    print(f"wrote {out1} ({len(ask)} questions, {len(exhibits)} exhibits), {out2} and {support(b, 'broker_summary.csv')}")
     for k, v in by_status.items():
         shown = [f"{s_} ({st[s_]['note']})" if st[s_].get('note') else s_ for s_ in v]
         print(f"  {LS.label(k)}{' (partial)' if k == 'confirmed_partial' else ''}: {', '.join(shown) or '-'}")

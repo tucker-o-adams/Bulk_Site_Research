@@ -22,6 +22,7 @@ from openpyxl.utils import get_column_letter
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from sites import REQUIRED, OPTIONAL          # noqa: E402
+from batch_paths import support, publish      # noqa: E402
 
 BAND_TITLES = {
     'transmission': 'Transmission (HIFLD)', 'substations': 'Substations (HIFLD)', 'flood': 'Flood (FEMA NFHL)',
@@ -73,9 +74,9 @@ def main():
     a = ap.parse_args()
     b = a.batch.rstrip('/\\')
     name = a.name or os.path.basename(b)
-    sites = list(csv.DictReader(open(os.path.join(b, 'sites.csv'), encoding='utf-8-sig')))
-    prov = list(csv.DictReader(open(os.path.join(b, 'provenance.csv'), encoding='utf-8-sig')))
-    run = json.load(open(os.path.join(b, 'run.json'), encoding='utf-8'))
+    sites = list(csv.DictReader(open(support(b, 'sites.csv'), encoding='utf-8-sig')))
+    prov = list(csv.DictReader(open(support(b, 'provenance.csv'), encoding='utf-8-sig')))
+    run = json.load(open(support(b, 'run.json'), encoding='utf-8'))
     if not sites:
         raise SystemExit(f"{b}: sites.csv has no sites - every input row was rejected; see sites_rejected in run.json")
     status = {(p['site_id'], p['field']): p for p in prov}
@@ -214,8 +215,7 @@ def main():
         rn.append([f'rejected row {n}', f'{sid}: {why}'])
     autosize(rn, max_w=100)
 
-    out = os.path.join(b, f'{name}.xlsx')
-    wb.save(out)
+    out = publish(b, f'{name}.xlsx', wb.save)
     print(f'wrote {out}: Sites {len(sites)} rows x {len(all_fields)} cols | Gaps {len(gaps)} | Sources {len(producers)} | Provenance {len(prov)}')
 
 

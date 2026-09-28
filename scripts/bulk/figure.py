@@ -59,6 +59,7 @@ from shapely.ops import transform, unary_union
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from cache import Cache, coord_key                                      # noqa: E402
+from batch_paths import support                                         # noqa: E402
 from geom import arcgis_envelope_query                                   # noqa: E402
 from producers import flood, footprint, wetlands                         # noqa: E402
 from producers import parcel as parcel_mod                               # noqa: E402
@@ -1074,8 +1075,8 @@ def main():
     if set(layers) - set(LAYERS) or set(views) - set(VIEWS):
         raise SystemExit(f'--layers must be from {LAYERS}, --views from {VIEWS}')
     basemap.check(a.basemap, a.audience)          # refuse before any fetching, not halfway through a batch
-    sites = {s['site_id']: s for s in csv.DictReader(open(os.path.join(b, 'sites.csv'), encoding='utf-8-sig'))}
-    run = json.load(open(os.path.join(b, 'run.json'), encoding='utf-8'))
+    sites = {s['site_id']: s for s in csv.DictReader(open(support(b, 'sites.csv'), encoding='utf-8-sig'))}
+    run = json.load(open(support(b, 'run.json'), encoding='utf-8'))
     want = [x.strip() for x in a.only.split(',') if x.strip()]
     unknown = [x for x in want if x not in sites]
     if unknown:

@@ -33,6 +33,7 @@ from collections import defaultdict
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from cache import Cache, coord_key, _safe                # noqa: E402
+from batch_paths import support, publish                 # noqa: E402
 from geom import point_dist_m, geojson_polygon_dist_m    # noqa: E402
 from shapely.geometry import shape, box, mapping           # noqa: E402
 from producers import footprint, wetlands                  # noqa: E402
@@ -246,8 +247,8 @@ def main():
                     help="split folders A and H by the input's group column (default: by state only)")
     a = ap.parse_args()
     b = a.batch.rstrip('/\\'); name = a.name or os.path.basename(b)
-    sites = list(csv.DictReader(open(os.path.join(b, 'sites.csv'), encoding='utf-8-sig')))
-    run = json.load(open(os.path.join(b, 'run.json'), encoding='utf-8'))
+    sites = list(csv.DictReader(open(support(b, 'sites.csv'), encoding='utf-8-sig')))
+    run = json.load(open(support(b, 'run.json'), encoding='utf-8'))
     srcs = {n: p['source'].split(' (')[0] for n, p in run['producers'].items()}
     # States are the only subfolders unless the user asks for group folders (rule, 2026-09-23)
     use_group = a.group_folders and any(s.get('group') for s in sites)
@@ -557,10 +558,12 @@ def main():
                         vis = ET.Element(NS + 'visibility'); el.insert(1, vis)   # after <name>, per the KML schema order
                     vis.text = '0'
 
-    out = os.path.join(b, f'{name}.kmz')
     data = ET.tostring(kml, encoding='utf-8', xml_declaration=True)
-    with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED) as z:
-        z.writestr('doc.kml', data)
+
+    def write(path):
+        with zipfile.ZipFile(path, 'w', zipfile.ZIP_DEFLATED) as z:
+            z.writestr('doc.kml', data)
+    out = publish(b, f'{name}.kmz', write)
     t = data.decode('utf-8')
     print(f'wrote {out} ({os.path.getsize(out) / 1024:,.0f} KB): folders {t.count("<Folder")}, placemarks {t.count("<Placemark")}')
     print(f'  B transmission segments {len(seen)} | C nearest lines {len(nearest)} | D substations {len(seen_s)} | E SFHA polygons {nz} | '

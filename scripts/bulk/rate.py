@@ -19,6 +19,7 @@ from memo import Broker, rd, num                                              # 
 from rating_rules import (power_score, capped, indicated_priority, assigned_priority,   # noqa: E402
                           METHOD_VERSION, IMPORTANT, SUPPORTING)
 from cache import Cache, coord_key                                            # noqa: E402
+from batch_paths import support                                               # noqa: E402
 
 CACHE = os.path.join(os.path.dirname(os.path.dirname(HERE)), 'data', 'cache')
 FCC = ('https://services8.arcgis.com/peDZJliSvYims39Q/arcgis/rest/services/'
@@ -117,8 +118,8 @@ def rate_batch(b):
     ev_by = {}
     for r in rd(os.path.join(inp, 'evidence_checked.csv')):
         ev_by.setdefault(r['site_id'], []).append(r)
-    summ = {r['site_id']: r for r in rd(os.path.join(b, 'broker_summary.csv'))}
-    S = {r['site_id']: r for r in rd(os.path.join(b, 'sites.csv'))}
+    summ = {r['site_id']: r for r in rd(support(b, 'broker_summary.csv'))}
+    S = {r['site_id']: r for r in rd(support(b, 'sites.csv'))}
     ids = list(summ)
     cache = Cache(CACHE)
     rows = []
@@ -259,7 +260,7 @@ def rate_batch(b):
         adj = [tuple(x) for x in readings.get('adjustments', {}).get(sid, [])]
         audit_mw = readings.get('audit_mw', {}).get(sid, mw_counted or 0)   # v1.0: MW per interconnection request
         if PARAMS['texas_audit'] and audit_mw >= 25:
-            adj.append((-1, f'Texas grid audit: {audit_mw:g} MW request (>= 25 MW) while the PUCT / ERCOT audit is open'))
+            adj.append((-1, f'Texas grid audit (25 MW+): {audit_mw:g} MW request while the PUCT / ERCOT audit is open'))
         asg = assigned_priority(ind, adj)
         row = {'site_id': sid, 'location_status': st, 'method_version': METHOD_VERSION, 'as_of': readings['as_of']}
         for d in DIMS:
@@ -281,13 +282,13 @@ def main():
     b = a.batch.rstrip('/\\')
     rows = rate_batch(b)
     cols = list(rows[0])
-    with open(os.path.join(b, 'ratings.csv'), 'w', newline='', encoding='utf-8-sig') as f:
+    with open(support(b, 'ratings.csv', write=True), 'w', newline='', encoding='utf-8-sig') as f:
         w = csv.DictWriter(f, fieldnames=cols); w.writeheader(); w.writerows(rows)
     print(f"{'site':7} {'status':18} " + ' '.join(f'{d[:5]:>5}' for d in DIMS) + '  indicated  -> assigned')
     for r in rows:
         print(f"{r['site_id']:7} {r['location_status']:18} " + ' '.join(f"{str(r[d + '_score']) or 'U':>5}" for d in DIMS)
               + f"  {r['indicated']:10} -> {r['assigned']}")
-    print(f"wrote {os.path.join(b, 'ratings.csv')}")
+    print(f"wrote {support(b, 'ratings.csv')}")
 
 
 if __name__ == '__main__':

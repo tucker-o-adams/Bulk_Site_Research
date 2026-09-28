@@ -19,6 +19,7 @@ from concurrent.futures import ThreadPoolExecutor
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from sites import load_sites, REQUIRED, OPTIONAL          # noqa: E402
+from batch_paths import support, SUPPORT                    # noqa: E402
 from cache import Cache                                     # noqa: E402
 from provenance import PROVENANCE_COLUMNS, now_iso, not_assessable   # noqa: E402
 import tiers                                                # noqa: E402
@@ -104,10 +105,10 @@ def main():
     extra_cols = sorted({k for s in sites for k in s.extra})
     prod_cols = [f for p in producers for f in p.FIELDS]
     cols += extra_cols + prod_cols
-    with open(os.path.join(a.out, 'sites.csv'), 'w', newline='', encoding='utf-8-sig') as f:
+    with open(support(a.out, 'sites.csv', write=True), 'w', newline='', encoding='utf-8-sig') as f:
         w = csv.DictWriter(f, fieldnames=cols, extrasaction='ignore')
         w.writeheader(); w.writerows(site_rows)
-    with open(os.path.join(a.out, 'provenance.csv'), 'w', newline='', encoding='utf-8-sig') as f:
+    with open(support(a.out, 'provenance.csv', write=True), 'w', newline='', encoding='utf-8-sig') as f:
         w = csv.DictWriter(f, fieldnames=PROVENANCE_COLUMNS, extrasaction='ignore')
         w.writeheader(); w.writerows(prov_rows)
 
@@ -122,9 +123,9 @@ def main():
                                'status_counts': dict(tally[p.NAME])} for p in producers},
         'cache': {'hits': cache.hits, 'misses': cache.misses},
     }
-    with open(os.path.join(a.out, 'run.json'), 'w', encoding='utf-8') as f:
+    with open(support(a.out, 'run.json', write=True), 'w', encoding='utf-8') as f:
         json.dump(report, f, indent=1)
-    print(f'\nwrote {a.out}: sites.csv ({len(site_rows)} rows), provenance.csv ({len(prov_rows)} rows), run.json')
+    print(f'\nwrote {os.path.join(a.out, SUPPORT)}: sites.csv ({len(site_rows)} rows), provenance.csv ({len(prov_rows)} rows), run.json')
     for p in producers:
         print(f'  {p.NAME}: {dict(tally[p.NAME])}')
     print(f'  {report["elapsed_s"]}s')

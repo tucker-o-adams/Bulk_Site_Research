@@ -17,6 +17,9 @@ import csv
 import json
 import re
 from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from batch_paths import support   # noqa: E402
 
 import requests
 
@@ -122,11 +125,11 @@ def sources(state, county):
 def main(batch, expected_owner=None):
     global OPERATOR
     if not expected_owner:
-        run = Path(batch) / 'run.json'
+        run = Path(support(batch, 'run.json'))
         expected_owner = json.load(open(run, encoding='utf-8')).get('expected_owner') if run.exists() else None
     OPERATOR = re.compile(expected_owner, re.I) if expected_owner else None
     print(f'operator pattern: {expected_owner or "(none - operator_owner left blank)"}')
-    rows = list(csv.DictReader(open(Path(batch) / 'sites.csv', encoding='utf-8-sig')))
+    rows = list(csv.DictReader(open(support(batch, 'sites.csv'), encoding='utf-8-sig')))
     todo = [r for r in rows if r['parcel_status'] != 'ok']
     out = []
     for r in todo:

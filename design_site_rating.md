@@ -13,10 +13,10 @@ go/no-go decision (GO / REVIEW / NO-GO waits for thresholds Mike approves). Focu
 **primarily for edge inference** (Tucker, 2026-09-28) - so nearness to demand counts (Market position), and remote
 sites suited to training or cable landings rate lower there by design.
 
-- A **1–5 rating per dimension**, then an **overall priority** reached by written rules plus judgement, not an average.
+- A **1–5 rating per dimension**, then an **overall priority** reached by written rules plus judgment, not an average.
 - Ratings measure the site against **market standards and its own need**, never against the other sites in the batch.
   A site sized for 5 MW with 5 MW secured rates high on power; it is not penalised for not being 100 MW.
-- Where no approved threshold exists we use **labelled hypothesis thresholds**, derived from the product segment and
+- Where no approved threshold exists we use **labeled hypothesis thresholds**, derived from the product segment and
   external benchmarks, never tuned to a batch's own values.
 
 ## 2. What the market says (summary)
@@ -30,7 +30,7 @@ price, incentives, water, workforce). Sources: JLL, CBRE, Build, GridMatch, Bloo
 Development, Bipartisan Policy Center (links in the session of 2026-09-26).
 
 TBDI's implied framework (CLAUDE.md filters, Mike's Teams message, the incomplete-inputs design note, the pipeline)
-agrees on flood / wetlands, neighbours, land, market and site control. It differed on: distance to power instead of
+agrees on flood / wetlands, neighbors, land, market and site control. It differed on: distance to power instead of
 deliverable power (now: distance is only a fallback proxy), no time-to-power or investment dimension (now: time-to-power inside Power; Investment added), carrier
 diversity (ask Mike), thin zoning / community data (partly addressed by a local headlines search).
 
@@ -47,11 +47,11 @@ diversity (ask Mike), thin zoning / community data (partly addressed by a local 
 |---|---|---|
 | **Power** | Reliable MW the site can count on, how certain, and when it arrives | Deliverable MW and its evidence first; distance / voltage to infrastructure only as a fallback proxy. Time-to-power is part of this dimension (a credible date, and how certain) |
 | **Investment to ready** | Cost to make the site ready for development or sale | Substation / transformer / feeder upgrades, connection charges (CIAC), fiber build, remediation. External benchmark: > ~30 % of project cost is a deal-breaker at edge scale |
-| **Connectivity** | Fiber and network position | Carrier quotes, carriers nearby, data-centre / interconnection ecosystem for network. Carrier diversity: question for Mike |
-| **Land and buildability** | Enough buildable land for the need, and how buildable | Minimum: the footprint of 2 MW of modular data-centre infrastructure (figure to set). Partial flood / wetland exposure reduces buildable acres; slope, soils, room to expand |
-| **Community and entitlements** | Zoning, permits, neighbours, local stance | Often unknown. Broker zoning; neighbours (homes, schools, worship, healthcare); a search for notable local headlines, positive or negative |
+| **Connectivity** | Fiber and network position | Carrier quotes, carriers nearby, data-center / interconnection ecosystem for network. Carrier diversity: question for Mike |
+| **Land and buildability** | Enough buildable land for the need, and how buildable | Minimum: the footprint of 2 MW of modular data-center infrastructure (figure to set). Partial flood / wetland exposure reduces buildable acres; slope, soils, room to expand |
+| **Community and entitlements** | Zoning, permits, neighbors, local stance | Often unknown. Broker zoning; neighbors (homes, schools, worship, healthcare); a search for notable local headlines, positive or negative |
 | **Site control** | How far along control of the land is | Contract > LOI > owner / tract identified > none. Blocked control is a screener |
-| **Market position** | Nearness to demand and the data-centre ecosystem | Metro distance, data centres and hubs nearby, planned developments (Baxtel, manual); later: regional grid congestion (Mike's item) |
+| **Market position** | Nearness to demand and the data-center ecosystem | Metro distance, data centers and hubs nearby, planned developments (Baxtel, manual); later: regional grid congestion (Mike's item) |
 
 ### Confidence (over every dimension, not a dimension itself)
 - Each rating carries a confidence level set by an **evidence standard** where one exists (power: utility study or
@@ -63,7 +63,7 @@ diversity (ask Mike), thin zoning / community data (partly addressed by a local 
 
 ## 4. Draft method (v0.2 — for review, then testing)
 
-All thresholds below are **hypotheses** (labelled H), set from the market sources in §2 and the product segment, scaled
+All thresholds below are **hypotheses** (labeled H), set from the market sources in §2 and the product segment, scaled
 to the site's own need, never to a batch's values. Testing (§6) may move them; every move is logged in the version log.
 
 ### 4.1 Common terms
@@ -187,9 +187,9 @@ Power (2 MW minimum, so small sites are not flattered).** (important)
 - **A stated grading or site-prep cost** goes under Investment to ready; Land then does not lower the score for slope
   again.
 - Carve-outs: stated acres, medium confidence (the site's own exposure is unknown).
-- Sources: acreage from MomentumWest, Build.inc and the Dunn County 2 MW project; the 15 % line from data-centre siting
+- Sources: acreage from MomentumWest, Build.inc and the Dunn County 2 MW project; the 15 % line from data-center siting
   guidance to avoid slopes of 15 % or more (Georgia Tech EPIcenter) and civil guidance that flat to gently sloping
-  land minimises grading and foundation cost (JPC Engineering, Cadence); **5 % is our hypothesis** for "gently
+  land minimizes grading and foundation cost (JPC Engineering, Cadence); **5 % is our hypothesis** for "gently
   sloping". Data: USGS 3DEP (slope) and USDA SSURGO (soils), free - to-do, not in the pipeline yet.
 
 **Site control** — how far along control of the land is. (important)
@@ -223,25 +223,25 @@ Power (2 MW minimum, so small sites are not flattered).** (important)
 - Build cost counts under Investment to ready only; interconnection-hub distance counts under Market position only.
 - **For Mike:** is one carrier with two diverse routes worth a 4, or does a 4 need two carriers?
 
-**Market position** — nearness to demand and the data-centre ecosystem. (supporting)
+**Market position** — nearness to demand and the data-center ecosystem. (supporting)
 | 5 | 4 | 3 | 2 | 1 |
 |---|---|---|---|---|
 | ≤ 10 km of a 1M+ urban area **and** an interconnection hub (PeeringDB facility with 20+ networks) ≤ 25 km | ≤ 25 km of a 1M+ urban area **and** a hub ≤ 50 km | ≤ 50 km of a 1M+ urban area; **or** ≤ 25 km of a 250k+ urban area | 50–100 km from a 1M+ urban area | > 100 km from any 1M+ urban area **and** > 25 km from any 250k+ urban area |
 
 - Distances: Census 2020 urban areas (distance to the edge; inside = 0) and PeeringDB facilities, both already in the
   pipeline. Sites not confirmed are measured from the placed point (market context), medium confidence at most.
-- A nearby data-centre ecosystem counts as a plus (network, customers, workforce). Competition for power / grid
+- A nearby data-center ecosystem counts as a plus (network, customers, workforce). Competition for power / grid
   congestion (Mike's item) and planned developments (Baxtel) come in later, as named adjustments or their own measure.
 - Bands (10 / 25 / 50 / 100 km; hub 25 / 50 km) are **our hypotheses**, loosely anchored on edge sites being within
-  20–50 km of major employment centres (Build.inc).
+  20–50 km of major employment centers (Build.inc).
 
-**Community and entitlements** — zoning and permit path, neighbours, local stance. (important, since v0.6)
+**Community and entitlements** — zoning and permit path, neighbors, local stance. (important, since v0.6)
 
 "Sensitive receptors" = schools, places of worship, hospitals and nursing homes (all measured by the pipeline).
 
 | 5 | 4 | 3 | 2 | 1 |
 |---|---|---|---|---|
-| data centres permitted by right, or no zoning authority; nearest sensitive receptor > 0.5 mi; ≤ 25 homes within 0.5 mi; no negative local news in 24 months | permitted by right, no zoning authority, or industrial zoning; nearest receptor > 1,000 ft; ≤ 100 homes within 0.5 mi; no negative local news | conditional / special use permit needed, or zoning unclear; **or** 100–500 homes within 0.5 mi; **or** mixed local news | rezoning needed; **or** a sensitive receptor within 1,000 ft; **or** > 500 homes within 0.5 mi; **or** negative local news (opposition, a county resolution against) | a moratorium or ban covering the site's jurisdiction; **or** organised opposition to this project on record |
+| data centers permitted by right, or no zoning authority; nearest sensitive receptor > 0.5 mi; ≤ 25 homes within 0.5 mi; no negative local news in 24 months | permitted by right, no zoning authority, or industrial zoning; nearest receptor > 1,000 ft; ≤ 100 homes within 0.5 mi; no negative local news | conditional / special use permit needed, or zoning unclear; **or** 100–500 homes within 0.5 mi; **or** mixed local news | rezoning needed; **or** a sensitive receptor within 1,000 ft; **or** > 500 homes within 0.5 mi; **or** negative local news (opposition, a county resolution against) | a moratorium or ban covering the site's jurisdiction; **or** organized opposition to this project on record |
 
 - **Permit path = time to entitlement** (from the retired Timeline dimension): by right is fastest; a conditional /
   special use permit adds public hearings (e.g. Lewisville TX: two); rezoning is slower and riskier.
@@ -284,7 +284,7 @@ Power (2 MW minimum, so small sites are not flattered).** (important)
      committed power** (C0 exempts); added v0.6 after calibration (Santa Clara / Silicon Valley Power, Hillsboro / PGE).
    - down: first power phase below half the MW counted; **Texas grid audit: site ≥ 25 MW while the PUCT / ERCOT audit
      (directed 3 Aug 2026; RFIs to 25–75 MW loads, pause for ≥ 75 MW "Batch Zero"; completion targeted Dec 2026) is
-     open** - remove when it closes; does not apply to sites under 25 MW (e.g. the ~5 MW sites this framework centres on).
+     open** - remove when it closes; does not apply to sites under 25 MW (e.g. the ~5 MW sites this framework centers on).
    - Retired as double counting (2026-09-28): upstream grid work beyond ~5 years (scored in Power), utility-funded
      upgrades (Investment), community opposition near the site (Community); on-site / bridge generation now counts in
      Power's MW when committed.
@@ -310,7 +310,7 @@ Power (2 MW minimum, so small sites are not flattered).** (important)
 12. **A request with a utility-stated date within 36 months but no study** → C2.
 13. **Conflicting site-control evidence:** the most specific fact wins (a named tract beats "no site yet").
 14. **"Anchor demand adjacent"** = a named large campus within ~2 km; Market position scores distances, not a
-    particular neighbour, so the two do not overlap.
+    particular neighbor, so the two do not overlap.
 
 Code: scripts/bulk/rating_rules.py (combination), scripts/bulk/rate.py (per-site scoring; in-session readings in
 input/rating_readings.json). Tests: rating_edge_cases.py (21 / 21), rating_calibration.py (17 public cases),
@@ -339,7 +339,7 @@ rating_sensitivity.py.
 - **Trial:** test batch 1 (25 rows); review; version 1.0; then build into the pipeline (spec, ratings.csv, a fixed
   Ratings section in the summary memo, a check that refuses ratings missing evidence, reason or confidence, or
   breaking a cap).
-  - **Done 2026-09-28**: `rate.py` writes `<batch>/ratings.csv`; `rating_check.py` refuses a rating missing its
+  - **Done 2026-09-28**: `rate.py` writes `<batch>/Supporting outputs/ratings.csv`; `rating_check.py` refuses a rating missing its
     confidence or reason, above its confidence cap, with a priority the rules do not give, with an adjustment
     without a reason, from another method version or against a changed location status (it caught four
     deliberate faults); the summary memo opens with "Priority ratings" (by market, with a total) and carries
