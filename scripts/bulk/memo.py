@@ -7,15 +7,18 @@
                                    one of five statuses (location_status.py); (B) a question, with options, for each
                                    site a person can settle. Sites already certain, and sites with too little to find,
                                    ask nothing. Exhibits only for the sites with a question (Appendix A)
-  <Title>_summary_memo.docx        Portfolio summary: the narrative, the portfolio at a glance, one block per site with
-                                   what the broker says beside what we found, data-handling notes, method and sources
+  <Title>_summary_memo.docx        Portfolio summary: the summary is the fixed topics, one section each (Priority ratings,
+                                   Location confidence, Power, Fiber, Proximity, Neighbors, Flood, Ownership, Caveats and
+                                   other); every table by market with a totals row; appendices: site by site, ownership and
+                                   data handling, method and sources, ratings by site. MEMOS.md §3
   broker_summary.csv               one row per site: key broker-stated facts, their tags and the location status
 
 Built only from files already on disk: the run (sites.csv, provenance.csv, run.json), the broker-text extraction
 (input/: evidence_checked.csv, clues_checked.csv, sites_in.csv, extract_*.json) and the exhibits' own results
 (figures/<site>_parcel_check.json, <site>_candidates.json). Every number is computed here, so the memos are
 reproducible. The one hand-written part is the summary narrative, input/memo_narrative.md (written in the Claude
-Code session). No scores, no GO / REVIEW / NO-GO until approved thresholds exist.
+Code session). The priority ratings come from <batch>/ratings.csv (rate.py), refused unless rating_check.py passes.
+No GO / REVIEW / NO-GO until approved thresholds exist.
 """
 import argparse, csv, json, os, re, sys
 from collections import Counter, defaultdict, OrderedDict
@@ -33,6 +36,14 @@ STAGE = OrderedDict([('under_contract', 'Under contract'), ('loi_or_negotiating'
 TIER = OrderedDict([('L1', 'Parcel'), ('L2', 'Point on the site'), ('L3', 'Near a named substation, intersection or landmark'),
                     ('L4', 'Within a ZIP'), ('L5', 'Within a county'), ('', 'No location')])
 SITE_LEVEL = LS.SITE_LEVEL
+# the summary memo's fixed sections, in order - locked across reports (MEMOS.md §3); each takes a takeaway from input/memo_narrative.md
+SUMMARY_SECTIONS = ('Priority ratings', 'Location confidence', 'Power', 'Fiber', 'Proximity', 'Neighbors', 'Flood', 'Ownership',
+                    'Caveats and other')
+PRIORITY_ORDER = ('High', 'Medium', 'Low', 'Insufficient information', 'Screened out')
+PRIORITY_FILL = {'High': 'C6EFCE', 'Medium': 'FFEB9C', 'Low': 'F4CCCC', 'Insufficient information': 'E7E6E6', 'Screened out': 'BFBFBF'}
+SCORE_FILL = {'5': 'C6EFCE', '4': 'E2EFDA', '3': 'FFF2CC', '2': 'FCE4D6', '1': 'F4CCCC', 'U': 'EDEDED'}
+RATING_DIMS = (('power', 'Power'), ('investment', 'Invest-\nment'), ('land', 'Land'), ('site_control', 'Site\ncontrol'),
+               ('community', 'Commu-\nnity'), ('connectivity', 'Connec-\ntivity'), ('market', 'Market'))
 GREY = '595959'
 BOX = '☐'
 
@@ -137,6 +148,37 @@ class Broker:
         return [r['value'] for r in self.get('flood_wetlands', 'claim')]
 
 
+def save(d, path):
+    """Save, or - when the file is open in Word (locked) - save beside it as '<name> (new).docx' and say so."""
+    try:
+        d.save(path)
+        return path
+    except PermissionError:
+        for i in range(1, 10):
+            alt = path[:-5] + (' (new).docx' if i == 1 else f' (new {i}).docx')
+            try:
+                d.save(alt)
+            except PermissionError:
+                continue
+            print(f'  {os.path.basename(path)} is open (locked): wrote {os.path.basename(alt)} instead; close Word and rerun to replace it')
+            return alt
+        raise
+
+
+def narrative_sections(text):
+    """input/memo_narrative.md split by '## <Section>' (MEMOS.md §5); one block per summary topic (SUMMARY_SECTIONS)."""
+    secs, cur = {}, 'Summary'
+    for line in (text or '').splitlines():
+        m = re.match(r'##\s+(.+)', line)
+        if m:
+            cur = m.group(1).strip()
+            continue
+        if not line.startswith('#'):
+            secs.setdefault(cur, []).append(line)
+    joined = {k: '\n'.join(v).strip() for k, v in secs.items()}
+    return {k: v for k, v in joined.items() if v}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('batch')
@@ -148,6 +190,7 @@ def main():
     ev = rd(os.path.join(inp, 'evidence_checked.csv'))
     located = {r['site_id']: r for r in rd(os.path.join(inp, 'sites_in.csv'))}
     run_sites = {r['site_id']: r for r in rd(os.path.join(b, 'sites.csv'))}
+    prov = {(r['site_id'], r['field']): r for r in rd(os.path.join(b, 'provenance.csv'))}
     run = json.load(open(os.path.join(b, 'run.json'), encoding='utf-8'))
     cells_info = json.load(open(os.path.join(inp, 'extract_cells.json'), encoding='utf-8'))
     check = json.load(open(os.path.join(inp, 'extract_check.json'), encoding='utf-8'))
@@ -323,86 +366,255 @@ def main():
             d.banner([(f"{anum[sid]}  {sid}  {sname[sid]}", 'b'), (f"   —   {slabel(sid)}", '')], f_, ink, size=24)
             sp, spx = small(pmap(sid))
             d.image(sp, min(wl, 8.6), px=spx, caption=f"{os.path.basename(pmap(sid))}: full resolution in figures/")
-    out1 = os.path.join(b, f'{name}_confirmation_memo.docx')
-    d.save(out1)
+    out1 = save(d, os.path.join(b, f'{name}_confirmation_memo.docx'))
 
-    # ================================================================ 2. summary memo
+    # ---------------------------------------------------------------- priority ratings (rate.py -> ratings.csv; rating_check.py); after broker_summary.csv, which rate.py reads
+    rpath = os.path.join(b, 'ratings.csv')
+    ratings = {r['site_id']: r for r in rd(rpath)} if os.path.exists(rpath) else {}
+    if ratings:
+        from rating_check import check_rows
+        errs, review = check_rows(list(ratings.values()), {sid: st[sid]['status'] for sid in ids})
+        errs += [f"{sid}: not rated" for sid in ids if sid not in ratings]
+        if errs:
+            raise SystemExit('ratings.csv fails rating_check.py (re-run rate.py, then fix):\n  ' + '\n  '.join(errs))
+    else:
+        review = []
+        print('  summary memo: no ratings.csv - run rate.py, then memo.py again')
+    rvers = sorted({r['method_version'] for r in ratings.values()})
+    ras_of = sorted({r['as_of'] for r in ratings.values()})
+
+    # ================================================================ 2. summary memo (MEMOS.md §3)
+    # An overview for TBDI of what the portfolio offers. Fixed sections, same order every batch. Each opens with Claude's
+    # takeaway (input/memo_narrative.md) and carries one small computed table as its evidence; detail is in the appendices.
+    nsec = narrative_sections(narrative)
+    missing_narr = [s_ for s_ in SUMMARY_SECTIONS if s_ not in nsec]
+    confirmed = [sid for sid in ids if tier[sid] in SITE_LEVEL and st[sid]['status'] in ('confirmed', 'confirmed_partial')]
+    markets = list(by_market)
+    n = len(ids)
+
+    def say(section):
+        """The section's takeaway from input/memo_narrative.md: a bold lead sentence, then bullets ('- ' lines)."""
+        txt = nsec.get(section, '').strip()
+        if not txt:
+            d.para(f'(Takeaway not written: add "## {section}" to input/memo_narrative.md in the Claude Code session.)', italic=True, color='7F7F7F')
+            return
+        prose = []
+        for line in txt.splitlines() + ['']:
+            s_ = line.strip()
+            if s_.startswith(('- ', '* ')) or not s_:
+                if prose:
+                    d.para(' '.join(prose))
+                    prose = []
+                if s_:
+                    d.bullet(s_[2:])
+            else:
+                prose.append(s_)
+
+    def note(txt):
+        d.para(txt, size=16, color=GREY)
+
+    def vals(sid, dim, fld):
+        return [r['value'] for r in B[sid].get(dim, fld)]
+
+    def rng(xs, fmt=lambda x: g(x)):
+        xs = sorted(x for x in xs if x is not None)
+        return '—' if not xs else fmt(xs[0]) if xs[0] == xs[-1] else f'{fmt(xs[0])}–{fmt(xs[-1])}'
+
+    def km(x):
+        return 'inside' if x == 0 else '<0.1 km' if x < 0.05 else f'{x:,.0f} km' if x >= 10 else f'{x:,.1f} km'
+
+    def near(sid, fld):
+        """A nearest-feature distance, or 'none within X km' when the source confirmed there is none in its search radius."""
+        if R(sid, fld):
+            return dist(R(sid, fld))
+        pv = prov.get((sid, fld)) or {}
+        m_ = re.search(r'within (\d+) m', pv.get('method', '') + ' ' + pv.get('note', ''))
+        return f"none within {int(m_.group(1)) / 1000:g} km" if pv.get('status') == 'absent' and m_ else '—'
+
+    def first_power(sid):
+        """'now' or a year from the broker's availability text, else None."""
+        tv = B[sid].first('power_timing', 'available') or B[sid].first('power_timing', 'initial_available')
+        if not tv:
+            return None
+        if re.search(r'immediate|now\b', tv['value'], re.I):
+            return 'now'
+        m_ = re.search(r'\b(20\d\d)\b', tv['value'])
+        return m_.group(1) if m_ else None
+
+    def when(xs):
+        xs = [x for x in xs if x]
+        if not xs:
+            return '—'
+        ys = sorted(x for x in xs if x != 'now')
+        lo = 'now' if 'now' in xs else ys[0]
+        hi = ys[-1] if ys else 'now'
+        return lo if lo == hi else f'{lo}–{hi}'
+
+    def mw_split(ss):
+        """(confirmed in writing, pre-screen or estimate, requested / up to) MW over sites."""
+        c = [0.0, 0.0, 0.0]
+        for sid in ss:
+            v_, k_, t_, _ = mw_rows[sid]
+            if v_:
+                c[2 if k_ in ('request', 'up_to') else 0 if t_ == 'confirmed_written' else 1] += v_
+        return c
+
+    def mwtxt(x):
+        return g(x) if x else '—'
+
+    def cnt(x):
+        return str(x) if x else '—'
+
+    def by_msa(row_fn, total_fn):
+        """Every summary table: one row per market (MSA), then a totals row (MEMOS.md §3)."""
+        rows = [[f'**{m}**'] + row_fn([sid for sid in ids if market[sid] == m]) for m in markets]
+        rows.append(['**Total**'] + [f'**{x}**' if x not in ('', '—') else x for x in total_fn(ids)])
+        return rows
+
+    fiber_q = lambda sid: (B[sid].first('fiber', 'status') or {}).get('value') == 'quoted'
+    f1 = lambda sid, fld: num((B[sid].first('fiber', fld) or {}).get('value'))
+
     d = Doc(f'{name} portfolio summary')
     d.title_block(f'{name}: portfolio summary', stamp)
-    d.para([('Status: ', 'b'), ('no screening verdicts. Thresholds for this portfolio are not yet approved, so no site is scored or ranked; '
-                                'this memo reports facts and their sources. Location confidence is in the separate location confirmation memo.', '')],
-           color='C00000')
+    d.para([('Status: ', 'b'), ('no screening verdicts. Thresholds for this portfolio are not yet approved; this memo describes what the portfolio offers. '
+                                'The priority ratings are our internal attractiveness ratings (rating method '
+                                f"{', '.join(rvers) or 'not run'}, draft: some thresholds still to confirm with TBDI). "
+                                'Everything else is the broker\'s unless marked as our check.', '')], color='C00000')
+    if missing_narr:
+        print(f"  summary memo: no takeaway for {', '.join(missing_narr)} (input/memo_narrative.md)")
+
+    # ---- Summary: one section per fixed topic (SUMMARY_SECTIONS), nothing above them; every table by market with a totals row
     d.heading('Summary', 1)
-    if narrative.strip():
-        for block in re.split(r'\n\s*\n', narrative.strip()):
-            lines = [l for l in block.splitlines() if not l.startswith('#')]
-            if lines and all(l.lstrip().startswith(('- ', '* ')) for l in lines):
-                for l in lines:
-                    d.bullet(l.lstrip()[2:])
-            elif lines:
-                d.para(' '.join(l.strip() for l in lines))
+
+    # ---- Priority ratings (our rating, design_site_rating.md; counts of the assigned priority)
+    d.heading('Priority ratings', 2)
+    say('Priority ratings')
+    prow = lambda ms: [str(len(ms))] + [cnt(sum(1 for sid in ms if (ratings.get(sid) or {}).get('assigned') == p_)) for p_ in PRIORITY_ORDER]
+    rows = by_msa(prow, prow)
+    cells = {(i, 2 + j): PRIORITY_FILL[p_] for i in range(len(rows)) for j, p_ in enumerate(PRIORITY_ORDER)}
+    d.table(['Market', 'Rows', 'High', 'Medium', 'Low', 'Insufficient\ninformation', 'Screened out'], rows,
+            [1.6, 0.5, 0.8, 0.8, 0.8, 1.1, 0.95], size=15, shade_cells=cells)
+    if ratings:
+        note(f"Our rating (method {', '.join(rvers)}, as of {', '.join(ras_of)}; design_site_rating.md). Power sets the ceiling; weak important "
+             f"dimensions step it down; caps and named adjustments follow. Counts are the assigned priority; {len(review)} site(s) where it differs "
+             f"from the indicated one go to a second review. Scores by site: Appendix D; evidence and confidence for every score: ratings.csv.")
     else:
-        d.para('(Narrative not written yet: add input/memo_narrative.md in the Claude Code session and rerun memo.py.)', italic=True, color='7F7F7F')
+        note('Not rated for this batch: run rate.py, then memo.py again.')
 
-    d.heading('Portfolio at a glance', 1)
-    d.bullet(f'**{len(ids)} sites** in the list: ' + ', '.join(f'{m} {n}' for m, (n, _) in by_market.items()) + '.')
-    d.bullet(f'**Site control: {no_control} of {len(ids)} sites have none.** ' + '; '.join(f'{STAGE[s_]} {stages[s_]}' for s_ in STAGE if stages[s_]) + '.')
-    d.bullet(f'**Location:** {counts}. Details and questions in the location confirmation memo.')
-    d.bullet(f'**Broker-stated power:** {g(mw_conf)} MW stated available and confirmed in writing; {g(mw_other)} MW stated available at lower confidence '
-             f'(pre-screen, utility or broker estimate); {g(mw_req)} MW requested or "up to". By market (stated available): ' +
-             ', '.join(f'{m} {g(v)} MW' for m, (_, v) in by_market.items()) + '. All figures are the broker\'s; deliverable MW is not something this tool estimates.')
-    nq = sum(1 for sid in ids if B[sid].first('fiber', 'status') and B[sid].first('fiber', 'status')['value'] == 'quoted')
-    ngc = sum(1 for sid in ids if B[sid].constraints())
-    d.bullet(f'**Fiber:** {nq} of {len(ids)} sites carry a carrier quote (broker-stated, not a proximity measure).')
-    d.bullet(f'**Grid caveats:** the broker states limits beyond the MW figure (timing gates, interruptible service, upstream work) for {ngc} sites; they are '
-             f'shown in each site\'s block. Silence elsewhere means not provided, not "none".')
+    # ---- Location confidence (brief)
+    d.heading('Location confidence', 2)
+    say('Location confidence')
+    keys = list(LS.STATUS)
+    rows = by_msa(lambda ms: [str(len(ms))] + [cnt(sum(1 for sid in ms if st[sid]['status'] == k_)) for k_ in keys],
+                  lambda ms: [str(len(ms))] + [cnt(sum(1 for sid in ms if st[sid]['status'] == k_)) for k_ in keys])
+    cells = {(i, 2 + j): LS.colours(k_)[0] for i in range(len(rows)) for j, k_ in enumerate(keys)}
+    d.table(['Market', 'Rows', 'Confirmed', 'Confirmed: carve-out /\nseveral parcels', 'Needs\nconfirmation', 'Not locatable', 'No site yet'], rows,
+            [1.6, 0.5, 0.85, 1.25, 0.95, 0.9, 0.95], size=15, shade_cells=cells)
 
+    # ---- Power
+    d.heading('Power', 2)
+    say('Power')
+
+    def power_row(ms):
+        c = mw_split(ms)
+        return [str(len(ms)), mwtxt(c[0]), mwtxt(c[1]), mwtxt(c[2]), rng([mw_rows[sid][0] for sid in ms if mw_rows[sid][0]]),
+                when([first_power(sid) for sid in ms]), rng([num(x) for sid in ms for x in vals(sid, 'power_cost', 'cents_per_kwh')], lambda x: f'{x:.1f}')]
+    d.table(['Market', 'Rows', 'MW confirmed\nin writing', 'MW pre-screen\n/ estimate', 'MW requested\n/ up to', 'MW per row', 'First power', '¢/kWh'],
+            by_msa(power_row, power_row), [1.55, 0.45, 0.9, 0.95, 0.9, 0.75, 0.8, 0.7], size=15)
+    note('All broker-stated. Deliverable MW is a utility study; this tool does not estimate it.')
+
+    # ---- Fiber
+    d.heading('Fiber', 2)
+    say('Fiber')
+
+    def fiber_row(ms):
+        q = [sid for sid in ms if fiber_q(sid)]
+        return [f"{len(q)} of {len(ms)}", ', '.join(Counter(x for sid in q for x in vals(sid, 'fiber', 'carrier'))) or '—',
+                rng([f1(sid, 'nrc_usd') for sid in q], lambda x: f'${x / 1e6:,.1f}M'), rng([f1(sid, 'mrc_usd') for sid in q], lambda x: f'${x / 1e3:,.1f}K'),
+                rng([max(f1(sid, 'route1_ft') or 0, f1(sid, 'route2_ft') or 0) or None for sid in q], lambda x: f'{x:,.0f} ft')]
+    d.table(['Market', 'Quoted', 'Carrier', 'Build (NRC)', 'Monthly (MRC)', 'Longer route'], by_msa(fiber_row, fiber_row), [1.7, 0.8, 0.9, 1.2, 1.2, 1.2], size=16)
+    note('Broker-stated carrier quotes, not a proximity measure.')
+
+    # ---- Proximity (our check; every row, measured from the placed point where the site is not confirmed)
+    d.heading('Proximity', 2)
+    say('Proximity')
+
+    def prox_row(ms):
+        kmv = lambda sid, f: num(R(sid, f)) / 1000 if R(sid, f) != '' else None
+        return [str(len(ms)), f"{sum(1 for sid in ms if sid in confirmed)} / {sum(1 for sid in ms if sid not in confirmed)}",
+                rng([kmv(sid, 'metro_1m_nearest_m') for sid in ms], km), rng([kmv(sid, 'dc_nearest_m') for sid in ms], km),
+                rng([kmv(sid, 'dc_hub_nearest_m') for sid in ms], km), rng([num(R(sid, 'dc_count_within_50km')) for sid in ms])]
+    d.table(['Market', 'Rows', 'From site /\nplaced point', 'To 1M+ metro', 'Nearest data\ncentre', 'Nearest hub\n(20+ networks)', 'Data centres\nwithin 50 km'],
+            by_msa(prox_row, prox_row), [1.6, 0.5, 0.9, 1.05, 1.05, 1.05, 0.85], size=15)
+    note('Our check: Census 2020 urban areas (distance to the edge; "inside" = within it); PeeringDB data-centre facilities. For rows without a confirmed '
+         'site the distance is from where the site was placed (a named substation, an intersection or a ZIP centre): market context, not a site measure.')
+
+    # ---- Neighbors (our check, confirmed sites only; no table)
+    d.heading('Neighbors', 2)
+    say('Neighbors')
+    note('Our check on the confirmed sites: Census 2020 housing, NCES schools, HIFLD places of worship, CMS hospitals and nursing homes. Per-site figures in Appendix A.')
+
+    # ---- Flood (our check, confirmed sites only; no table)
+    d.heading('Flood', 2)
+    say('Flood')
+    note('Our check on the confirmed sites (FEMA NFHL, USFWS NWI): screening layers, not determinations. For a carve-out or multi-parcel site the figures '
+         'describe the parcel under the pin. Per-site figures in Appendix A.')
+
+    # ---- Ownership (site control)
+    d.heading('Ownership', 2)
+    say('Ownership')
+    stg = list(STAGE)
+    orow = lambda ms: [str(len(ms))] + [cnt(sum(1 for sid in ms if B[sid].stage() == s_)) for s_ in stg]
+    d.table(['Market', 'Rows', 'Under\ncontract', 'LOI /\nnegotiating', 'Owner\nidentified', 'Tract\nidentified', 'No site yet', 'No site\ncontrol'],
+            by_msa(orow, orow), [1.6, 0.5, 0.8, 0.9, 0.85, 0.85, 0.8, 0.75], size=15)
+    note('Broker-stated site control. Owner of record on the confirmed sites: Appendix B.')
+
+    # ---- Caveats and other
+    d.heading('Caveats and other', 2)
+    say('Caveats and other')
+    note('Every broker statement behind these is in Appendix A.')
+
+    # ================================================================ appendices
     d.landscape()
     wl = d.usable_width_in()
-    d.heading('Site by site', 1)
-    d.para('One block per site: what the broker says (its confidence tag in brackets) beside what we found in free public sources. Parcel, flood, wetland and '
-           'housing checks need the site itself, so they appear only for confirmed sites; for a site placed near a named substation, power distances '
-           'are measured from that point (~). A blank means nothing stated or nothing measurable, not zero.', size=17, color=GREY)
+    d.heading('Appendix A: Site by site', 1)
+    note('One row per site, grouped by market. Broker-stated except Location (our status) and the three "ours" columns (our checks; Flood and Neighbors on '
+         'confirmed sites only; Proximity from the placed point where the site is not confirmed, marked "placed").')
+
+    def dedupe(xs):
+        w = [(x, set(re.findall(r'[a-z0-9]+', x.lower()))) for x in xs]
+        return [x for i, (x, s) in enumerate(w) if not any(j != i and s < s2 or (s == s2 and j < i) for j, (_, s2) in enumerate(w))]
     rows, cells, rules = [], {}, []
-    for sid in ids:
-        br, t, sl = B[sid], tier[sid], tier[sid] in SITE_LEVEL
-        ok_site = sl and st[sid]['status'] in ('confirmed', 'confirmed_partial')
-        v, k, tg, txt = mw_rows[sid]
-        pc = pcs[sid] or {}
-        sc = pc.get('substation') or {}
-        sub_near = (f"nearest: {R(sid, 'sub_nearest_name')} {g(R(sid, 'sub_nearest_max_kv'))} kV, "
-                    + ('the anchor' if t == 'L3' and basis[sid].startswith('HIFLD substation') else f"{dist(R(sid, 'sub_nearest_m'))}" + ('' if sl else ' ~'))) \
-            if R(sid, 'sub_nearest_name') and t in SITE_LEVEL + ('L3',) else ''
-        if sc.get('text'):
-            sub_near = (sub_near + '. ' if sub_near else '') + sc['text']
-        blk = [('Location', f"{basis[sid] or 'none'}", f'**{slabel(sid)}**'),
-               ('Site control', STAGE.get(br.stage(), br.stage()), ''),
-               ('Acreage', br.acres()[1], (f"parcel {g(R(sid, 'parcel_acres_gis'))} ac" + (' (internal)' if sid in internal else '')) if ok_site and R(sid, 'parcel_acres_gis') else ''),
-               ('Power', (tagged(txt, tg) if tg else txt if txt != '—' else '') + (f"; {br.timing()}" if br.timing() else ''), ''),
-               ('Connection', br.connection(), sub_near),
-               ('Transmission', '', (f"{g(R(sid, 'tx_voltage_kv'))} kV line, {dist(R(sid, 'tx_nearest_m'))}" + ('' if sl else ' ~')) if R(sid, 'tx_nearest_m') and t in SITE_LEVEL + ('L3',) else ''),
-               ('Flood', '; '.join(br.flood_claims()), f"zone {R(sid, 'fema_flood_zone') or '—'} at the pin; {g(R(sid, 'fp_sfha_pct'))} % of the parcel in the SFHA" if ok_site else ''),
-               ('Wetlands', '', f"{g(R(sid, 'fp_nwi_pct'))} % of the parcel (NWI)" if ok_site and R(sid, 'fp_nwi_pct') != '' else ''),
-               ('Fiber', br.fiber(), ''),
-               ('Grid caveats', '\n'.join(br.constraints()), ''),
-               ('Homes within 1 mi', '', g(R(sid, 'hu_within_1mi')) if ok_site and R(sid, 'hu_within_1mi') != '' else '')]
-        first = True
-        for topic, said, found in blk:
-            if not (said or found) and topic != 'Location':
-                continue
-            if first:
-                if rows:
-                    rules.append(len(rows))
-                rows.append([f"**{sid}**\n{market[sid]}", topic, said, found])
-                cells[(len(rows) - 1, 3)] = fill(sid)
-                first = False
-            else:
-                rows.append(['', topic, said, found])
-    widths = [1.0, 1.15, 3.6, 3.75]
-    d.table(['Site', 'Topic', 'Broker says', 'We found'], rows, [w * wl / sum(widths) for w in widths], size=15, shade_cells=cells, rule_rows=rules)
+    for m in markets:
+        if rows:
+            rules.append(len(rows))
+        for sid in [s_ for s_ in ids if market[s_] == m]:
+            br = B[sid]
+            v_, k_, t_, txt = mw_rows[sid]
+            ok = sid in confirmed
+            kmv = lambda f: km(num(R(sid, f)) / 1000) if R(sid, f) != '' else '—'
+            prox = f"metro {kmv('metro_1m_nearest_m')}\nDC {kmv('dc_nearest_m')}; hub {kmv('dc_hub_nearest_m')}" + ('' if ok else '\n(placed)')
+            fl = (f"zone {R(sid, 'fema_flood_zone') or '—'}\nSFHA {g(R(sid, 'fp_sfha_pct'))} %\nwetland {g(R(sid, 'fp_nwi_pct'))} %") if ok else ''
+            nb = (f"{g(R(sid, 'hu_within_1mi'))} homes in 1 mi\nschool {near(sid, 'school_nearest_m')}\nworship {near(sid, 'worship_nearest_m')}\n"
+                  f"hospital {near(sid, 'hospital_nearest_m')}\nnursing home {near(sid, 'nursing_home_nearest_m')}") if ok else ''
+            rows.append([f'**{sid}**', slabel(sid).replace('Confirmed: ', 'Conf.: '), STAGE.get(br.stage(), br.stage()),
+                         (tagged(txt, t_) if t_ else txt) + (f"\n{br.timing()}" if br.timing() else '') + (f"\n{br.connection()}" if br.connection() else ''),
+                         br.fiber() or '—', prox, fl, nb, '\n'.join(dedupe(br.constraints() + vals(sid, 'other', 'detail')))])
+            cells[(len(rows) - 1, 1)] = fill(sid)
+    widths = [0.55, 0.95, 0.9, 1.75, 1.1, 1.05, 0.85, 1.3, 1.95]
+    d.table(['Site', 'Location', 'Site control', 'Power, timing, utility', 'Fiber', 'Proximity (ours)', 'Flood (ours)', 'Neighbors (ours)', 'Caveats and other notes'],
+            rows, [w * wl / sum(widths) for w in widths], size=13, shade_cells=cells, rule_rows=rules)
 
     d.portrait()
-    d.heading('Data handling notes', 1)
+    d.heading('Appendix B: Ownership and data handling', 1)
+    rows = []
+    for sid in confirmed:
+        said = '; '.join(vals(sid, 'site_control', 'owner_type') + vals(sid, 'site_control', 'detail')) or '—'
+        rows.append([f'**{sid}**', said, (R(sid, 'parcel_owner').strip() or '(none in the record)') + (' (internal)' if sid in internal else '')])
+    if rows:
+        note('Owner of record on the confirmed sites (county parcel data; for a carve-out, the owner of the parent parcel).')
+        d.table(['Site', 'Broker says about the owner', 'Owner of record'], rows, [0.8, 2.6, 3.6], size=15)
+    d.heading('Data handling', 2)
     notes = []
     if internal:
         notes.append(f"**Licensed-county parcels:** {', '.join(internal)}. The parcel comes from a licensed county dataset: internal use only; register the "
@@ -423,7 +635,7 @@ def main():
     for n_ in notes or ['None.']:
         d.bullet(n_)
 
-    d.heading('Method, sources and gaps', 1)
+    d.heading('Appendix C: Method, sources and gaps', 1)
     d.heading('How the broker list was read', 2)
     d.bullet(f"{cells_info['cells']} cells read from {cells_info['sites']} sites through a checked column map "
              f"({cells_info['cells_copied']} cells are identical across sites: market-level, not site-level, evidence).")
@@ -439,10 +651,42 @@ def main():
     for t in ('Deliverable MW / power availability: proximity facts only; capacity is a utility study.',
               'Jurisdictional wetland or flood determinations: NWI and FEMA NFHL are screening layers.',
               'County politics, incentives, moratoriums; planned data-centre developments (Baxtel is context only, not copied).',
-              'Screening verdicts: none until thresholds for this portfolio are approved.'):
+              'Screening verdicts: none until thresholds for this portfolio are approved. The priority ratings (Appendix D) are our '
+              'internal rating, not a screen against approved thresholds.'):
         d.bullet(t)
-    out2 = os.path.join(b, f'{name}_summary_memo.docx')
-    d.save(out2)
+
+    # ---- Appendix D: ratings by site (landscape; evidence and confidence per score stay in ratings.csv)
+    d.landscape()
+    wl = d.usable_width_in()
+    d.heading('Appendix D: Ratings by site', 1)
+    if ratings:
+        note(f"Method {', '.join(rvers)}, as of {', '.join(ras_of)} (design_site_rating.md). Scores 1–5; U = unknown. Confidence caps each score "
+             f"(high 5, medium 4, low 3). Power is critical; Investment to ready, Land and buildability, Site control and Community are important; "
+             f"Connectivity and Market position are supporting. Indicated = the rules; assigned = after named adjustments.")
+        rows, cells, rules = [], {}, []
+        for m in markets:
+            if rows:
+                rules.append(len(rows))
+            for sid in [s_ for s_ in ids if market[s_] == m]:
+                r = ratings[sid]
+                scores = [r[f'{k}_score'] or 'U' for k, _ in RATING_DIMS]
+                scr = f"Site risk: {r['screener_site_risk'].replace('_', ' ')}\nControl: {r['screener_control'].replace('_', ' ')}"
+                adj = '\n'.join(a.replace('+1 ', '▲ ').replace('-1 ', '▼ ') for a in r['adjustments'].split(' | ') if a) or '—'
+                why = '\n'.join(x for x in r['indicated_reasons'].split(' | ') + r['flags'].split(' | ') if x)
+                rows.append([f'**{sid}**', slabel(sid).replace('Confirmed: ', 'Conf.: ')] + scores +
+                            [scr, r['indicated'], adj, f"**{r['assigned']}**", why])
+                i = len(rows) - 1
+                cells[(i, 1)] = fill(sid)
+                for j, s_ in enumerate(scores):
+                    cells[(i, 2 + j)] = SCORE_FILL[s_]
+                cells[(i, 10)] = PRIORITY_FILL[r['indicated']]
+                cells[(i, 12)] = PRIORITY_FILL[r['assigned']]
+        widths = [0.55, 0.9] + [0.5] * 7 + [0.95, 0.7, 1.45, 0.7, 2.0]
+        d.table(['Site', 'Location'] + [h for _, h in RATING_DIMS] + ['Screeners', 'Indicated', 'Named adjustments', 'Assigned', 'Why (the rules)'],
+                rows, [w * wl / sum(widths) for w in widths], size=13, shade_cells=cells, rule_rows=rules)
+    else:
+        note('Not rated for this batch: run rate.py, then memo.py again.')
+    out2 = save(d, os.path.join(b, f'{name}_summary_memo.docx'))
     print(f"wrote {out1} ({len(ask)} questions, {len(exhibits)} exhibits), {out2} and {os.path.join(b, 'broker_summary.csv')}")
     for k, v in by_status.items():
         shown = [f"{s_} ({st[s_]['note']})" if st[s_].get('note') else s_ for s_ in v]

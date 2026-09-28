@@ -51,14 +51,44 @@ Candidate search (`candidates.py`): every parcel within ±15 % of the stated acr
 
 Not in this memo: flood, wetlands, power, site control, data-handling notes. They are in the summary.
 
-## 3. Summary memo — sections, in order
+## 3. Summary memo — LOCKED structure
 
-1. **Title block** and the **status line** (no screening verdicts until thresholds are approved).
-2. **Summary**: `input/memo_narrative.md`, written in the Claude Code session (§5).
-3. **Portfolio at a glance**: sites by market; site control; location status counts (pointing to the confirmation memo); broker-stated power by confidence tag and market; fiber quotes; how many sites carry broker grid caveats.
-4. **Site by site** (landscape): one block per site, a heavy rule between sites; rows Location · Site control · Acreage · Power · Connection · Transmission · Flood · Wetlands · Fiber · Grid caveats · Homes within 1 mi, columns *Broker says* | *We found*; a row appears only if either side has something. The Location row's *We found* cell is shaded in the status colour. Parcel-level checks (flood, wetlands, parcel acres) only for sites located to a point; `~` marks values measured from a placed point, for context only.
-5. **Data handling notes**: licensed-county parcels, parcel records without owners, pin/ZIP or pin/address differences that were *not* treated as contradictions.
-6. **Method, sources and gaps**: how the list was read; the producers table; what the tool does not do.
+**Purpose:** give TBDI an overview of the portfolio, before thresholds exist. Consistency across reports comes first:
+the section headers, their order, and every table's rows and columns below are fixed and appear in every batch
+(Tucker, 2026-09-25). A reader learns the memo once. Change this only when Tucker asks, and change `memo.py`
+(`SUMMARY_SECTIONS` and the section code) in the same commit.
+
+Rules for every section:
+- `Summary` (heading 1) contains only these sections (heading 2), in this order. Nothing above them.
+- Each opens with Claude's takeaway (§5): one bold lead sentence, then bullets. No blocks of prose.
+- **Every summary table has one row per market (MSA), in list order, then a bold Total row.** Zero counts show "—". Ranges show min–max.
+- A section with nothing to show keeps its heading and table and says so.
+
+| # | Section | Table (rows: each market, then Total) |
+|---|---|---|
+| 1 | **Priority ratings** (our rating, `ratings.csv`; added 2026-09-28) | Market · Rows · High · Medium · Low · Insufficient information · Screened out (assigned priority; columns shaded in the priority colours) |
+| 2 | **Location confidence** (brief; the confirmation memo has the detail) | Market · Rows · Confirmed · Confirmed: carve-out / several parcels · Needs confirmation · Not locatable · No site yet (status columns shaded in the status colours) |
+| 3 | **Power** | Market · Rows · MW confirmed in writing · MW pre-screen / estimate · MW requested / up to · MW per row · First power · ¢/kWh |
+| 4 | **Fiber** | Market · Quoted (n of rows) · Carrier · Build (NRC) · Monthly (MRC) · Longer route |
+| 5 | **Proximity** (our check, every row) | Market · Rows · From site / placed point · To 1M+ metro · Nearest data centre · Nearest hub (20+ networks) · Data centres within 50 km |
+| 6 | **Neighbors** (our check, confirmed sites) | no table: bullets only (homes within 1 mile, schools, places of worship, hospitals / nursing homes); per-site figures in Appendix A |
+| 7 | **Flood** (our check, confirmed sites) | no table: bullets only (FEMA zone at the pin, % of parcel in SFHA, % in NWI wetland); per-site figures in Appendix A |
+| 8 | **Ownership** | Market · Rows · Under contract · LOI / negotiating · Owner identified · Tract identified · No site yet · No site control |
+| 9 | **Caveats and other** | no table: bullets, each naming the sites and the effect on the headline figures |
+
+Proximity for a row without a confirmed site is measured from where it was placed (named substation, intersection,
+ZIP centre): market context, counted in "From site / placed point" and marked "(placed)" in Appendix A.
+
+Appendices:
+- **A. Site by site** (landscape): one row per site, grouped by market (heavy rule between markets). Columns: Site · Location (our status, shaded) · Site control · Power, timing, utility · Fiber · Proximity (ours) · Flood (ours) · Neighbors (ours) · Caveats and other notes.
+- **B. Ownership and data handling**: owner of record beside what the broker says, on confirmed sites; licensed-county parcels, records without owners, pin/ZIP or pin/address differences not treated as contradictions.
+- **C. Method, sources and gaps**.
+- **D. Ratings by site** (landscape): one row per site, grouped by market. Columns: Site · Location (shaded) · the seven dimension scores (Power, Investment, Land, Site control, Community, Connectivity, Market; shaded 1–5, U = unknown) · Screeners · Indicated · Named adjustments · Assigned · Why (the rules). Evidence and confidence for every score stay in `ratings.csv`.
+
+The ratings come from `rate.py` (method: `design_site_rating.md`). `memo.py` runs `rating_check.py` on `ratings.csv` and
+will not write the summary memo from ratings that fail it (missing confidence or reason, a score above its confidence cap,
+a priority the rules do not give, an adjustment without a reason, another method version, or a changed location status).
+Without `ratings.csv` the section keeps its heading and table and says the batch is not rated.
 
 ## 4. Exhibits
 
@@ -66,17 +96,21 @@ Not in this memo: flood, wetlands, power, site control, data-handling notes. The
 - Banner in the status colour, with the status, stated vs found acreage and the assessment; the broker's words verbatim under it.
 - Identified parcel: dark red, thick outline. Candidates: orange, lettered. Named substation: purple square. Red dot for the pin only when the broker gave a precise coordinate.
 
-## 5. The narrative (Claude, in session)
+## 5. The takeaways (Claude, in session)
 
-Written after the run, read into the summary memo. Portfolio facts only, no verdicts, about half a page:
-what the offering is; the power picture and how well it is evidenced; how much of the land side can be checked
-(pointing to the confirmation memo, not repeating it); the facts on confirmed sites a reader should see first
-(e.g. a site in Zone AE); broker-stated caveats that change what a MW figure means.
+`input/memo_narrative.md`, written after the run: one `## <Section>` block per section in §3, named exactly. Facts only,
+no verdicts; memo.py flags any section without one.
+- Each block: **one bold lead sentence** that answers the section, then 2–6 bullets (`- `): sites and numbers, outliers, contrasts between markets, what the broker says against our check. No paragraphs.
+- A finding goes in the section it is mainly about (MW without land: Power; the rows with every element in place: Ownership). Never add a free-form section.
+- Check every number against the computed tables and Appendix A before rerunning.
 
 ## 6. Order of work
 
 ```
 figure.py <batch> --only <all L1-L4 sites> --layers parcels --views site --audience internal
+memo.py <batch> --name <Title>          (writes broker_summary.csv, which rate.py reads)
+(write input/rating_readings.json)
+rate.py <batch>                         (ratings.csv; rating_check.py <batch> to check it on its own)
 (write input/memo_narrative.md)
 memo.py <batch> --name <Title>
 ```
