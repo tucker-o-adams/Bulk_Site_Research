@@ -49,6 +49,34 @@ def kvs(p=None):
     return p['power_line_min_kv'], p['power_sub_min_kv'], p['power_headroom_sub_kv']
 
 
+CLASS_KV = {'UNDER 100': 99, '100-161': 161, '220-287': 287, '345': 345, '500': 500, '735 AND ABOVE': 765, 'DC': 500}
+
+
+def line_kv_for_row(props):
+    """A line's voltage for right-of-way width: published VOLTAGE, else the top of its HIFLD class band (wider = safer),
+    else None."""
+    kv = transmission._kv(props)
+    if kv is not None:
+        return kv
+    vc = (props.get('VOLT_CLASS') or '').upper().strip()
+    return next((v for k, v in CLASS_KV.items() if vc.startswith(k)), None)
+
+
+def row_width_m(props, p):
+    """Total right-of-way width in metres for a line (profile line_row_width_ft bands), or 0 when not configured."""
+    bands = p.get('line_row_width_ft')
+    if not bands:
+        return 0.0
+    kv = line_kv_for_row(props)
+    if kv is None:
+        return (p.get('line_row_unknown_ft') or 0) * prof.FT
+    width = 0
+    for min_kv, ft in sorted(bands):
+        if kv >= min_kv:
+            width = ft
+    return width * prof.FT
+
+
 def line_ok(props, min_kv):
     kv = transmission._kv(props)
     if kv is not None:

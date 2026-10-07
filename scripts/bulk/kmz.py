@@ -418,7 +418,7 @@ def site_layers(site_f, s, fp, cache, outlines, profile, ref_nh, ref_h, counts):
     xf = folder(site_f, 'Excluded land by reason', visible=False)
     reasons = [('edge setback', 'exSetback', r['setback'])]
     for k, g in r['excluded'].items():
-        style = ('exBuildings' if k.startswith('buildings') else 'exFlood' if k.startswith('flood') else 'exWetlands' if k.startswith('wetlands')
+        style = ('exRow' if k.startswith('power line') else 'exBuildings' if k.startswith('buildings') else 'exFlood' if k.startswith('flood') else 'exWetlands' if k.startswith('wetlands')
                  else 'exCover' if k.startswith('land cover') else 'exSlope' if k.startswith('slope') else 'exSetback')
         label = f"steep ground ({k})" if k.startswith('slope') else k
         reasons.append((label, style, g))
@@ -501,7 +501,7 @@ def main():
     # usable land: purple / yellow / red, so it never reads as wetland green or flood blue (KML colours are aabbggrr)
     for sid, colour in (('ulNear', 'ff0000ff'), ('ulMid', 'ff00d7ff'), ('ulFar', 'ffd30094'),
                         ('exSetback', 'ff909090'), ('exBuildings', 'ff202020'), ('exFlood', 'ffd06f1f'), ('exWetlands', 'ff1cc37f'),
-                        ('exCover', 'ff2a5a8b'), ('exSlope', 'ff008cff')):
+                        ('exCover', 'ff2a5a8b'), ('exSlope', 'ff008cff'), ('exRow', 'ffff00ff')):
         st = sub(doc, 'Style', id=sid); ls = sub(st, 'LineStyle'); sub(ls, 'color', colour); sub(ls, 'width', '1.5')
         ps = sub(st, 'PolyStyle'); sub(ps, 'color', '66' + colour[2:]); sub(ps, 'fill', '1'); sub(ps, 'outline', '1')
     st = sub(doc, 'Style', id='home'); ic = sub(st, 'IconStyle'); sub(ic, 'scale', '0.8'); sub(ic, 'color', 'ff0000ff')

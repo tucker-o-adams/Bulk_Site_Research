@@ -20,6 +20,8 @@ the setback. Pads still sit only on the site's own land, never on a filled gap.
                 with no NLCD value (0, outside the coverage) are excluded too - unknown ground is not usable
     slope       USGS 3DEP elevation, lightly smoothed (3 x 3 mean), slope over max_slope_pct; steep patches
                 under 0.25 ac are dropped as DEM noise
+    power lines HIFLD transmission lines, each widened to its right-of-way (profile line_row_width_ft by voltage;
+                a line with no voltage takes the top of its class band, else line_row_unknown_ft)
 
 A pad needs one contiguous block: the usable land is "opened" by the pad's minimum width (shrunk by half the
 width, then grown back), which removes every part too narrow to hold a pad. Pads fitting = the sum over the
@@ -297,7 +299,11 @@ def measure(site, cache, p):
     take('homes (USA Structures)', None, f3, e3)
     hs, hs_on = homes.split(hs_all or [])
     lines, subs, f4, e4 = power_site.near_site(site, cache, fp)
-    take('power (HIFLD)', None, f4, e4)
+    row = None
+    if not e4 and p.get('line_row_width_ft'):
+        strips = [g.buffer(power_site.row_width_m(q, p) / 2) for g, q in lines if g.intersects(fp['m'].buffer(150))]
+        row = unary_union([x for x in strips if not x.is_empty]) if strips else None
+    take('power line right-of-way' if p.get('line_row_width_ft') else 'power (HIFLD)', row, f4, e4)
     fetched = max([f for f in fetched_all if f] or [now_iso()])
     if errors:
         return {'fp': fp, 'error': '; '.join(errors) + '; rerun - a missing layer would overstate usable land',

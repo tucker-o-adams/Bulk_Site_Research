@@ -28,3 +28,10 @@ These are evidence for a limit, not limits themselves: each portfolio's profile 
 | [National Grid electrical service cost estimator](https://www.nationalgrid.com/us/ma/electric/business/start-service-for-new-construction/new-electric-service/electrical-service-cost-estimator) | 3-phase overhead line about $1.4–1.65M per mile | 2026-10-07 |
 | [Hydro One Bulletin 3](https://www.hydroone.com/businessservices_/generators_/Documents/Bulletin%203.pdf) | feeders of 13 kV and up: 400 A max; 30 MW per feeder at 44 kV | 2026-10-07 |
 | [NC Clean Energy Technology Center](https://nccleantech.ncsu.edu/?p=13984) | 56% of large-load tariffs set their threshold above 20 MW | 2026-10-07 |
+
+## Transmission right-of-way widths
+
+| Source | What it says | Read |
+|---|---|---|
+| [Great River Energy, power poles](https://greatriverenergy.com/transmission-and-delivery/power-line-project-faqs/power-poles/) | typical right-of-way: 69 and 115 kV 70–100 ft; 161 kV 100–150 ft | 2026-10-07 |
+| [AEP Transmission / Transource, encroachment on rights-of-way](https://www.aeptransmission.com/dist/docs/property/EncroachmentOnROW_AEPTrans-V2.pdf) | typical widths: 138 kV 70–100 ft; 230 kV 120–150 ft (150 rural); 345 kV 150 ft; 765 kV 200 ft (table read from extracted text) | 2026-10-07 |
