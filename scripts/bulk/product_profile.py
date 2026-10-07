@@ -14,7 +14,10 @@ values actually used):
                          scoring (flags.py, BACKLOG 9b) is not
     pad_mw, mw_per_acre  pad acres = pad_mw / mw_per_acre
     pad_min_width_ft     a block narrower than this anywhere cannot hold a pad
-    edge_setback_ft      pad kept this far inside the site outline
+    edge_setback_ft      pad kept this far inside the site's outer edge, everywhere (used when the three below are unset)
+    edge_setback_road_ft / edge_setback_other_ft / edge_setback_industrial_ft
+                         the setback by what is next door (producers/usable.py): road frontage, an industrial neighbor,
+                         anything else. Homes are covered by the receptor distances, not here
     building_buffer_ft   around every existing building
     max_slope_pct        ground steeper than this is not usable
     exclude_sfha         FEMA 1% annual-chance zones are not usable
@@ -28,7 +31,8 @@ import hashlib, json, re
 
 FT = 0.3048
 DEFAULTS = {'version': None, 'approved': False, 'pad_mw': None, 'mw_per_acre': None, 'pad_min_width_ft': 0,
-            'edge_setback_ft': 0, 'building_buffer_ft': 0, 'max_slope_pct': None, 'exclude_sfha': True,
+            'edge_setback_ft': 0, 'edge_setback_road_ft': None, 'edge_setback_other_ft': None,
+            'edge_setback_industrial_ft': None, 'building_buffer_ft': 0, 'max_slope_pct': None, 'exclude_sfha': True,
             'exclude_nwi': True, 'exclude_nlcd': [], 'receptor_review_ft': 1000, 'receptor_pass_ft': 2000,
             'buildings_required': True}
 REQUIRED = ('pad_mw', 'mw_per_acre')

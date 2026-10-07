@@ -4,7 +4,11 @@
 from it (product_profile.py).
 
 Usable land = the site footprint (producers/footprint.py: intake outline, parcel or square) inside the edge
-setback, minus each of the layers below. The setback is measured from the site's OUTER edge only (Tucker,
+setback, minus each of the layers below. The setback depends on what is next door when the profile sets
+edge_setback_road/other/industrial_ft (Tucker, 2026-10-07): an outer edge within ROAD_NEAR_M of a Census TIGER road
+(primary, secondary, local) is road frontage; else an edge with a USA Structures Industrial building within
+IND_NEAR_M beyond it faces an industrial neighbor; else it takes the "other" setback (farmland, vacant, commercial,
+homes - homes are held off far further by the receptor distances). Otherwise one edge_setback_ft applies everywhere. The setback is measured from the site's OUTER edge only (Tucker,
 2026-10-07): gaps up to GAP_FILL_M between the site's own parcels (roads, rail, digitizing slivers) are filled
 before measuring, so they cut no strip through the site; holes wider than that (likely other owners' land) keep
 the setback. Pads still sit only on the site's own land, never on a filled gap.
@@ -31,7 +35,7 @@ exactly what was counted.
 A failed layer fails the measured fields (rerun): a missing layer would overstate usable land. The one exception
 is buildings when the profile sets buildings_required false - then the values carry a note instead.
 """
-import math
+import math, urllib.parse
 import numpy as np
 import rasterio
 import rasterio.transform
@@ -58,6 +62,10 @@ DEM = 'https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/Imag
 DEM_MAX_PX, DEM_TARGET_M = 1500, 10
 SLOPE_MIN_PATCH_M2 = 0.25 * AC
 FAR_CELL_M = 3                  # grid for "at least d from every home" (far_from); 3 m: 0.2 s a site, never lets ground closer than d
+ROADS = 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Transportation/MapServer'
+ROAD_LAYERS = (2, 6, 8)         # primary roads, secondary roads (full detail), local roads
+ROAD_NEAR_M = 30                # an edge this close to a road centreline fronts the road (right-of-way width) - hypothesis
+IND_NEAR_M = 150                # an industrial building this close beyond an edge makes it an industrial neighbor - hypothesis
 GAP_FILL_M = 50                 # = the grouping gap: gaps this wide between the site's own parcels are inside the site
 METHOD = ('footprint shrunk by the edge setback, minus buildings (+buffer), SFHA, NWI, NLCD excluded classes and slope over '
           'the limit; opened by the pad minimum width; pads = sum of floor(block / pad area); repeated beyond the review and '
@@ -184,6 +192,61 @@ def inside_setback(fp, edge_m):
     return closed.buffer(-edge_m).intersection(fp['m'])
 
 
+def neighbors(fp, cache):
+    """(roads, industrial buildings outside the site) near the footprint, in footprint metres, plus fetched, error."""
+    gs, fetched = [], []
+    for lid in ROAD_LAYERS:
+        url = arcgis_envelope_query(f'{ROADS}/{lid}', _bbox_ll(fp, ROAD_NEAR_M + 20), 'MTFCC')
+        resp, f, err = cache.get_json(NAME, _key(fp, f'road{lid}'), url)
+        if err:
+            return None, None, f, f'roads (TIGER layer {lid}): {err}'
+        fetched.append(f)
+        for ft in (resp or {}).get('features') or []:
+            try:
+                gs.append(transform(fp['fwd'], shape(ft['geometry'])))
+            except Exception:
+                continue
+    url = arcgis_envelope_query(STRUCTURES, _bbox_ll(fp, IND_NEAR_M + 20), 'OCC_CLS') + '&where=' + \
+        urllib.parse.quote("OCC_CLS='Industrial'")
+    resp, f, err = cache.get_json(NAME, _key(fp, 'ind'), url)
+    if err:
+        return None, None, f, f'industrial buildings: {err}'
+    fetched.append(f)
+    ind = []
+    for ft in (resp or {}).get('features') or []:
+        try:
+            g = transform(fp['fwd'], shape(ft['geometry']))
+        except Exception:
+            continue
+        if not fp['m'].contains(g.centroid):
+            ind.append(g)
+    return (unary_union(gs) if gs else None), (unary_union(ind) if ind else None), max([x for x in fetched if x] or [None]), None
+
+
+def inside_setback_by_neighbor(fp, p, roads, industrial):
+    """(interior, note): the site's own land inside a setback that depends on what lies beyond each stretch of the
+    outer edge - road frontage, an industrial neighbor, or anything else. Gaps up to GAP_FILL_M are closed first."""
+    h = GAP_FILL_M / 2
+    closed = fp['m'].buffer(h).buffer(-h)
+    edge = closed.boundary
+    road_zone = roads.buffer(ROAD_NEAR_M) if roads is not None else None
+    ind_zone = industrial.buffer(IND_NEAR_M) if industrial is not None else None
+    on_road = edge.intersection(road_zone) if road_zone is not None else None
+    rest = edge.difference(road_zone) if road_zone is not None else edge
+    on_ind = rest.intersection(ind_zone) if ind_zone is not None else None
+    other = rest.difference(ind_zone) if ind_zone is not None else rest
+    parts = []
+    for seg, key in ((on_road, 'edge_setback_road_ft'), (on_ind, 'edge_setback_industrial_ft'), (other, 'edge_setback_other_ft')):
+        d = prof.m(p, key) if p.get(key) is not None else prof.m(p, 'edge_setback_other_ft')
+        if seg is not None and not seg.is_empty and d > 0:
+            parts.append(seg.buffer(d))
+    interior = (closed.difference(unary_union(parts)) if parts else closed).intersection(fp['m'])
+    km = lambda g: 0 if g is None or g.is_empty else g.length / 1000
+    note = (f"outer edge: road frontage {km(on_road):,.2f} km at {p.get('edge_setback_road_ft')} ft, industrial neighbor "
+            f"{km(on_ind):,.2f} km at {p.get('edge_setback_industrial_ft')} ft, other {km(other):,.2f} km at {p.get('edge_setback_other_ft')} ft")
+    return interior, note
+
+
 def measure(site, cache, p):
     """{'fp', 'values' (field -> (value, note)) or 'error', 'layers', 'blocks', 'review', 'pass', 'homes'}; geometry in
     footprint metres. A failed layer comes back as 'error'."""
@@ -195,8 +258,17 @@ def measure(site, cache, p):
     site_m2 = fp['m'].area
     pad_m2 = prof.pad_acres(p) * AC
     width_m = prof.m(p, 'pad_min_width_ft')
-    interior = inside_setback(fp, prof.m(p, 'edge_setback_ft'))
     excl, layers, notes, fetched_all, errors = {}, [], [], [], []
+    edge_note = None
+    if p.get('edge_setback_other_ft') is not None:
+        roads, industrial, fn, en = neighbors(fp, cache)
+        if en:
+            return {'fp': fp, 'error': en + '; rerun - the edge setback depends on it', 'layers': [f'neighbors FAILED'],
+                    'notes': [], 'fetched': fn}
+        fetched_all.append(fn)
+        interior, edge_note = inside_setback_by_neighbor(fp, p, roads, industrial)
+    else:
+        interior = inside_setback(fp, prof.m(p, 'edge_setback_ft'))
 
     def take(label, geom, fetched, err, required=True):
         if err:
@@ -245,7 +317,8 @@ def measure(site, cache, p):
     pad_note = (f"pad {prof.pad_acres(p):,.2f} ac ({p['pad_mw']} MW at {p['mw_per_acre']} MW/ac), min width {p['pad_min_width_ft']} ft; "
                 'an area count, not a layout')
     values = {'ul_usable_acres': (round(usable.area / AC, 2), None),
-              'ul_excluded': ('; '.join(parts), 'edge setback from the outer edge only; layers overlap, so these do not add up to the excluded total'),
+              'ul_excluded': ('; '.join(parts), '; '.join(x for x in [edge_note, 'edge setback from the outer edge only; layers overlap, '
+                                                                        'so these do not add up to the excluded total'] if x)),
               'ul_largest_block_acres': (round(max((b.area for b in blocks_all), default=0) / AC, 2), pad_note),
               'ul_pads_fit': (pads(blocks_all, pad_m2), pad_note),
               'ul_pads_fit_review': (pads(rev, pad_m2), f'{pad_note}; at least {p["receptor_review_ft"]:,} ft from every home'),
