@@ -26,6 +26,8 @@ values actually used):
     receptor_review_ft   pads closer than this to a home are NO-GO territory
     receptor_pass_ft     pads at least this far from every home pass
     buildings_required   false: a failed building lookup degrades (noted) instead of failing the usable-land fields
+    home_min_residential_sqft   a Residential-tagged building smaller than this is a shed or garage, not a home
+    home_unclassified_sqft      [min, max]: an Unclassified building counts as a possible home only at this size
 """
 import hashlib, json, re
 
@@ -34,7 +36,7 @@ DEFAULTS = {'version': None, 'approved': False, 'pad_mw': None, 'mw_per_acre': N
             'edge_setback_ft': 0, 'edge_setback_road_ft': None, 'edge_setback_other_ft': None,
             'edge_setback_industrial_ft': None, 'building_buffer_ft': 0, 'max_slope_pct': None, 'exclude_sfha': True,
             'exclude_nwi': True, 'exclude_nlcd': [], 'receptor_review_ft': 1000, 'receptor_pass_ft': 2000,
-            'buildings_required': True}
+            'buildings_required': True, 'home_min_residential_sqft': 0, 'home_unclassified_sqft': None}
 REQUIRED = ('pad_mw', 'mw_per_acre')
 
 

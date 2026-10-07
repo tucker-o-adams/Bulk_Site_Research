@@ -11,9 +11,9 @@ workbook was computed from. Folders:
                                    only with --group-folders); popup = key values + sources   (off)
     A2. Site footprints            the shape the fp_* columns were measured over: parcel boundary
                                    (green) or, with no parcel, the square around the pin (blue)  (off)
-    U. Usable land vs homes        with a product profile (run.py --profile): per site, the usable land a pad could use,
-                                   colored by distance from actual homes (red < review, amber review-pass, green >= pass),
-                                   and the nearest home with a connector; state subfolders            (off)
+    U. Usable land vs homes        with a product profile (run.py --profile), state -> site subfolders      (off)
+       U1 usable land by distance from actual homes (red < review, amber review-pass, green >= pass)
+       U2 nearest home per site: the building home_nearest_m measures to - outline, tags, line to the site
     A3. Approximate locations      sites located only to a landmark, ZIP or county (location tier L3-L5):
                                    a circle of the location's uncertainty radius; these sites' pins are
                                    grey and get no flood, wetland or neighbour layers              (ON)
@@ -256,22 +256,33 @@ def site_desc(s, srcs):
 
 
 def draw_usable(doc, b, sites, groups, by_group, fkey, profile, srcs):
-    """Folder U: the usable land usable.measure() counted, recomputed from the cache (offline), split by distance from
-    actual homes, plus the nearest home and a connector. Off by default; state subfolders."""
+    """Folder U, recomputed from the cache (offline) with usable.measure() - exactly what the counts were made from:
+        U1  usable land per site, colored by distance from actual homes (state -> site)
+        U2  each site's nearest home - the building home_nearest_m measures to: its outline, a pin with its tags,
+            size, address and imagery date, and the shortest line to the site (state -> site)
+    Off by default, like every heavy layer; ticking U turns both on."""
     offline = Cache(CACHE, offline=True)
     outlines = footprint.batch_outlines(b)
     homes.PROFILE = profile
     rev_ft, pass_ft = profile['receptor_review_ft'], profile['receptor_pass_ft']
     U = folder(doc, f'U. Usable land vs homes (pad {prof.pad_acres(profile):,.2f} ac)', visible=False, description=(
-        f'Usable land a pad could use (after the edge setback, buildings, flood, wetlands, land cover and slope), colored by '
-        f'distance from actual homes (FEMA USA Structures): red under {rev_ft:,} ft, amber {rev_ft:,}-{pass_ft:,} ft, green {pass_ft:,} ft '
-        'or more. Only blocks wide enough for a pad are drawn. The red icon is the nearest home; the line is the shortest distance.'))
-    n = 0
+        'U1: usable land a pad could use, colored by distance from actual homes. U2: the nearest home to each site, '
+        'the building the home_nearest_m column measures to, with its FEMA USA Structures tags for checking.'))
+    U1 = folder(U, 'U1. Usable land by distance from homes', visible=False, description=(
+        f'Usable land (after the edge setback, buildings, flood, wetlands, land cover and slope), colored by distance from '
+        f'actual homes: red under {rev_ft:,} ft, amber {rev_ft:,}-{pass_ft:,} ft, green {pass_ft:,} ft or more. '
+        'Only blocks wide enough for a pad are drawn.'))
+    U2 = folder(U, 'U2. Nearest home per site', visible=False, description=(
+        'The building each site\'s home_nearest_m is measured to (from its center to the site edge), with the line along '
+        'that distance. Tags come from FEMA USA Structures; "Unverified" means the tag is modeled, not confirmed - check it '
+        'against the imagery.'))
+    n1 = n2 = 0
     for g in groups:
         todo = [s for s in by_group[g] if s.get('ul_layers') and s.get('ul_pads_fit') not in (None, '')]
         if not todo:
             continue
-        gf = folder(U, f'{g} ({len(todo)})', visible=False)
+        g1 = folder(U1, f'{g} ({len(todo)})', visible=False)
+        g2 = None
         for s in todo:
             site = Site(site_id=s['site_id'], lat=float(s['lat']), lng=float(s['lng']), acres_stated=footprint.row_acres(s),
                         outline=outlines.get(s['site_id']))
@@ -280,7 +291,7 @@ def draw_usable(doc, b, sites, groups, by_group, fkey, profile, srcs):
                 continue
             inv = footprint.projection(site.lat, site.lng)[1]
             to_ll = lambda geom: mapping(transform(inv, geom))
-            sf = folder(gf, f"{s['site_id']}: {fmt(s.get('ul_pads_fit'))} pads, {fmt(s.get('ul_pads_fit_pass'))} at {pass_ft:,} ft", visible=False)
+            sf = folder(g1, f"{s['site_id']}: {fmt(s.get('ul_pads_fit'))} pads, {fmt(s.get('ul_pads_fit_pass'))} at {pass_ft:,} ft", visible=False)
             allb = unary_union(r['blocks']) if r['blocks'] else None
             rev = unary_union(r['review']) if r['review'] else None
             far = unary_union(r['pass']) if r['pass'] else None
@@ -289,16 +300,26 @@ def draw_usable(doc, b, sites, groups, by_group, fkey, profile, srcs):
                                        (far, 'ulFar', f'{pass_ft:,} ft or more')):
                 if geom is not None and not geom.is_empty:
                     add_poly_pm(sf, f"{s['site_id']} usable, {label}: {geom.area / footprint.AC:,.1f} ac", style, '', to_ll(geom))
-            if r['homes']:
-                hp, lab, yr = min(r['homes'], key=lambda h: h[0].distance(r['fp']['m']))
-                d = hp.distance(r['fp']['m'])
-                lng, lat = inv(hp.x, hp.y)
-                add_point_pm(sf, f"nearest home {d:,.0f} m ({d / 0.3048:,.0f} ft)", 'home', f'{esc(lab)}; imagery {yr or "?"}', lng, lat)
-                if d > 0:
-                    a, b_ = nearest_points(hp, r['fp']['m'])
-                    add_line_pm(sf, 'distance to nearest home', 'connector', '', [[inv(a.x, a.y), inv(b_.x, b_.y)]])
-            n += 1
-    U.find(NS + 'name').text += f': {n} sites'
+            n1 += 1
+            if not r['homes']:
+                continue
+            hp, lab, yr, info = min(r['homes'], key=lambda h: h[0].distance(r['fp']['m']))
+            d = hp.distance(r['fp']['m'])
+            g2 = g2 if g2 is not None else folder(U2, g, visible=False)
+            hf = folder(g2, f"{s['site_id']}: nearest home {d / 0.3048:,.0f} ft ({esc(lab)})", visible=False)
+            desc = (f"<b>{esc(lab)}</b><br/>{info['sqft']:,} sq ft; tag {esc(info['verified'] or '?')}; imagery {yr or '?'}"
+                    + (f"<br/>{esc(info['address'])}" if info['address'] else '')
+                    + f"<br/>{d:,.0f} m ({d / 0.3048:,.0f} ft) from the site edge" + (' - on the site' if d == 0 else '')
+                    + '<br/><i>FEMA USA Structures</i>')
+            lng, lat = inv(hp.x, hp.y)
+            add_point_pm(hf, f"{s['site_id']} nearest home", 'home', desc, lng, lat)
+            add_poly_pm(hf, f"{s['site_id']} nearest home outline", 'homeBldg', desc, to_ll(info['poly']))
+            if d > 0:
+                a, b_ = nearest_points(hp, r['fp']['m'])
+                add_line_pm(hf, f"{d / 0.3048:,.0f} ft to the site", 'connector', '', [[inv(a.x, a.y), inv(b_.x, b_.y)]])
+            n2 += 1
+    U1.find(NS + 'name').text += f': {n1} sites'
+    U2.find(NS + 'name').text += f': {n2} sites'
 
 
 def main():
@@ -350,6 +371,8 @@ def main():
         ps = sub(st, 'PolyStyle'); sub(ps, 'color', '66' + colour[2:]); sub(ps, 'fill', '1'); sub(ps, 'outline', '1')
     st = sub(doc, 'Style', id='home'); ic = sub(st, 'IconStyle'); sub(ic, 'scale', '0.8'); sub(ic, 'color', 'ff0000ff')
     sub(sub(ic, 'Icon'), 'href', ICON + 'shapes/homegardenbusiness.png')
+    st = sub(doc, 'Style', id='homeBldg'); ls = sub(st, 'LineStyle'); sub(ls, 'color', 'ff0000ff'); sub(ls, 'width', '3')
+    ps = sub(st, 'PolyStyle'); sub(ps, 'color', '880000ff'); sub(ps, 'fill', '1'); sub(ps, 'outline', '1')
     for sid, line in (('fpParcel', 'ff00ff00'), ('fpSquare', 'ffffc864')):      # outline only: imagery shows through
         st = sub(doc, 'Style', id=sid); ls = sub(st, 'LineStyle'); sub(ls, 'color', line); sub(ls, 'width', '2.5')
         ps = sub(st, 'PolyStyle'); sub(ps, 'fill', '0'); sub(ps, 'outline', '1')
