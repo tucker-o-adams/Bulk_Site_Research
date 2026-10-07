@@ -12,6 +12,8 @@ approved before any site is scored, screening, survivor review) is in **WORKFLOW
 ```
 # 0. only if the list has addresses but no coordinates
 .venv_fema/Scripts/python.exe scripts/bulk/geocode.py <raw.csv> <in.csv>
+# 0b. only for an owner's parcel file (KMZ of parcel outlines): merge nearby parcels into sites
+.venv_fema/Scripts/python.exe scripts/bulk/group_parcels.py <parcels.kmz> Outputs/<batch>/input/ [--gap 50]
 # 1. are the sources still there and unchanged? (exit 1 = something drifted; read it before trusting a run)
 .venv_fema/Scripts/python.exe scripts/bulk/check_sources.py
 # 2. the run; repeat until run.json shows no `failed` (FEMA drops connections; failures are never cached)
