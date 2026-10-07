@@ -45,8 +45,8 @@ from shapely.geometry import shape
 from shapely.ops import transform, unary_union
 from cache import coord_key
 from geom import arcgis_envelope_query
-from provenance import Value, failed, now_iso
-from producers import flood, footprint, homes, wetlands
+from provenance import Value, absent, failed, now_iso
+from producers import flood, footprint, homes, power_site, wetlands
 import product_profile as prof
 
 NAME = 'usable'
@@ -72,7 +72,7 @@ METHOD = ('footprint shrunk by the edge setback, minus buildings (+buffer), SFHA
           'pass distances from actual homes (USA Structures)')
 
 FIELDS = ['ul_basis', 'ul_site_acres', 'ul_usable_acres', 'ul_excluded', 'ul_largest_block_acres', 'ul_pads_fit',
-          'ul_pads_fit_review', 'ul_pads_fit_pass', 'ul_layers']
+          'ul_pads_fit_review', 'ul_pads_fit_pass', 'ul_line_kv_m', 'ul_sub_kv_m', 'ul_sub_headroom_m', 'ul_layers']
 
 
 def _bbox_ll(fp, grow_m=0):
@@ -293,8 +293,11 @@ def measure(site, cache, p):
         take(f"land cover (NLCD {','.join(map(str, p['exclude_nlcd']))})", *land_cover(fp, cache, p['exclude_nlcd']))
     if p['max_slope_pct'] is not None:
         take(f"slope > {p['max_slope_pct']}%", *steep(fp, cache, p['max_slope_pct']))
-    hs, f3, e3 = homes.points(site, cache, fp)
+    hs_all, f3, e3 = homes.points(site, cache, fp)
     take('homes (USA Structures)', None, f3, e3)
+    hs, hs_on = homes.split(hs_all or [])
+    lines, subs, f4, e4 = power_site.near_site(site, cache, fp)
+    take('power (HIFLD)', None, f4, e4)
     fetched = max([f for f in fetched_all if f] or [now_iso()])
     if errors:
         return {'fp': fp, 'error': '; '.join(errors) + '; rerun - a missing layer would overstate usable land',
@@ -312,6 +315,13 @@ def measure(site, cache, p):
         return blocks_all if not hs else opened(far_from(union_all, [h[0] for h in hs], d), width_m)
 
     rev, pas = beyond(rev_m), beyond(pass_m)
+    line_kv, sub_kv, head_kv = power_site.kvs(p)
+    pw = {}
+    for key, items, ok in (('line', lines, lambda q: power_site.line_ok(q, line_kv)), ('sub', subs, lambda q: power_site.sub_ok(q, sub_kv)),
+                           ('head', subs, lambda q: power_site.sub_ok(q, head_kv))):
+        pw[key] = power_site.nearest(items, union_all, ok) if union_all is not None else None
+    pw_note = lambda kv, what: (f'from the nearest usable block (wide enough for a pad) to the nearest {what} >= {kv} kV'
+                                + ('' if union_all is not None else '; no usable block'))
     parts = [f"edge setback {(site_m2 - interior.area) / AC:,.1f} ac"] + \
             [f'{k} {v.intersection(interior).area / AC:,.1f} ac' for k, v in excl.items()]
     pad_note = (f"pad {prof.pad_acres(p):,.2f} ac ({p['pad_mw']} MW at {p['mw_per_acre']} MW/ac), min width {p['pad_min_width_ft']} ft; "
@@ -323,9 +333,12 @@ def measure(site, cache, p):
               'ul_pads_fit': (pads(blocks_all, pad_m2), pad_note),
               'ul_pads_fit_review': (pads(rev, pad_m2), f'{pad_note}; at least {p["receptor_review_ft"]:,} ft from every home'),
               'ul_pads_fit_pass': (pads(pas, pad_m2), f'{pad_note}; at least {p["receptor_pass_ft"]:,} ft from every home'),
+              'ul_line_kv_m': (round(pw['line'][0], 1) if pw['line'] else None, pw_note(line_kv, 'line')),
+              'ul_sub_kv_m': (round(pw['sub'][0], 1) if pw['sub'] else None, pw_note(sub_kv, 'in-service substation')),
+              'ul_sub_headroom_m': (round(pw['head'][0], 1) if pw['head'] else None, pw_note(head_kv, 'in-service substation')),
               'ul_layers': ('; '.join(layers), None)}
     return {'fp': fp, 'values': values, 'layers': layers, 'notes': notes, 'fetched': fetched,
-            'blocks': blocks_all, 'review': rev, 'pass': pas, 'homes': hs,
+            'blocks': blocks_all, 'review': rev, 'pass': pas, 'homes': hs, 'homes_on_site': hs_on, 'power': pw,
             'setback': fp['m'].difference(interior), 'excluded': {k: v.intersection(fp['m']) for k, v in excl.items()}}
 
 
@@ -342,4 +355,8 @@ def run(site, cache):
     out = [mk('ul_basis', fp['basis']), mk('ul_site_acres', round(fp['m'].area / AC, 2))]
     if 'error' in r:
         return out + [failed(f, SOURCE, LYR, METHOD, r['error']) for f in FIELDS[2:-1]] + [mk('ul_layers', '; '.join(r['layers']))]
-    return out + [mk(f, *r['values'][f]) for f in FIELDS[2:]]
+    vals = []
+    for f in FIELDS[2:]:
+        v, n = r['values'][f]
+        vals.append(mk(f, v, n) if v is not None else absent(f, SOURCE, LYR, METHOD, note=n))
+    return out + vals

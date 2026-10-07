@@ -31,6 +31,7 @@ BAND_TITLES = {
     'healthcare': 'Nursing homes & hospitals (CMS)', 'parcel': 'Parcel (county / state GIS)',
     'footprint': 'Site footprint: parcel, else square around pin (FEMA, NWI)',
     'homes': 'Homes (FEMA USA Structures)', 'usable': 'Usable land and pads (product profile)',
+    'power_site': 'Power from the site edge (HIFLD)',
 }
 BAND_COLORS = ['1F3864', '2E5A46', '7A4A00', '4A235A', '0B5345', '6E2C00', '1B4F72', '4D5656', '5B2C6F', '145A32',
                '78281F', '1A5276', '3D3D3D']      # one per band: Site + 12 producers

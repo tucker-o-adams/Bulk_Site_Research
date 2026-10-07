@@ -9,16 +9,17 @@ Unclassified building counts only inside home_unclassified_sqft [min, max] - hou
 SQFEET, else the footprint area. The dataset does not say how each use tag was assigned (VAL_METHOD describes the
 check of the building OUTLINE, not of the tag), so some tags are wrong;
 kmz.py draws each site's nearest home with its tags for checking.
-Every home counts - one farmhouse weighs the same as a subdivision - including a Residential building on the site
-itself (homes_on_site says how many), since a house on the owner's land may be occupied. An Unclassified building
+Every home counts - one farmhouse weighs the same as a subdivision. A Residential building ON the site itself (intake
+outline or parcel) is not counted as a home for distances or pad zones: it is on the owner's land, often a caretaker
+house, office or mis-tagged building. It is flagged for review instead - homes_on_site counts them (Tucker, 2026-10-07). An Unclassified building
 ON the site (intake outline or parcel) is not a home: on a quarry or plant it is almost always a plant building
 (Tucker, 2026-10-07). Off the site it still counts. The square around a pin is not the site, so nothing is dropped there.
 
 Measured from the site footprint (producers/footprint.py: intake outline, parcel or square), not the pin:
 
-    home_nearest_m        distance from the footprint edge to the nearest home (0 = a home on the site)
+    home_nearest_m        distance from the footprint edge to the nearest home off the site
     home_nearest_class    its OCC_CLS / PRIM_OCC
-    homes_on_site         homes inside the footprint
+    homes_on_site         Residential buildings on the site itself: not counted, flagged for review
     homes_within_review   homes within the profile's receptor_review_ft of the footprint (default 1,000 ft)
     homes_within_pass     homes within receptor_pass_ft (default 2,000 ft)
 
@@ -96,8 +97,14 @@ def points(site, cache, fp):
         if pr.get('PRIM_OCC') and pr.get('PRIM_OCC') != label:
             label += f" / {pr['PRIM_OCC']}"
         addr = ', '.join(x for x in (pr.get('PROP_ADDR'), pr.get('PROP_CITY')) if x)
-        out.append((c, label, yr, {'poly': poly, 'sqft': round(sqft), 'address': addr, 'verified': pr.get('VAL_METHOD'), 'occ': occ}))
+        out.append((c, label, yr, {'poly': poly, 'sqft': round(sqft), 'address': addr, 'verified': pr.get('VAL_METHOD'), 'occ': occ,
+                                   'on_site': own is not None and own.contains(c)}))
     return out, fetched, None
+
+
+def split(homes):
+    """(off-site homes, on-site homes): only the first count; the second are flagged for review."""
+    return [h for h in homes if not h[3]['on_site']], [h for h in homes if h[3]['on_site']]
 
 
 def zone(homes, d, snap_m=25.0):
@@ -115,9 +122,10 @@ def run(site, cache):
     fp = footprint.shape_at(site.lat, site.lng, cache, site.acres_stated, site.outline)
     if fp['stage'] == 'failed':
         return [failed(f, SOURCE, LYR, METHOD, fp['error'] + '; rerun') for f in FIELDS]
-    homes, fetched, err = points(site, cache, fp)
+    allh, fetched, err = points(site, cache, fp)
     if err:
         return [failed(f, SOURCE, LYR, METHOD, err) for f in FIELDS]
+    homes, onsite = split(allh)
     rev_m, pass_m = receptor_m()
     yrs = sorted({h[2] for h in homes if h[2]})
     vintage = (f'imagery {yrs[0]}' if len(yrs) == 1 else f'imagery {yrs[0]}-{yrs[-1]}') if yrs else None
@@ -126,13 +134,15 @@ def run(site, cache):
             f"{p.get('home_min_residential_sqft') or 0:,} sq ft = shed/garage; Unclassified counts only off the site and at "
             f"{(p.get('home_unclassified_sqft') or ['any', 'any'])[0]:,}-{(p.get('home_unclassified_sqft') or ['any', 'any'])[1]:,} sq ft")
     mk = lambda fld, val, n=note: Value(fld, val, SOURCE, LYR, METHOD, vintage=vintage, fetched_at=fetched or now_iso(), note=n)
+    on_note = (f"{len(onsite)} Residential building(s) on the site: not counted as homes - REVIEW (imagery, assessor or the owner)"
+               if onsite else 'no Residential building on the site')
     if not homes:
-        why = f'no Residential or Unclassified building within {pass_m + MARGIN_M:,.0f} m of the footprint'
+        why = f'no home off the site within {pass_m + MARGIN_M:,.0f} m of the footprint'
         return [absent('home_nearest_m', SOURCE, LYR, METHOD, note=why), absent('home_nearest_class', SOURCE, LYR, METHOD, note=why),
-                mk('homes_on_site', 0, why), mk('homes_within_review', 0, why), mk('homes_within_pass', 0, why)]
+                mk('homes_on_site', len(onsite), on_note), mk('homes_within_review', 0, why), mk('homes_within_pass', 0, why)]
     dist = [(h[0].distance(fp['m']), h[1]) for h in homes]
     d0, lab0 = min(dist, key=lambda t: t[0])
     return [mk('home_nearest_m', round(d0, 1)), mk('home_nearest_class', lab0),
-            mk('homes_on_site', sum(1 for d, _ in dist if d == 0)),
+            mk('homes_on_site', len(onsite), on_note),
             mk('homes_within_review', sum(1 for d, _ in dist if d <= rev_m)),
             mk('homes_within_pass', sum(1 for d, _ in dist if d <= pass_m))]

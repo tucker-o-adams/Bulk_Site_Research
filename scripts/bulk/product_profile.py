@@ -28,6 +28,8 @@ values actually used):
     buildings_required   false: a failed building lookup degrades (noted) instead of failing the usable-land fields
     home_min_residential_sqft   a Residential-tagged building smaller than this is a shed or garage, not a home
     home_unclassified_sqft      [min, max]: an Unclassified building counts as a possible home only at this size
+    power_line_min_kv / power_sub_min_kv / power_headroom_sub_kv
+                         the line and substation voltages the site-based power distances look for (producers/power_site.py)
 """
 import hashlib, json, re
 
@@ -36,7 +38,8 @@ DEFAULTS = {'version': None, 'approved': False, 'pad_mw': None, 'mw_per_acre': N
             'edge_setback_ft': 0, 'edge_setback_road_ft': None, 'edge_setback_other_ft': None,
             'edge_setback_industrial_ft': None, 'building_buffer_ft': 0, 'max_slope_pct': None, 'exclude_sfha': True,
             'exclude_nwi': True, 'exclude_nlcd': [], 'receptor_review_ft': 1000, 'receptor_pass_ft': 2000,
-            'buildings_required': True, 'home_min_residential_sqft': 0, 'home_unclassified_sqft': None}
+            'buildings_required': True, 'home_min_residential_sqft': 0, 'home_unclassified_sqft': None,
+            'power_line_min_kv': 69, 'power_sub_min_kv': 69, 'power_headroom_sub_kv': 115}
 REQUIRED = ('pad_mw', 'mw_per_acre')
 
 
