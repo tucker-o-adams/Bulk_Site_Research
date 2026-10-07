@@ -13,16 +13,16 @@ and Polygon / MultiGeometry outlines. Writes to the output folder:
     sites_grouped.csv     one row per site: state, types, parcel count, acres, a pin inside the largest piece
     sites_grouped.kmz     site outlines in state folders (parcel outlines inside each site, off)
     group_parcels.json    counts, the gap used, and the site count at other gaps for comparison
-    sites_in.csv          run.py input: site_id, name, lat, lng, state, acres_stated, notes, plus type / parcels and
-                          expected_owner (the site's own owner names and parcel ids, for parcel_owner_check)
+    sites_in.csv          run.py input: site_id, name, lat, lng, state, acres_stated, notes, plus type / parcels
     outlines.geojson      run.py --outlines: each site's merged outline (lng/lat), property site_id
 
-Next: run.py --sites <out>/sites_in.csv --outlines <out>/outlines.geojson [--profile <out>/thresholds.md]
+Next: run.py --sites <out>/sites_in.csv --outlines <out>/outlines.geojson [--profile <out>/thresholds.md], without the
+parcel producer: the owner's file already is the parcel record, so the county lookup at the pin adds nothing
 
 Acres are measured on the merged outline in CONUS Albers (EPSG:5070), so a parcel listed twice or two overlapping
 parcels are counted once. listed_acres is the sum of the file's own GIS_AREA_ACRES, for comparison.
 """
-import argparse, html, json, os, re, zipfile
+import argparse, html, json, os, zipfile
 import xml.etree.ElementTree as ET
 import geopandas as gpd
 import pandas as pd
@@ -88,14 +88,6 @@ def join(values, limit=None):
     return '; '.join(seen)
 
 
-def owner_pattern(p):
-    """Regex for run.py's parcel_owner_check: the site's own owner names (first two words, any separator, since a
-    county writes 'HOLCIM (US) INC' where the file has 'HOLCIM US INC') and parcel ids, as the owner's file lists them."""
-    names = {r'\W+'.join(re.escape(w) for w in re.findall(r'[A-Za-z0-9&]+', n)[:2]) for n in p.OWNER_NAME if n}
-    ids = {re.escape(a) for a in p.PID_PIN_APN if a}
-    return '|'.join(sorted(x for x in names | ids if x))
-
-
 def sites_from(g, comp):
     rows = []
     for _, p in g.groupby(comp):
@@ -113,8 +105,7 @@ def sites_from(g, comp):
                      'span_km': round(max(shape.bounds[2] - shape.bounds[0], shape.bounds[3] - shape.bounds[1]) / 1000, 2),
                      'lat': round(pin.y, 6), 'lng': round(pin.x, 6),
                      'property_names': join(p.PROPERTY_NAME), 'owner_names': join(p.OWNER_NAME, 5),
-                     'apns': join(p.PID_PIN_APN, 10), 'expected_owner': owner_pattern(p),
-                     '_rows': list(p.index), '_shape': shape})
+                     'apns': join(p.PID_PIN_APN, 10), '_rows': list(p.index), '_shape': shape})
     s = pd.DataFrame(rows).sort_values(['state', 'acres'], ascending=[True, False]).reset_index(drop=True)
     s.insert(0, 'site_id', [f'{st}-{i + 1:03d}' for st, i in zip(s.state, s.groupby('state').cumcount())])
     return s
@@ -173,7 +164,7 @@ def write_run_inputs(out, sites):
     rows = pd.DataFrame({'site_id': sites.site_id, 'name': sites.property_names.fillna(''), 'lat': sites.lat, 'lng': sites.lng,
                          'state': sites.state, 'acres_stated': sites.acres,
                          'notes': [f'{n} parcels merged within the grouping gap; acres = merged outline' for n in sites.parcels],
-                         'type': sites.types, 'parcels': sites.parcels, 'expected_owner': sites.expected_owner})
+                         'type': sites.types, 'parcels': sites.parcels})
     rows.to_csv(os.path.join(out, 'sites_in.csv'), index=False)
     shapes = gpd.GeoSeries(list(sites._shape), crs=5070).to_crs(4326)
     feats = [{'type': 'Feature', 'properties': {'site_id': sid}, 'geometry': mapping(g)} for sid, g in zip(sites.site_id, shapes)]

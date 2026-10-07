@@ -3,8 +3,10 @@
 Decided 2026-10-07 (Tucker): home distance is measured to real homes, not to Census block edges.
 
 A home = a building whose OCC_CLS is Residential, or Unclassified (counted as a possible home: conservative).
-Every home counts - one farmhouse weighs the same as a subdivision - including a home on the site itself
-(homes_on_site says how many), since a house on the owner's land may be occupied.
+Every home counts - one farmhouse weighs the same as a subdivision - including a Residential building on the site
+itself (homes_on_site says how many), since a house on the owner's land may be occupied. An Unclassified building
+ON the site (intake outline or parcel) is not a home: on a quarry or plant it is almost always a plant building
+(Tucker, 2026-10-07). Off the site it still counts. The square around a pin is not the site, so nothing is dropped there.
 
 Measured from the site footprint (producers/footprint.py: intake outline, parcel or square), not the pin:
 
@@ -57,6 +59,7 @@ def points(site, cache, fp):
     resp, fetched, err = cache.get_json(NAME, key, url, timeout=120)
     if err:
         return None, fetched, err
+    own = fp['m'] if fp['basis'] in (footprint.BASIS_OUTLINE, footprint.BASIS_PARCEL) else None
     out = []
     for f in (resp or {}).get('features') or []:
         pr = f.get('properties') or {}
@@ -64,6 +67,8 @@ def points(site, cache, fp):
             c = transform(fp['fwd'], shape(f['geometry'])).centroid
         except Exception:
             continue
+        if own is not None and pr.get('OCC_CLS') == 'Unclassified' and own.contains(c):
+            continue                                  # an untagged building on the site: a plant building, not a home
         yr = None
         try:
             yr = datetime.fromtimestamp(pr['IMAGE_DATE'] / 1000, tz=timezone.utc).year if pr.get('IMAGE_DATE') else None
@@ -97,7 +102,8 @@ def run(site, cache):
     rev_m, pass_m = receptor_m()
     yrs = sorted({y for _, _, y in homes if y})
     vintage = (f'imagery {yrs[0]}' if len(yrs) == 1 else f'imagery {yrs[0]}-{yrs[-1]}') if yrs else None
-    note = f"from the {fp['basis']} edge; review {rev_m / prof.FT:,.0f} ft, pass {pass_m / prof.FT:,.0f} ft; Unclassified buildings count as possible homes"
+    note = (f"from the {fp['basis']} edge; review {rev_m / prof.FT:,.0f} ft, pass {pass_m / prof.FT:,.0f} ft; Unclassified buildings "
+            'count as possible homes off the site, not on it')
     mk = lambda fld, val, n=note: Value(fld, val, SOURCE, LYR, METHOD, vintage=vintage, fetched_at=fetched or now_iso(), note=n)
     if not homes:
         why = f'no Residential or Unclassified building within {pass_m + MARGIN_M:,.0f} m of the footprint'
