@@ -29,7 +29,7 @@ import product_profile as prof                                     # noqa: E402
 from producers.footprint import load_outlines               # noqa: E402
 
 ALL_PRODUCERS = ['transmission', 'substations', 'power_site', 'flood', 'wetlands', 'metro', 'datacenter',
-                 'housing', 'homes', 'schools', 'worship', 'healthcare', 'parcel', 'footprint']   # footprint reuses flood/wetlands/parcel answers
+                 'housing', 'homes', 'sensitive', 'schools', 'worship', 'healthcare', 'parcel', 'footprint']   # footprint reuses flood/wetlands/parcel answers
 
 
 def main():

@@ -28,7 +28,8 @@ width, then grown back), which removes every part too narrow to hold a pad. Pads
 remaining blocks of floor(block area / pad area) - an area count, not a layout; a test-fit decides the real number.
 
 The same count is repeated inside two receptor zones: usable land at least receptor_review_ft and at least
-receptor_pass_ft from every actual home (producers/homes.py: FEMA USA Structures, Residential or Unclassified).
+receptor_pass_ft from every receptor: actual homes (producers/homes.py: FEMA USA Structures) and schools, places of
+worship, nursing homes and hospitals (producers/sensitive.py), all measured to the site, not the pin.
 So "pads at the pass distance >= 1" means a pad can sit that far from every home.
 
 measure() returns the geometries too (usable blocks, and the parts beyond each distance), so kmz.py draws
@@ -48,7 +49,7 @@ from shapely.ops import transform, unary_union
 from cache import coord_key
 from geom import arcgis_envelope_query
 from provenance import Value, absent, failed, now_iso
-from producers import flood, footprint, homes, power_site, wetlands
+from producers import flood, footprint, homes, power_site, sensitive, wetlands
 import product_profile as prof
 
 NAME = 'usable'
@@ -298,6 +299,9 @@ def measure(site, cache, p):
     hs_all, f3, e3 = homes.points(site, cache, fp)
     take('homes (USA Structures)', None, f3, e3)
     hs, hs_on = homes.split(hs_all or [])
+    sens, f5, e5 = sensitive.points(site, cache, fp)
+    take('schools, worship, healthcare', None, f5, e5)
+    receptors = [h[0] for h in hs] + [x[0] for x in (sens or [])]
     lines, subs, f4, e4 = power_site.near_site(site, cache, fp)
     row = None
     if not e4 and p.get('line_row_width_ft'):
@@ -318,7 +322,7 @@ def measure(site, cache, p):
     def beyond(d):
         if union_all is None:
             return []
-        return blocks_all if not hs else opened(far_from(union_all, [h[0] for h in hs], d), width_m)
+        return blocks_all if not receptors else opened(far_from(union_all, receptors, d), width_m)
 
     rev, pas = beyond(rev_m), beyond(pass_m)
     line_kv, sub_kv, head_kv = power_site.kvs(p)
@@ -337,14 +341,14 @@ def measure(site, cache, p):
                                                                         'so these do not add up to the excluded total'] if x)),
               'ul_largest_block_acres': (round(max((b.area for b in blocks_all), default=0) / AC, 2), pad_note),
               'ul_pads_fit': (pads(blocks_all, pad_m2), pad_note),
-              'ul_pads_fit_review': (pads(rev, pad_m2), f'{pad_note}; at least {p["receptor_review_ft"]:,} ft from every home'),
-              'ul_pads_fit_pass': (pads(pas, pad_m2), f'{pad_note}; at least {p["receptor_pass_ft"]:,} ft from every home'),
+              'ul_pads_fit_review': (pads(rev, pad_m2), f'{pad_note}; at least {p["receptor_review_ft"]:,} ft from every home, school, place of worship, nursing home and hospital'),
+              'ul_pads_fit_pass': (pads(pas, pad_m2), f'{pad_note}; at least {p["receptor_pass_ft"]:,} ft from every home, school, place of worship, nursing home and hospital'),
               'ul_line_kv_m': (round(pw['line'][0], 1) if pw['line'] else None, pw_note(line_kv, 'line')),
               'ul_sub_kv_m': (round(pw['sub'][0], 1) if pw['sub'] else None, pw_note(sub_kv, 'in-service substation')),
               'ul_sub_115kv_m': (round(pw['head'][0], 1) if pw['head'] else None, pw_note(head_kv, 'in-service substation')),
               'ul_layers': ('; '.join(layers), None)}
     return {'fp': fp, 'values': values, 'layers': layers, 'notes': notes, 'fetched': fetched,
-            'blocks': blocks_all, 'review': rev, 'pass': pas, 'homes': hs, 'homes_on_site': hs_on, 'power': pw,
+            'blocks': blocks_all, 'review': rev, 'pass': pas, 'homes': hs, 'homes_on_site': hs_on, 'sensitive': sens or [], 'power': pw,
             'setback': fp['m'].difference(interior), 'excluded': {k: v.intersection(fp['m']) for k, v in excl.items()}}
 
 

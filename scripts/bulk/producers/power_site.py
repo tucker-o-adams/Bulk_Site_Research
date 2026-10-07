@@ -150,16 +150,19 @@ def _corners(g):
     return [(x0, y0), (x0, y1), (x1, y0), (x1, y1)]
 
 
+def _kv_of(p):
+    return line_kv_for_row(p) if 'VOLT_CLASS' in p or 'VOLTAGE' in p else substations._kv(p.get('MAX_VOLT'))
+
+
 def nearest(items, target, ok):
-    """(distance m, geometry, props) of the nearest item passing ok(props) to target geometry, or None."""
-    best = None
-    for g, p in items:
-        if not ok(p):
-            continue
-        d = g.distance(target)
-        if best is None or d < best[0]:
-            best = (d, g, p)
-    return best
+    """(distance m, geometry, props) of the nearest item passing ok(props) to target geometry, or None. Items within
+    1 m of each other tie (three lines can all sit exactly at the edge of their right-of-way); a tie goes to the higher
+    voltage."""
+    cand = [(g.distance(target), g, p) for g, p in items if ok(p)]
+    if not cand:
+        return None
+    d0 = min(c[0] for c in cand)
+    return max((c for c in cand if c[0] <= d0 + 1.0), key=lambda c: _kv_of(c[2]) or 0)
 
 
 def run(site, cache):
