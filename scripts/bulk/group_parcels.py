@@ -13,6 +13,10 @@ and Polygon / MultiGeometry outlines. Writes to the output folder:
     sites_grouped.csv     one row per site: state, types, parcel count, acres, a pin inside the largest piece
     sites_grouped.kmz     site outlines in state folders (parcel outlines inside each site, off)
     group_parcels.json    counts, the gap used, and the site count at other gaps for comparison
+    sites_in.csv          run.py input: site_id, name, lat, lng, state, acres_stated, notes, plus type / parcels
+    outlines.geojson      run.py --outlines: each site's merged outline (lng/lat), property site_id
+
+Next: run.py --sites <out>/sites_in.csv --outlines <out>/outlines.geojson [--profile <out>/thresholds.md]
 
 Acres are measured on the merged outline in CONUS Albers (EPSG:5070), so a parcel listed twice or two overlapping
 parcels are counted once. listed_acres is the sum of the file's own GIS_AREA_ACRES, for comparison.
@@ -21,7 +25,7 @@ import argparse, html, json, os, zipfile
 import xml.etree.ElementTree as ET
 import geopandas as gpd
 import pandas as pd
-from shapely.geometry import MultiPolygon, Polygon
+from shapely.geometry import MultiPolygon, Polygon, mapping
 from shapely.ops import unary_union
 from shapely.validation import make_valid
 
@@ -153,6 +157,20 @@ def write_kmz(path, title, sites, g84):
         z.writestr('doc.kml', ''.join(parts))
 
 
+def write_run_inputs(out, sites):
+    """sites_in.csv and outlines.geojson for run.py. name = the property names when the file has them; acres_stated
+    = merged-outline acres (a measurement, not a broker's statement - notes says so)."""
+    rows = pd.DataFrame({'site_id': sites.site_id, 'name': sites.property_names.fillna(''), 'lat': sites.lat, 'lng': sites.lng,
+                         'state': sites.state, 'acres_stated': sites.acres,
+                         'notes': [f'{n} parcels merged within the grouping gap; acres = merged outline' for n in sites.parcels],
+                         'type': sites.types, 'parcels': sites.parcels})
+    rows.to_csv(os.path.join(out, 'sites_in.csv'), index=False)
+    shapes = gpd.GeoSeries(list(sites._shape), crs=5070).to_crs(4326)
+    feats = [{'type': 'Feature', 'properties': {'site_id': sid}, 'geometry': mapping(g)} for sid, g in zip(sites.site_id, shapes)]
+    with open(os.path.join(out, 'outlines.geojson'), 'w', encoding='utf-8') as f:
+        json.dump({'type': 'FeatureCollection', 'features': feats}, f)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('kmz')
@@ -173,6 +191,7 @@ def main():
     parcels.to_csv(os.path.join(a.out, 'parcels_grouped.csv'), index=False)
     sites.drop(columns=['_rows', '_shape']).to_csv(os.path.join(a.out, 'sites_grouped.csv'), index=False)
     write_kmz(os.path.join(a.out, 'sites_grouped.kmz'), a.title, sites, g84)
+    write_run_inputs(a.out, sites)
 
     summary = {'source': os.path.basename(a.kmz), 'gap_m': a.gap, 'parcels': len(g84), 'sites': len(sites),
                'sites_at_other_gaps': compare, 'acres_merged': round(sites.acres.sum()),

@@ -9,11 +9,27 @@ built-up areas (a city block) and large in the country (a square mile or
 more), so the rural figures are coarse and the block-at-point row shows how
 much area that one block covers. Raw counts only; no density class until the
 thresholds are agreed.
+
+Home distance (BACKLOG 9j, 2026-10-07) - measured from the site footprint (intake outline, parcel or square;
+producers/footprint.py), not the pin:
+    home_block_dist_m   distance to the nearest *edge* of any 2020 block with HU100 >= 1. Every home counts: one
+                        farmhouse weighs the same as a subdivision. Rural blocks are large and the home may sit
+                        anywhere in its block, so this can only understate the true distance - errors fall toward
+                        REVIEW, never toward a false PASS. When the footprint is an intake outline (an owner's
+                        own land), the site is taken out of each block first: homes are assumed off that land, and
+                        buildings on it are removed from usable land anyway (producers/usable.py). A parcel or the
+                        square around a pin may hold a home (a farmhouse on a broker's tract), so nothing is taken out
+    hu_near_review/pass housing units within the profile's receptor distances of the footprint (default 1,000 /
+                        2,000 ft): each block's HU100 split by the share of its (off-site) area inside the distance.
+                        Context only - never softens home_block_dist_m
 """
-import math
+import math, urllib.parse
+from shapely.geometry import shape
+from shapely.ops import transform
 from cache import coord_key
-from geom import arcgis_query, point_dist_m
+from geom import arcgis_envelope_query, arcgis_query, point_dist_m
 from provenance import Value, absent, failed, now_iso
+import product_profile as prof
 
 NAME = 'housing'
 LYR = 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/10'
@@ -26,7 +42,69 @@ METHOD = ('TIGERweb 2020 blocks within 1 mi of the point: HU100/POP100 summed ov
 NOTE = 'raw Census 2020 counts; rural blocks are large, so sums are coarse there and block-at-point area is given'
 
 FIELDS = ['hu_block_at_point', 'pop_block_at_point', 'block_at_point_acres', 'hu_within_0_5mi', 'pop_within_0_5mi',
-          'hu_within_1mi', 'pop_within_1mi', 'blocks_within_1mi']
+          'hu_within_1mi', 'pop_within_1mi', 'blocks_within_1mi', 'home_block_dist_m', 'hu_near_review', 'hu_near_pass']
+HOME_FIELDS = FIELDS[8:]
+PROFILE = None           # run.py sets the batch's product profile; None = product_profile.DEFAULTS distances
+MARGIN_M = 300
+METHOD_HOME = ('TIGERweb 2020 blocks with HU100 >= 1 intersecting the footprint bounding box grown by the pass distance '
+               '+ 300 m; distance from the footprint to the nearest block edge (site taken out of each block for an intake '
+               'outline); HU100 split by the share of each block off-site area within the review / pass distance')
+
+
+def receptor_m(p=None):
+    p = p or PROFILE or prof.DEFAULTS
+    return prof.m(p, 'receptor_review_ft'), prof.m(p, 'receptor_pass_ft')
+
+
+def home_blocks(site, cache, fp):
+    """Blocks with at least one home near a footprint: ([(HU100, off-site block geometry in footprint metres)], fetched, error)."""
+    from producers import footprint
+    _, pass_m = receptor_m()
+    xmin, ymin, xmax, ymax = fp['m'].bounds
+    grow = pass_m + MARGIN_M
+    _, inv = footprint.projection(site.lat, site.lng)
+    (x0, y0), (x1, y1) = inv(xmin - grow, ymin - grow), inv(xmax + grow, ymax + grow)
+    url = arcgis_envelope_query(LYR, (x0, y0, x1, y1), 'GEOID,HU100') + '&where=' + urllib.parse.quote('HU100>0')
+    key = coord_key(site.lat, site.lng, 'homes_' + '_'.join(str(round(v)) for v in (xmin - grow, ymin - grow, xmax + grow, ymax + grow)))
+    resp, fetched, err = cache.get_json(NAME, key, url)
+    if err:
+        return None, fetched, err
+    own = fp['m'] if fp['basis'] == footprint.BASIS_OUTLINE else None
+    out = []
+    for f in (resp or {}).get('features') or []:
+        hu = (f.get('properties') or {}).get('HU100') or 0
+        try:
+            g = transform(fp['fwd'], shape(f['geometry']))
+            g = g if g.is_valid else g.buffer(0)
+        except Exception:
+            continue
+        if own is not None:
+            g = g.difference(own)
+        if hu > 0 and not g.is_empty:
+            out.append((hu, g))
+    return out, fetched, None
+
+
+def _home_values(site, cache):
+    from producers import footprint
+    fp = footprint.shape_at(site.lat, site.lng, cache, site.acres_stated, site.outline)
+    if fp['stage'] == 'failed':
+        return [failed(f, SOURCE, LYR, METHOD_HOME, fp['error'] + '; rerun') for f in HOME_FIELDS]
+    blocks, fetched, err = home_blocks(site, cache, fp)
+    if err:
+        return [failed(f, SOURCE, LYR, METHOD_HOME, err) for f in HOME_FIELDS]
+    rev_m, pass_m = receptor_m()
+    note = (f"from the {fp['basis']}; review {rev_m / prof.FT:,.0f} ft, pass {pass_m / prof.FT:,.0f} ft; block edges "
+            'understate the distance to the home itself (conservative)')
+    mk = lambda fld, val, n=note: Value(fld, val, SOURCE, LYR, METHOD_HOME, vintage=VINTAGE, fetched_at=fetched or now_iso(), note=n)
+    if not blocks:
+        why = f'no 2020 block with a home within {pass_m + MARGIN_M:,.0f} m of the footprint'
+        return [absent('home_block_dist_m', SOURCE, LYR, METHOD_HOME, note=why, vintage=VINTAGE), mk('hu_near_review', 0, why),
+                mk('hu_near_pass', 0, why)]
+    near = lambda d: sum(hu * g.intersection(fp['m'].buffer(d)).area / g.area for hu, g in blocks if g.area > 0)
+    dist = min(g.distance(fp['m']) for _, g in blocks)
+    return [mk('home_block_dist_m', round(dist, 1)), mk('hu_near_review', round(near(rev_m), 1)),
+            mk('hu_near_pass', round(near(pass_m), 1))]
 
 
 def run(site, cache):
@@ -51,8 +129,8 @@ def run(site, cache):
         else:
             out += [absent(f, SOURCE, LYR, METHOD, note='no 2020 block at the point', vintage=VINTAGE) for f in FIELDS[:3]]
     if e2:
-        out += [failed(f, SOURCE, LYR, METHOD, e2) for f in FIELDS[3:]]
-        return out
+        out += [failed(f, SOURCE, LYR, METHOD, e2) for f in FIELDS[3:8]]
+        return out + _home_values(site, cache)
     hu5 = pop5 = hu1 = pop1 = n1 = 0
     for f in (near or {}).get('features') or []:
         a = f['attributes']
@@ -66,4 +144,4 @@ def run(site, cache):
                 hu5 += a.get('HU100') or 0; pop5 += a.get('POP100') or 0
     out += [mk('hu_within_0_5mi', hu5), mk('pop_within_0_5mi', pop5), mk('hu_within_1mi', hu1),
             mk('pop_within_1mi', pop1), mk('blocks_within_1mi', n1)]
-    return out
+    return out + _home_values(site, cache)

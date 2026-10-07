@@ -5,6 +5,8 @@
         [--producers transmission,...]   default: all
         [--only SITE_ID,SITE_ID]         subset, for spot checks
         [--expected-owner REGEX]         owner a portfolio's parcels should carry (parcel_owner_check)
+        [--outlines input/outlines.geojson]   site outlines keyed by site_id (group_parcels.py); footprint uses them
+        [--profile input/thresholds.md]  the batch's product profile (product_profile.py); adds the usable producer
 
 Writes into --out:
     sites.csv        one row per site: input columns + every producer field
@@ -23,6 +25,8 @@ from batch_paths import support, SUPPORT                    # noqa: E402
 from cache import Cache                                     # noqa: E402
 from provenance import PROVENANCE_COLUMNS, now_iso, not_assessable   # noqa: E402
 import tiers                                                # noqa: E402
+import product_profile as prof                                     # noqa: E402
+from producers.footprint import load_outlines               # noqa: E402
 
 ALL_PRODUCERS = ['transmission', 'substations', 'flood', 'wetlands', 'metro', 'datacenter',
                  'housing', 'schools', 'worship', 'healthcare', 'parcel', 'footprint']   # footprint reuses flood/wetlands/parcel answers
@@ -38,6 +42,8 @@ def main():
     ap.add_argument('--expected-owner', default='',
                     help='regex for the owner of record a portfolio batch should show, e.g. '
                          '"windstream|kinetic|\\bcsl\\b"; an expected_owner input column overrides it per site')
+    ap.add_argument('--outlines', default='', help='GeoJSON of site outlines, feature property site_id (group_parcels.py)')
+    ap.add_argument('--profile', default='', help="the batch's product profile (thresholds.md with a ```json block)")
     a = ap.parse_args()
     if a.expected_owner:
         try:
@@ -48,6 +54,17 @@ def main():
     t0 = time.time()
     os.makedirs(a.out, exist_ok=True)
     sites, rejected = load_sites(a.sites)
+    outlines = load_outlines(a.outlines) if a.outlines else {}
+    for s in sites:
+        s.outline = outlines.get(s.site_id)
+    if outlines:
+        print(f'outlines: {sum(1 for s in sites if s.outline is not None)} of {len(sites)} sites have one')
+    profile, profile_sha = prof.load(a.profile) if a.profile else (None, None)
+    names = [n.strip() for n in a.producers.split(',') if n.strip()]
+    if profile and 'usable' not in names:
+        names.append('usable')
+    if 'usable' in names and not profile:
+        raise SystemExit('the usable producer needs --profile (the batch thresholds.md)')
     if a.only:
         keep = set(x.strip() for x in a.only.split(',') if x.strip())
         unknown = keep - {s.site_id for s in sites}
@@ -56,10 +73,12 @@ def main():
         sites = [s for s in sites if s.site_id in keep]
         if not sites:
             raise SystemExit('--only matched no accepted site; nothing to run')
-    producers = [importlib.import_module(f'producers.{n.strip()}') for n in a.producers.split(',') if n.strip()]
+    producers = [importlib.import_module(f'producers.{n}') for n in names]
     for p in producers:
         if hasattr(p, 'EXPECTED_OWNER') and a.expected_owner:
             p.EXPECTED_OWNER = a.expected_owner
+        if hasattr(p, 'PROFILE'):
+            p.PROFILE = profile
     cache = Cache(os.path.join(os.path.dirname(os.path.dirname(HERE)), 'data', 'cache'))   # shared across batches
     print(f'sites: {len(sites)} accepted, {len(rejected)} rejected | producers: {[p.NAME for p in producers]}')
     for n, sid, why in rejected:
@@ -118,6 +137,9 @@ def main():
                   'sha256': hashlib.sha256(open(a.sites, 'rb').read()).hexdigest()},
         'sites_accepted': len(sites), 'sites_rejected': [list(r) for r in rejected],
         'expected_owner': a.expected_owner or None,
+        'outlines': {'path': os.path.abspath(a.outlines), 'sha256': hashlib.sha256(open(a.outlines, 'rb').read()).hexdigest()}
+                    if a.outlines else None,
+        'profile': {'path': os.path.abspath(a.profile), 'sha256': profile_sha, 'values': profile} if profile else None,
         'producers': {p.NAME: {'source': p.SOURCE, 'url': p.LYR if hasattr(p, 'LYR') else None,
                                'vintage': getattr(p, 'VINTAGE', None), 'fields': list(p.FIELDS),
                                'status_counts': dict(tally[p.NAME])} for p in producers},

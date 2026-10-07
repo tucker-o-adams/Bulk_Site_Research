@@ -312,18 +312,19 @@ def main():
     fps = {}
     if any(s.get('fp_basis') for s in sites):
         offline = Cache(CACHE, offline=True)
+        outlines = footprint.batch_outlines(b)
         for s in sites:
             if not s.get('fp_basis'):
                 continue                    # footprint not assessable at this location tier
-            fp = footprint.shape_at(float(s['lat']), float(s['lng']), offline, footprint.row_acres(s))
+            fp = footprint.shape_at(float(s['lat']), float(s['lng']), offline, footprint.row_acres(s), outlines.get(s['site_id']))
             if fp['stage'] == 'ok':
                 fps[s['site_id']] = fp
         A2 = folder(doc, 'A2. Site footprints', visible=False, description=(
             f'The shape each site\'s footprint figures (fp_*) were measured over. Green = parcel boundary from the registered '
             f'county/state parcel service. Blue = no parcel resolved, so a north-aligned square centred on the pin '
             f'({footprint.SQUARE_M} m, or the stated acreage if larger) stands in for the site - it is not a parcel.'))
-        for is_parcel, style, label in ((True, 'fpParcel', 'Parcel boundaries'), (False, 'fpSquare', 'Squares around the pin (no parcel)')):
-            ids = [sid_ for sid_, fp in fps.items() if (fp['basis'] == footprint.BASIS_PARCEL) == is_parcel]
+        for is_parcel, style, label in ((True, 'fpParcel', 'Parcel boundaries and intake outlines'), (False, 'fpSquare', 'Squares around the pin (no parcel)')):
+            ids = [sid_ for sid_, fp in fps.items() if (fp['basis'] in (footprint.BASIS_PARCEL, footprint.BASIS_OUTLINE)) == is_parcel]
             ff = folder(A2, f'{label} ({len(ids)})')
             for s in (x for x in sites if x['site_id'] in ids):
                 internal = ' (INTERNAL USE ONLY - licensed county parcel)' if fps[s['site_id']]['parcel'].get('exclusion') and is_parcel else ''
@@ -535,7 +536,7 @@ def main():
                 fp = fps.get(s['site_id'])
                 if fp:
                     add_poly_pm(site_f, f"footprint — {fp['basis']}, {fmt(s.get('fp_acres'))} ac",
-                                'fpParcel' if fp['basis'] == footprint.BASIS_PARCEL else 'fpSquare', '', mapping(fp['ll']))
+                                'fpParcel' if fp['basis'] in (footprint.BASIS_PARCEL, footprint.BASIS_OUTLINE) else 'fpSquare', '', mapping(fp['ll']))
                 if nb:
                     d, fp, p, parts = nb
                     add_line_pm(site_f, f"nearest line — {f'{v:g} kV' if v else 'kV n/p'} @ {d:,.0f} m", 'nearLine', f"ID {esc(p.get('ID'))}; owner {esc(p.get('OWNER'))}", parts)

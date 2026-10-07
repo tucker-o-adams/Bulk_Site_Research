@@ -36,9 +36,16 @@ Ask these of the client's documents first. Ask a person only for what the docume
 
 ## Template
 
+The run reads the profile's first ```json block (`product_profile.py` lists the keys and defaults):
+`run.py --profile Outputs/<batch>/input/thresholds.md` adds the usable-land producer and sets the home distances.
+
 ```
 # <Portfolio>: screening limits (DRAFT v0.1, <date>)
 Status: draft for Mike's approval. Nothing is screened against these until he approves.
+
+## 0. Values the run reads   a ```json block: version, approved, pad_mw, mw_per_acre, pad_min_width_ft,
+                             edge_setback_ft, building_buffer_ft, max_slope_pct, exclude_sfha, exclude_nwi,
+                             exclude_nlcd, receptor_review_ft, receptor_pass_ft, buildings_required
 
 ## 1. Product basis        target MW, density, pad acres, service voltage, hookup cap, land available, skipped topics
 ## 2. Usable land          exclusions (buildings, flood, wetlands, pits, slope, edge setback) + pad rules (one block, min width)

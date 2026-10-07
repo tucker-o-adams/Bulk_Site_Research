@@ -40,6 +40,7 @@ class Site:
     group: str = ''
     notes: str = ''
     extra: dict = field(default_factory=dict)   # pass-through columns
+    outline: object = None                      # shapely lng/lat polygon from run.py --outlines (an owner's parcel file)
 
 
 def _norm_header(h: str) -> str:

@@ -5,7 +5,9 @@ centred on the pin - and what lies inside it.
 Every other producer measures at the pin ("the pin is in Zone X"). This one measures over an
 area, so a flood sliver or a wetland 60 m from the pin is counted rather than missed:
 
-  shape     parcel.resolve(): the registered parcel polygon at the pin, the same one the parcel
+  shape     an intake outline when the input carries one (run.py --outlines: the merged parcels of an owner's
+            parcel file, group_parcels.py) - it wins over everything below. Otherwise
+            parcel.resolve(): the registered parcel polygon at the pin, the same one the parcel
             columns describe. No polygon (county unregistered or excluded, nothing at the pin)
             -> a north-aligned square built in a Lambert azimuthal equal-area projection centred on
             the pin: 200 m x 200 m (9.88 ac), or, when the input's acres_stated is larger, a square of
@@ -25,7 +27,7 @@ so a sliver under ~0.01 ac is at the limit of what this can resolve.
 The square is not a parcel. Its acres describe the ground around the pin and `fp_basis` says so
 on every row; parcel acreage stays in the parcel columns.
 """
-import hashlib, math
+import hashlib, json, math, os
 from pyproj import Transformer
 from shapely.geometry import box, shape
 from shapely.ops import transform, unary_union
@@ -39,7 +41,7 @@ SQUARE_M = 200
 SOURCE = 'Site footprint (parcel boundary, else 200 m square) x FEMA NFHL + USFWS NWI'
 VINTAGE = None
 AC = 4046.8564224
-BASIS_PARCEL, BASIS_SQUARE = 'parcel boundary', f'{SQUARE_M} m square'   # a larger stated acreage gives e.g. '636 m square'
+BASIS_PARCEL, BASIS_SQUARE, BASIS_OUTLINE = 'parcel boundary', f'{SQUARE_M} m square', 'intake outline'   # a larger stated acreage gives e.g. '636 m square'
 UNMAPPED_ZONES = {'AREA NOT INCLUDED'}
 METHOD_SHAPE = (f'parcel polygon from the registered parcel service at the pin; if none, a north-aligned square centred on '
                 f'the pin, {SQUARE_M} m a side or the input acres_stated if larger (Lambert azimuthal equal-area, pin-centred); '
@@ -81,14 +83,39 @@ def row_acres(row):
         return None
 
 
-def shape_at(la, ln, cache, acres=None):
-    """The footprint at a pin (acres = the input's acres_stated, which sizes the square). Returns a dict:
+def load_outlines(path):
+    """{site_id: shapely lng/lat geometry} from an outlines GeoJSON (group_parcels.py writes one; feature property site_id)."""
+    gj = json.load(open(path, encoding='utf-8'))
+    out = {}
+    for f in gj.get('features') or []:
+        g = shape(f['geometry'])
+        out[str(f['properties']['site_id'])] = g if g.is_valid else g.buffer(0)
+    return out
+
+
+def batch_outlines(batch):
+    """The outlines a batch's run used (run.json 'outlines'), for kmz.py / figure.py; {} when the run had none."""
+    from batch_paths import support
+    rj = support(batch, 'run.json')
+    if not os.path.exists(rj):
+        return {}
+    path = (json.load(open(rj, encoding='utf-8')).get('outlines') or {}).get('path')
+    return load_outlines(path) if path and os.path.exists(path) else {}
+
+
+def shape_at(la, ln, cache, acres=None, outline=None):
+    """The footprint at a pin (acres = the input's acres_stated, which sizes the square; outline = an intake
+    outline, which wins). Returns a dict:
         stage   'ok' or 'failed' (parcel lookup failed - no footprint, rerun)
-        basis   'parcel boundary' / '<side> m square'
+        basis   'intake outline' / 'parcel boundary' / '<side> m square'
         why     for a square: why there is no parcel
         ll, m   the shape as a shapely geometry in lng/lat, and in pin-centred metres
         fwd     lng/lat -> metres transform
         parcel  the parcel.resolve() result"""
+    if outline is not None and not outline.is_empty:
+        fwd, _ = projection(la, ln)
+        return {'stage': 'ok', 'basis': BASIS_OUTLINE, 'why': None, 'll': outline, 'm': transform(fwd, outline), 'fwd': fwd,
+                'parcel': {'fetched_parcel': None}}
     r = parcel.resolve(la, ln, cache)
     if r['stage'] in ('county_failed', 'parcel_failed'):
         return {'stage': 'failed', 'error': f"parcel lookup ({r['stage']}): {r['error']}", 'parcel': r}
@@ -168,13 +195,16 @@ def breakdown(groups, total_m2):
 
 def run(site, cache):
     la, ln = site.lat, site.lng
-    fp = shape_at(la, ln, cache, site.acres_stated)
+    fp = shape_at(la, ln, cache, site.acres_stated, site.outline)
     if fp['stage'] == 'failed':
         return [failed(f, SOURCE, parcel.LYR, METHOD_SHAPE, fp['error'] + '; rerun - a failed lookup is never replaced by the square')
                 for f in FIELDS]
     total = fp['m'].area
     r = fp['parcel']
-    if fp['basis'] == BASIS_PARCEL:
+    if fp['basis'] == BASIS_OUTLINE:
+        src_shape, url_shape = 'Intake outline (run.py --outlines)', ''
+        note_shape = "the site outline from the input's parcel file (merged parcels); parcel_* columns describe the parcel at the pin only"
+    elif fp['basis'] == BASIS_PARCEL:
         svc = r['svc']
         src_shape, url_shape = f"{svc.get('name')} ({svc.get('owner')})", svc['base']
         note_shape = 'the parcel the parcel_* columns describe; check parcel_owner_check before relying on it' + parcel.internal_note(r)
@@ -185,7 +215,7 @@ def run(site, cache):
         note_shape = f"{NOTE_SQUARE}{sized}; no parcel because: {fp['why']}"
     out = [Value('fp_basis', fp['basis'], src_shape, url_shape, METHOD_SHAPE, fetched_at=r['fetched_parcel'] or now_iso(), note=note_shape),
            Value('fp_acres', round(total / AC, 4), src_shape, url_shape, METHOD_SHAPE, fetched_at=r['fetched_parcel'] or now_iso(), note=note_shape)]
-    basis_note = '' if fp['basis'] == BASIS_PARCEL else f" - over the {fp['basis']}, not a parcel"
+    basis_note = '' if fp['basis'] in (BASIS_PARCEL, BASIS_OUTLINE) else f" - over the {fp['basis']}, not a parcel"
 
     # ---- flood
     feats, fetched, err = overlay_features(fp, la, ln, cache, 'flood', flood.zones_request(la, ln), flood.SFHA_SEARCH_M,

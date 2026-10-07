@@ -374,7 +374,7 @@ def render(d, layer, run, out_dir):
     minx, miny, maxx, maxy = d['bounds']
     span, hspan = maxx - minx, maxy - miny
     k = hspan / 1980.0                  # Site 2 layout was tuned for a ~1,980 m frame height
-    is_parcel = fp['basis'] == footprint.BASIS_PARCEL
+    is_parcel = fp['basis'] in (footprint.BASIS_PARCEL, footprint.BASIS_OUTLINE)
     fig = plt.figure(figsize=(16, 9), dpi=300)
     ax = fig.add_axes(list(MAP_BOX))
     with rasterio.open(d['img']) as ds:
@@ -1131,7 +1131,8 @@ def main():
             print(f'  {sid}: SKIPPED - no footprint in sites.csv (run run.py with the footprint producer first)')
             continue
         t0 = time.time()
-        fp = footprint.shape_at(float(s['lat']), float(s['lng']), Cache(CACHE, offline=True), footprint.row_acres(s))
+        fp = footprint.shape_at(float(s['lat']), float(s['lng']), Cache(CACHE, offline=True), footprint.row_acres(s),
+                                footprint.batch_outlines(b).get(sid))
         if fp['stage'] != 'ok' or fp['basis'] != s['fp_basis']:
             print(f'  {sid}: SKIPPED - footprint no longer matches the workbook ({fp.get("basis") or fp.get("error")}); rerun run.py')
             continue

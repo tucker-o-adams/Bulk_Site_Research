@@ -93,6 +93,40 @@ class Cache:
         return None, None, err
 
 
+    def get_bytes(self, producer: str, key: str, url: str, ext: str, timeout=120, tries=3):
+        """get_json for binary answers (a GeoTIFF from an image service): (path_to_file_or_None, fetched_at, error).
+        The file sits beside a small .json record of its url and fetch time; same endpoint rule as get_json."""
+        meta = self.path(producer, key)
+        data = meta[:-5] + ext
+        if os.path.exists(meta) and os.path.exists(data):
+            rec = json.load(open(meta, encoding='utf-8'))
+            if endpoint(rec.get('url')) == endpoint(url):
+                self.hits += 1
+                return data, rec['fetched_at'], None
+        self.misses += 1
+        if self.offline:
+            return None, None, 'not in cache (offline)'
+        err = None
+        for i in range(tries):
+            try:
+                with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=timeout) as r:
+                    body, ctype = r.read(), r.headers.get('content-type', '')
+                if 'json' in ctype or 'xml' in ctype or 'html' in ctype or len(body) < 64:
+                    err = f'service answered {ctype or "?"} instead of an image: {body[:160]!r}'
+                    break
+                fetched = datetime.now(timezone.utc).isoformat(timespec='seconds')
+                with open(data, 'wb') as f:
+                    f.write(body)
+                with open(meta, 'w', encoding='utf-8') as f:
+                    json.dump({'fetched_at': fetched, 'url': url, 'file': os.path.basename(data)}, f)
+                return data, fetched, None
+            except Exception as e:
+                err = f'{type(e).__name__}: {str(e)[:160]}'
+                if i < tries - 1:
+                    time.sleep(1.5 * (i + 1))
+        return None, None, err
+
+
 MAX_PAGES = 50
 
 
