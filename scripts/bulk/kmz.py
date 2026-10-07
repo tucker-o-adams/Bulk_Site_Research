@@ -9,22 +9,24 @@ workbook was computed from. Folders:
 
     A. Sites                       one pin per site, in state subfolders (group subfolders instead
                                    only with --group-folders); popup = key values + sources   (off)
-    A2. Site footprints            the shape the fp_* columns were measured over: parcel boundary
-                                   (green) or, with no parcel, the square around the pin (blue)  (off)
-    U. Usable land vs homes        with a product profile (run.py --profile), state -> site subfolders      (off)
-       U1 usable land by distance from actual homes (red < review, amber review-pass, green >= pass)
-       U2 nearest home per site: the building home_nearest_m measures to - outline, tags, line to the site
+    A2. Site footprints            the shape the fp_* columns were measured over: parcel boundary or intake
+                                   outline (green) or, with no parcel, the square around the pin (blue)  (off)
     A3. Approximate locations      sites located only to a landmark, ZIP or county (location tier L3-L5):
                                    a circle of the location's uncertainty radius; these sites' pins are
-                                   grey and get no flood, wetland or neighbour layers              (ON)
-    B. Transmission within 5 km    HIFLD segments by voltage band               (off)
-    C. Nearest line per site       the identified segment, and a site -> line connector  (off)
+                                   grey and get no flood, wetland or neighbor layers              (ON)
+    B. Transmission within 5 km    HIFLD segments by voltage band: regional, shared by nearby sites  (off)
     D. Substations within 5 km     points by voltage band                      (off)
-    E. Flood: SFHA within 1 km     FEMA A/AE/AH/AO/V polygons                  (ON)
-    F. Wetlands within 500 m       NWI polygons                                 (ON)
-    G. Neighbors within 1 mi       schools, places of worship, nursing homes, hospitals (ON)
-    H. Site-by-site verification   state -> site ([group ->] with --group-folders): pin, footprint, nearest line,
-                                   connector, nearest substation, fly-to       (off)
+    H. Site by site                state -> site ([group ->] with --group-folders), fly-to; every theme of one
+                                   site in its own folder with its own checkbox (2026-10-07: everything that is
+                                   about one site lives with that site):                         (off)
+         Power                     nearest line, site -> line connector, nearest substation
+         Flood                     FEMA SFHA polygons over the site outline + 500 m (and 1.5 km around the pin)
+         Wetlands                  NWI polygons, same extent
+         Neighbors within 1 mi     schools, places of worship, nursing homes, hospitals
+         Usable land               with a product profile: usable blocks by distance from actual homes
+                                   (purple >= pass, yellow review-pass, red < review)
+         Excluded land by reason   edge setback, buildings, flood, wetlands, land cover, steep ground - one each
+         Nearest home              the building home_nearest_m measures to: outline, tags, line to the site
 
 A folder that ships off has every folder and placemark inside it off too, so Google Earth's
 checkboxes agree with what is drawn; ticking the folder turns its contents on.
@@ -40,7 +42,7 @@ from batch_paths import support, publish                 # noqa: E402
 from geom import point_dist_m, geojson_polygon_dist_m    # noqa: E402
 from shapely.geometry import shape, box, mapping           # noqa: E402
 from shapely.ops import nearest_points, transform, unary_union   # noqa: E402
-from producers import footprint, homes, usable, wetlands    # noqa: E402
+from producers import flood, footprint, homes, usable, wetlands   # noqa: E402
 from sites import Site                                     # noqa: E402
 import product_profile as prof                             # noqa: E402
 
@@ -255,71 +257,141 @@ def site_desc(s, srcs):
     return '<table cellpadding="2" style="font-size:11px">' + ''.join(f'<tr><td valign="top" style="color:#666;white-space:nowrap"><i>{esc(k)}</i></td><td>{v}</td></tr>' for k, v in rows) + '</table>'
 
 
-def draw_usable(doc, b, sites, groups, by_group, fkey, profile, srcs):
-    """Folder U, recomputed from the cache (offline) with usable.measure() - exactly what the counts were made from:
-        U1  usable land per site, colored by distance from actual homes (state -> site)
-        U2  each site's nearest home - the building home_nearest_m measures to: its outline, a pin with its tags,
-            size, address and imagery date, and the shortest line to the site (state -> site)
-    Off by default, like every heavy layer; ticking U turns both on."""
-    offline = Cache(CACHE, offline=True)
-    outlines = footprint.batch_outlines(b)
-    homes.PROFILE = profile
-    rev_ft, pass_ft = profile['receptor_review_ft'], profile['receptor_pass_ft']
-    U = folder(doc, f'U. Usable land vs homes (pad {prof.pad_acres(profile):,.2f} ac)', visible=False, description=(
-        'U1: usable land a pad could use, colored by distance from actual homes. U2: the nearest home to each site, '
-        'the building the home_nearest_m column measures to, with its FEMA USA Structures tags for checking.'))
-    U1 = folder(U, 'U1. Usable land by distance from homes', visible=False, description=(
-        f'Usable land (after the edge setback, buildings, flood, wetlands, land cover and slope), colored by distance from '
-        f'actual homes: red under {rev_ft:,} ft, amber {rev_ft:,}-{pass_ft:,} ft, green {pass_ft:,} ft or more. '
-        'Only blocks wide enough for a pad are drawn.'))
-    U2 = folder(U, 'U2. Nearest home per site', visible=False, description=(
-        'The building each site\'s home_nearest_m is measured to (from its center to the site edge), with the line along '
-        'that distance. Tags come from FEMA USA Structures; "Unverified" means the tag is modeled, not confirmed - check it '
-        'against the imagery.'))
-    n1 = n2 = 0
-    for g in groups:
-        todo = [s for s in by_group[g] if s.get('ul_layers') and s.get('ul_pads_fit') not in (None, '')]
-        if not todo:
+def _extent(fp, la, ln):
+    """Where a site's flood and wetland polygons are drawn (lng/lat): the footprint's box + 500 m, and CLIP_M around the pin."""
+    k = math.cos(math.radians(la))
+    parts = [box(ln - CLIP_M / (111320 * k), la - CLIP_M / 110540, ln + CLIP_M / (111320 * k), la + CLIP_M / 110540)]
+    if fp:
+        x0, y0, x1, y1 = fp['ll'].bounds
+        dx, dy = 500 / (111320 * k), 500 / 110540
+        parts.append(box(x0 - dx, y0 - dy, x1 + dx, y1 + dy))
+    return unary_union(parts)
+
+
+def _overlay(fp, la, ln, cache, producer, pin_suffix, request, reach, layer, fields):
+    """The polygons the site was scored from: the producer's answer around the pin, plus the footprint's own answer
+    (the bounding-box query when the footprint reaches past the pin radius). Duplicates dropped."""
+    feats = list((cached(producer, la, ln, pin_suffix) or {}).get('features') or [])
+    if fp:
+        more, _, err = footprint.overlay_features(fp, la, ln, cache, producer, request, reach, layer, fields)
+        if not err:
+            feats += more
+    out, seen = [], set()
+    for f in feats:
+        key = json.dumps((f.get('geometry') or {}).get('coordinates', [])[:1])[:300] + json.dumps(f.get('properties') or {}, sort_keys=True)[:200]
+        if key not in seen:
+            seen.add(key); out.append(f)
+    return out
+
+
+def site_layers(site_f, s, fp, cache, outlines, profile, ref_nh, ref_h, counts):
+    """A site's flood, wetland, neighbor, usable-land, excluded-land and nearest-home folders, from the cache."""
+    la, ln = float(s['lat']), float(s['lng'])
+    ext = _extent(fp, la, ln)
+
+    def clipped(geometry):
+        try:
+            g = shape(geometry)
+            c = g.intersection(ext) if g.intersects(ext) else None
+        except Exception:
+            try:
+                c = shape(geometry).buffer(0).intersection(ext)
+            except Exception:
+                return None
+        return mapping(c) if c is not None and not c.is_empty and c.geom_type in ('Polygon', 'MultiPolygon', 'GeometryCollection') else None
+
+    ff = folder(site_f, 'Flood: FEMA SFHA zones', visible=False)
+    for f in _overlay(fp, la, ln, cache, 'flood', 'zones1000', flood.zones_request(la, ln), flood.SFHA_SEARCH_M, f'{flood.NFHL}/28', flood.ZONE_FIELDS):
+        p = f.get('properties') or {}
+        if (p.get('SFHA_TF') or '').upper() != 'T':
             continue
-        g1 = folder(U1, f'{g} ({len(todo)})', visible=False)
-        g2 = None
-        for s in todo:
-            site = Site(site_id=s['site_id'], lat=float(s['lat']), lng=float(s['lng']), acres_stated=footprint.row_acres(s),
-                        outline=outlines.get(s['site_id']))
-            r = usable.measure(site, offline, profile)
-            if 'error' in r:
+        geom = clipped(f.get('geometry') or {})
+        if geom:
+            counts['flood polygons'] += 1
+            add_poly_pm(ff, f"Zone {p.get('FLD_ZONE')} {p.get('ZONE_SUBTY') or ''}".strip(), 'sfha',
+                        f"FLD_ZONE {esc(p.get('FLD_ZONE'))}; {esc(p.get('ZONE_SUBTY'))}; static BFE {esc(p.get('STATIC_BFE'))}; DFIRM {esc(p.get('DFIRM_ID'))}", geom)
+    wf = folder(site_f, 'Wetlands: NWI', visible=False)
+    for f in _overlay(fp, la, ln, cache, 'wetlands', 'near500', wetlands.near_request(la, ln), wetlands.SEARCH_M, wetlands.WET, '*'):
+        p = f.get('properties') or {}
+        attr = next((v for k, v in p.items() if k.upper().endswith('ATTRIBUTE')), '')
+        wt = next((v for k, v in p.items() if k.upper().endswith('WETLAND_TYPE')), '')
+        geom = clipped(f.get('geometry') or {})
+        if geom:
+            counts['wetland polygons'] += 1
+            add_poly_pm(wf, f'{wt} ({attr})', 'nwi', f'{esc(wt)}; Cowardin {esc(attr)}; photointerpreted, not a jurisdictional determination', geom)
+
+    nf = folder(site_f, 'Neighbors within 1 mi', visible=False)
+    for producer, suffix, style, kind, name_key in (('schools', 'pub5000', 'school', 'public school', 'NAME'), ('schools', 'prv5000', 'school', 'private school', 'NAME'),
+                                                    ('worship', 'r5000', 'worship', 'place of worship (IRS-geocoded)', 'NAME')):
+        for f in (cached(producer, la, ln, suffix) or {}).get('features') or []:
+            g = f.get('geometry') or {}
+            if g.get('type') != 'Point':
                 continue
-            inv = footprint.projection(site.lat, site.lng)[1]
-            to_ll = lambda geom: mapping(transform(inv, geom))
-            sf = folder(g1, f"{s['site_id']}: {fmt(s.get('ul_pads_fit'))} pads, {fmt(s.get('ul_pads_fit_pass'))} at {pass_ft:,} ft", visible=False)
-            allb = unary_union(r['blocks']) if r['blocks'] else None
-            rev = unary_union(r['review']) if r['review'] else None
-            far = unary_union(r['pass']) if r['pass'] else None
-            for geom, style, label in ((allb.difference(rev) if allb is not None and rev is not None else allb, 'ulNear', f'under {rev_ft:,} ft from a home'),
-                                       (rev.difference(far) if rev is not None and far is not None else rev, 'ulMid', f'{rev_ft:,}-{pass_ft:,} ft'),
-                                       (far, 'ulFar', f'{pass_ft:,} ft or more')):
-                if geom is not None and not geom.is_empty:
-                    add_poly_pm(sf, f"{s['site_id']} usable, {label}: {geom.area / footprint.AC:,.1f} ac", style, '', to_ll(geom))
-            n1 += 1
-            if not r['homes']:
+            x, y = g['coordinates'][:2]
+            d = point_dist_m(ln, la, x, y)
+            if d <= MI:
+                p = f.get('properties') or {}
+                counts['neighbors'] += 1
+                add_point_pm(nf, f"{(p.get(name_key) or '').title()} ({d / MI:.2f} mi)", style, f"{kind}; {esc(p.get('CITY'))}, {esc(p.get('STATE'))}", x, y)
+    for rows, style, kind, name_key in ((ref_nh, 'nursing', 'nursing home (CMS)', 'provider_name'), (ref_h, 'hospital', 'hospital (CMS)', 'facility_name')):
+        for r in rows:
+            try:
+                x, y = float(r['longitude']), float(r['latitude'])
+            except (TypeError, ValueError, KeyError):
                 continue
-            hp, lab, yr, info = min(r['homes'], key=lambda h: h[0].distance(r['fp']['m']))
-            d = hp.distance(r['fp']['m'])
-            g2 = g2 if g2 is not None else folder(U2, g, visible=False)
-            hf = folder(g2, f"{s['site_id']}: nearest home {d / 0.3048:,.0f} ft ({esc(lab)})", visible=False)
-            desc = (f"<b>{esc(lab)}</b><br/>{info['sqft']:,} sq ft; tag {esc(info['verified'] or '?')}; imagery {yr or '?'}"
-                    + (f"<br/>{esc(info['address'])}" if info['address'] else '')
-                    + f"<br/>{d:,.0f} m ({d / 0.3048:,.0f} ft) from the site edge" + (' - on the site' if d == 0 else '')
-                    + '<br/><i>FEMA USA Structures</i>')
-            lng, lat = inv(hp.x, hp.y)
-            add_point_pm(hf, f"{s['site_id']} nearest home", 'home', desc, lng, lat)
-            add_poly_pm(hf, f"{s['site_id']} nearest home outline", 'homeBldg', desc, to_ll(info['poly']))
-            if d > 0:
-                a, b_ = nearest_points(hp, r['fp']['m'])
-                add_line_pm(hf, f"{d / 0.3048:,.0f} ft to the site", 'connector', '', [[inv(a.x, a.y), inv(b_.x, b_.y)]])
-            n2 += 1
-    U1.find(NS + 'name').text += f': {n1} sites'
-    U2.find(NS + 'name').text += f': {n2} sites'
+            d = point_dist_m(ln, la, x, y)
+            if d <= MI:
+                counts['neighbors'] += 1
+                add_point_pm(nf, f"{(r.get(name_key) or '').title()} ({d / MI:.2f} mi)", style, kind, x, y)
+
+    if not (profile and s.get('ul_layers') and s.get('ul_pads_fit') not in (None, '')):
+        return
+    site = Site(site_id=s['site_id'], lat=la, lng=ln, acres_stated=footprint.row_acres(s), outline=outlines.get(s['site_id']))
+    r = usable.measure(site, cache, profile)
+    if 'error' in r:
+        return
+    inv = footprint.projection(la, ln)[1]
+    to_ll = lambda geom: mapping(transform(inv, geom.simplify(1.0)))
+    rev_ft, pass_ft = profile['receptor_review_ft'], profile['receptor_pass_ft']
+
+    uf = folder(site_f, f"Usable land: {fmt(s.get('ul_pads_fit'))} pads, {fmt(s.get('ul_pads_fit_pass'))} at {pass_ft:,} ft from homes", visible=False)
+    allb = unary_union(r['blocks']) if r['blocks'] else None
+    rev = unary_union(r['review']) if r['review'] else None
+    far = unary_union(r['pass']) if r['pass'] else None
+    for geom, style, label in ((allb.difference(rev) if allb is not None and rev is not None else allb, 'ulNear', f'under {rev_ft:,} ft from a home (red)'),
+                               (rev.difference(far) if rev is not None and far is not None else rev, 'ulMid', f'{rev_ft:,}-{pass_ft:,} ft (yellow)'),
+                               (far, 'ulFar', f'{pass_ft:,} ft or more (purple)')):
+        if geom is not None and not geom.is_empty:
+            counts['usable polygons'] += 1
+            add_poly_pm(uf, f'usable, {label}: {geom.area / footprint.AC:,.1f} ac', style, 'blocks wide enough for a pad', to_ll(geom))
+
+    xf = folder(site_f, 'Excluded land by reason', visible=False)
+    reasons = [('edge setback', 'exSetback', r['setback'])]
+    for k, g in r['excluded'].items():
+        style = ('exBuildings' if k.startswith('buildings') else 'exFlood' if k.startswith('flood') else 'exWetlands' if k.startswith('wetlands')
+                 else 'exCover' if k.startswith('land cover') else 'exSlope' if k.startswith('slope') else 'exSetback')
+        label = f"steep ground ({k})" if k.startswith('slope') else k
+        reasons.append((label, style, g))
+    for label, style, g in reasons:
+        if g is not None and not g.is_empty:
+            counts['excluded polygons'] += 1
+            add_poly_pm(xf, f'{label}: {g.area / footprint.AC:,.1f} ac', style, 'removed from usable land (reasons overlap)', to_ll(g))
+
+    if r['homes']:
+        hp, lab, yr, info = min(r['homes'], key=lambda h: h[0].distance(r['fp']['m']))
+        d = hp.distance(r['fp']['m'])
+        hf = folder(site_f, f"Nearest home: {d / 0.3048:,.0f} ft ({esc(lab)})", visible=False)
+        desc = (f"<b>{esc(lab)}</b><br/>{info['sqft']:,} sq ft; tag {esc(info['verified'] or '?')}; imagery {yr or '?'}"
+                + (f"<br/>{esc(info['address'])}" if info['address'] else '')
+                + f"<br/>{d:,.0f} m ({d / 0.3048:,.0f} ft) from the site edge" + (' - on the site' if d == 0 else '')
+                + '<br/><i>FEMA USA Structures</i>')
+        x, y = inv(hp.x, hp.y)
+        add_point_pm(hf, 'nearest home', 'home', desc, x, y)
+        add_poly_pm(hf, 'nearest home outline', 'homeBldg', desc, to_ll(info['poly']))
+        if d > 0:
+            a, b_ = nearest_points(hp, r['fp']['m'])
+            add_line_pm(hf, f'{d / 0.3048:,.0f} ft to the site', 'connector', '', [[inv(a.x, a.y), inv(b_.x, b_.y)]])
+        counts['nearest homes'] += 1
 
 
 def main():
@@ -366,7 +438,10 @@ def main():
     sub(sub(ic, 'Icon'), 'href', ICON + 'shapes/placemark_circle.png')
     st = sub(doc, 'Style', id='approxCircle'); ls = sub(st, 'LineStyle'); sub(ls, 'color', 'ffb4b4b4'); sub(ls, 'width', '2')
     ps = sub(st, 'PolyStyle'); sub(ps, 'color', '22b4b4b4'); sub(ps, 'fill', '1'); sub(ps, 'outline', '1')
-    for sid, colour in (('ulNear', 'ff0000ff'), ('ulMid', 'ff00a5ff'), ('ulFar', 'ff00c800')):   # KML colours are aabbggrr
+    # usable land: purple / yellow / red, so it never reads as wetland green or flood blue (KML colours are aabbggrr)
+    for sid, colour in (('ulNear', 'ff0000ff'), ('ulMid', 'ff00d7ff'), ('ulFar', 'ffd30094'),
+                        ('exSetback', 'ff909090'), ('exBuildings', 'ff202020'), ('exFlood', 'ffd06f1f'), ('exWetlands', 'ff1cc37f'),
+                        ('exCover', 'ff2a5a8b'), ('exSlope', 'ff008cff')):
         st = sub(doc, 'Style', id=sid); ls = sub(st, 'LineStyle'); sub(ls, 'color', colour); sub(ls, 'width', '1.5')
         ps = sub(st, 'PolyStyle'); sub(ps, 'color', '66' + colour[2:]); sub(ps, 'fill', '1'); sub(ps, 'outline', '1')
     st = sub(doc, 'Style', id='home'); ic = sub(st, 'IconStyle'); sub(ic, 'scale', '0.8'); sub(ic, 'color', 'ff0000ff')
@@ -459,19 +534,7 @@ def main():
             nm = ' - '.join(x for x in ((p.get('SUB_1') or '').strip(), (p.get('SUB_2') or '').strip()) if x and not x.upper().startswith(('UNKNOWN', 'NOT AVAIL'))) or f"line {p.get('ID')}"
             add_line_pm(tf, nm, sid, f"ID {esc(p.get('ID'))}<br/>Voltage {esc(p.get('VOLTAGE'))} kV ({esc(p.get('VOLT_CLASS'))})<br/>Owner {esc(p.get('OWNER'))}<br/>"
                                      f"Type {esc(p.get('TYPE'))}; Status {esc(p.get('STATUS'))}; attrs inferred {esc(p.get('INFERRED'))}", parts)
-    C = folder(doc, f'C. Nearest transmission line per site ({len(nearest)})', visible=False)
-    Cs, Cc = folder(C, f'Identified nearest segments ({len(nearest)})'), folder(C, f'Site → line connectors ({len(nearest)})')
-    site_by = {s['site_id']: s for s in sites}
-    for sid_, (d, fp, p, parts) in sorted(nearest.items()):
-        s = site_by[sid_]; v = kv(p); kvtxt = f'{v:g} kV' if v else 'kV n/p'
-        desc = f"<b>{esc(sid_)}</b> nearest line {d:,.0f} m ({d / MI:.2f} mi)<br/>{kvtxt} ({esc(p.get('VOLT_CLASS'))}); ID {esc(p.get('ID'))}; owner {esc(p.get('OWNER'))}"
-        add_line_pm(Cs, f'{sid_} — {kvtxt} @ {d:,.0f} m', 'nearLine', desc, parts)
-        pm = sub(Cc, 'Placemark'); sub(pm, 'name', f'{sid_} — {d:,.0f} m'); sub(pm, 'styleUrl', '#connector'); sub(pm, 'description', desc)
-        ls = sub(pm, 'LineString'); sub(ls, 'tessellate', '1'); sub(ls, 'coordinates', f"{s['lng']},{s['lat']},0 {fp[0]},{fp[1]},0")
-
     # ---- D. Substations within 5 km
-    if profile and any(s.get('ul_layers') for s in sites):
-        draw_usable(doc, b, sites, groups, by_group, fkey, profile, srcs)
     D = folder(doc, 'D. Substations within 5 km of any site (HIFLD mirror, 2021)', visible=False)
     seen_s, nearest_sub = set(), {}
     dtiers = defaultdict(list)
@@ -504,113 +567,15 @@ def main():
                          f"status {esc(p.get('STATUS'))}; source {esc(p.get('SOURCE'))}; HIFLD ID {esc(p.get('ID'))}", x, y)
     D.find(NS + 'name').text = f'D. Substations within 5 km of any site ({len(seen_s)}, HIFLD mirror 2021)'
 
-    # ---- E. Flood SFHA within 1 km
-    E = folder(doc, 'E. Flood: FEMA SFHA polygons within 1 km of any site',
-               description=f'Special Flood Hazard Area zones (A, AE, AH, AO, AR, A99, V, VE) from the NFHL responses scored for each site. Geometry simplified ~2 m and clipped to {CLIP_M} m around each site.')
-    seen_z = set(); nz = 0
-    for s in sites:
-        resp = cached('flood', float(s['lat']), float(s['lng']), 'zones1000')
-        if not resp:
-            continue
-        for f in resp.get('features') or []:
-            p = f.get('properties') or {}
-            if (p.get('SFHA_TF') or '').upper() != 'T':
-                continue
-            key = json.dumps(f.get('geometry', {}).get('coordinates', [])[:1])[:200] + str(p.get('FLD_ZONE'))
-            if key in seen_z:
-                continue
-            seen_z.add(key)
-            geom = clip_to_site(f.get('geometry') or {}, float(s['lat']), float(s['lng']))
-            if not geom:
-                continue
-            nz += 1
-            add_poly_pm(E, f"Zone {p.get('FLD_ZONE')} {p.get('ZONE_SUBTY') or ''}".strip(), 'sfha',
-                        f"FLD_ZONE {esc(p.get('FLD_ZONE'))}; {esc(p.get('ZONE_SUBTY'))}; static BFE {esc(p.get('STATIC_BFE'))}; DFIRM {esc(p.get('DFIRM_ID'))}; clipped to {CLIP_M} m of {esc(s['site_id'])}", geom)
-    E.find(NS + 'name').text += f' ({nz})'
-
-    # ---- F. Wetlands within 500 m
-    F = folder(doc, 'F. Wetlands: NWI polygons within 500 m of any site',
-               description=f'USFWS National Wetlands Inventory polygons from the responses scored for each site, clipped to {CLIP_M} m around each site. Photointerpreted; not a jurisdictional determination.')
-    seen_w = set(); nw = 0
-    for s in sites:
-        resp = cached('wetlands', float(s['lat']), float(s['lng']), 'near500')
-        if not resp:
-            continue
-        for f in resp.get('features') or []:
-            p = f.get('properties') or {}
-            attr = next((v for k, v in p.items() if k.upper().endswith('ATTRIBUTE')), '')
-            wt = next((v for k, v in p.items() if k.upper().endswith('WETLAND_TYPE')), '')
-            ac = next((v for k, v in p.items() if k.upper().endswith('ACRES')), None)
-            key = json.dumps(f.get('geometry', {}).get('coordinates', [])[:1])[:200] + str(attr)
-            if key in seen_w:
-                continue
-            seen_w.add(key)
-            geom = clip_to_site(f.get('geometry') or {}, float(s['lat']), float(s['lng']))
-            if not geom:
-                continue
-            nw += 1
-            add_poly_pm(F, f'{wt} ({attr})', 'nwi', f"{esc(wt)}; Cowardin {esc(attr)}; {fmt(ac)} ac (whole polygon); drawn clipped to {CLIP_M} m of {esc(s['site_id'])}", geom)
-    F.find(NS + 'name').text += f' ({nw})'
-
-    # ---- G. Neighbors within 1 mi
-    G = folder(doc, 'G. Neighbors within 1 mi of any site')
-    def points_from_cache(producer, suffix, style, label_fn, desc_fn, fold):
-        seen_p = set(); n = 0
-        for s in sites:
-            if approx(s):
-                continue
-            la, ln = float(s['lat']), float(s['lng'])
-            resp = cached(producer, la, ln, suffix)
-            if not resp:
-                continue
-            for f in resp.get('features') or []:
-                g = f.get('geometry') or {}
-                if g.get('type') != 'Point':
-                    continue
-                x, y = g['coordinates'][:2]
-                if point_dist_m(ln, la, x, y) > MI:
-                    continue
-                key = (round(x, 5), round(y, 5))
-                if key in seen_p:
-                    continue
-                seen_p.add(key); n += 1
-                p = f.get('properties') or {}
-                add_point_pm(fold, label_fn(p), style, desc_fn(p), x, y)
-        return n
-    gs = folder(G, 'Schools (NCES)')
-    n1 = points_from_cache('schools', 'pub5000', 'school', lambda p: p.get('NAME', ''), lambda p: f"public school; {esc(p.get('CITY'))}, {esc(p.get('STATE'))}", gs)
-    n2 = points_from_cache('schools', 'prv5000', 'school', lambda p: p.get('NAME', ''), lambda p: f"private school; {esc(p.get('CITY'))}, {esc(p.get('STATE'))}", gs)
-    gs.find(NS + 'name').text += f' ({n1 + n2})'
-    gw = folder(G, 'Places of worship (HIFLD, IRS-geocoded)')
-    n3 = points_from_cache('worship', 'r5000', 'worship', lambda p: (p.get('NAME') or '').title(), lambda p: f"{esc((p.get('CITY') or '').title())}, {esc(p.get('STATE'))}; geocoded from IRS filing", gw)
-    gw.find(NS + 'name').text += f' ({n3})'
-    def points_from_ref(rows, style, label_fn, desc_fn, fold):
-        seen_p = set(); n = 0
-        for s in sites:
-            if approx(s):
-                continue                    # neighbours around an approximate point would be read as the site's
-            la, ln = float(s['lat']), float(s['lng'])
-            for r in rows:
-                try:
-                    x, y = float(r['longitude']), float(r['latitude'])
-                except (TypeError, ValueError, KeyError):
-                    continue
-                if point_dist_m(ln, la, x, y) > MI or (x, y) in seen_p:
-                    continue
-                seen_p.add((x, y)); n += 1
-                add_point_pm(fold, label_fn(r), style, desc_fn(r), x, y)
-        return n
-    gn = folder(G, 'Nursing homes (CMS)')
-    n4 = points_from_ref(ref_nh, 'nursing', lambda r: r.get('provider_name', '').title(), lambda r: f"{esc(r.get('number_of_certified_beds'))} certified beds; rating {esc(r.get('overall_rating'))}; {esc(r.get('ownership_type'))}", gn)
-    gn.find(NS + 'name').text += f' ({n4})'
-    gh = folder(G, 'Hospitals (CMS, Census-geocoded)')
-    n5 = points_from_ref(ref_h, 'hospital', lambda r: r.get('facility_name', '').title(), lambda r: f"{esc(r.get('hospital_type'))}; emergency {esc(r.get('emergency_services'))}; geocode {esc(r.get('geocode_match_type'))}", gh)
-    gh.find(NS + 'name').text += f' ({n5})'
-
-    # ---- H. Site-by-site verification
-    H = folder(doc, 'H. Site-by-site verification', visible=False,
-               description='One folder per site: pin, identified nearest transmission line, connector, nearest substation. Tick one at a time; double-click to fly to it. '
-                           'HIFLD geometry is national-scale and may sit 20-50 m off the visible towers.')
+    # ---- H. Site by site: everything about one site in its folder, each theme with its own checkbox
+    offline = Cache(CACHE, offline=True)
+    outlines = footprint.batch_outlines(b)
+    if profile:
+        homes.PROFILE = profile
+    counts = defaultdict(int)
+    H = folder(doc, 'H. Site by site', visible=False,
+               description='One folder per site, by state. Tick a site to see all of its layers; untick a theme inside it to hide that theme. '
+                           'Double-click a site to fly to it. HIFLD geometry is national-scale and may sit 20-50 m off the visible towers.')
     for i, g in enumerate(groups):
         gf = folder(H, f'{g} ({len(by_group[g])})') if use_group else H
         by_state = defaultdict(list)
@@ -625,22 +590,26 @@ def main():
                 v = kv(nb[2]) if nb else None
                 site_f = folder(sf, f"{s['site_id']} — {f'{v:g} kV' if v else 'kV n/p'} @ {dist:,.0f} m", visible=False)
                 look = sub(site_f, 'LookAt'); sub(look, 'longitude', ln); sub(look, 'latitude', la); sub(look, 'altitude', '0')
-                sub(look, 'heading', '0'); sub(look, 'tilt', '0'); sub(look, 'range', str(max(400.0, dist * 4.0))); sub(look, 'altitudeMode', 'relativeToGround')
-                add_point_pm(site_f, f"{s['site_id']} (site)", 'verifySite', site_desc(s, srcs), ln, la)
                 fp = fps.get(s['site_id'])
+                span = max(fp['m'].bounds[2] - fp['m'].bounds[0], fp['m'].bounds[3] - fp['m'].bounds[1]) if fp else 0
+                sub(look, 'heading', '0'); sub(look, 'tilt', '0'); sub(look, 'range', str(max(400.0, dist * 4.0, span * 1.6))); sub(look, 'altitudeMode', 'relativeToGround')
+                add_point_pm(site_f, f"{s['site_id']} (site)", 'verifySite', site_desc(s, srcs), ln, la)
                 if fp:
                     add_poly_pm(site_f, f"footprint — {fp['basis']}, {fmt(s.get('fp_acres'))} ac",
                                 'fpParcel' if fp['basis'] in (footprint.BASIS_PARCEL, footprint.BASIS_OUTLINE) else 'fpSquare', '', mapping(fp['ll']))
+                pw = folder(site_f, 'Power: nearest line and substation', visible=False)
                 if nb:
-                    d, fp, p, parts = nb
-                    add_line_pm(site_f, f"nearest line — {f'{v:g} kV' if v else 'kV n/p'} @ {d:,.0f} m", 'nearLine', f"ID {esc(p.get('ID'))}; owner {esc(p.get('OWNER'))}", parts)
-                    pm = sub(site_f, 'Placemark'); sub(pm, 'name', f'connector {d:,.0f} m'); sub(pm, 'styleUrl', '#connector')
-                    ls = sub(pm, 'LineString'); sub(ls, 'tessellate', '1'); sub(ls, 'coordinates', f'{ln},{la},0 {fp[0]},{fp[1]},0')
+                    d, fpt, p, parts = nb
+                    add_line_pm(pw, f"nearest line — {f'{v:g} kV' if v else 'kV n/p'} @ {d:,.0f} m", 'nearLine', f"ID {esc(p.get('ID'))}; owner {esc(p.get('OWNER'))}", parts)
+                    pm = sub(pw, 'Placemark'); sub(pm, 'name', f'connector {d:,.0f} m'); sub(pm, 'styleUrl', '#connector')
+                    ls = sub(pm, 'LineString'); sub(ls, 'tessellate', '1'); sub(ls, 'coordinates', f'{ln},{la},0 {fpt[0]},{fpt[1]},0')
                 ns_ = nearest_sub.get(s['site_id'])
                 if ns_:
                     d, p, x, y = ns_
-                    add_point_pm(site_f, f"nearest substation — {(p.get('NAME') or '').strip() or p.get('ID')} @ {d:,.0f} m", 'substation',
+                    add_point_pm(pw, f"nearest substation — {(p.get('NAME') or '').strip() or p.get('ID')} @ {d:,.0f} m", 'substation',
                                  f"MAX_VOLT {esc(p.get('MAX_VOLT'))} (inferred {esc(p.get('MAX_INFER'))}); {esc(p.get('TYPE'))}; source {esc(p.get('SOURCE'))}", x, y)
+                if not approx(s):           # around an approximate point these would be read as the site's
+                    site_layers(site_f, s, fp, offline, outlines, profile, ref_nh, ref_h, counts)
 
     # A folder that ships off: switch off everything inside it too, so its checkboxes match
     for top in doc.findall(NS + 'Folder'):
@@ -661,8 +630,8 @@ def main():
     out = publish(b, f'{name}.kmz', write)
     t = data.decode('utf-8')
     print(f'wrote {out} ({os.path.getsize(out) / 1024:,.0f} KB): folders {t.count("<Folder")}, placemarks {t.count("<Placemark")}')
-    print(f'  B transmission segments {len(seen)} | C nearest lines {len(nearest)} | D substations {len(seen_s)} | E SFHA polygons {nz} | '
-          f'F NWI polygons {nw} | G schools {n1 + n2}, worship {n3}, nursing {n4}, hospitals {n5}')
+    print(f'  B transmission segments {len(seen)} | D substations {len(seen_s)} | per site: ' +
+          ', '.join(f'{k} {v}' for k, v in sorted(counts.items())))
 
 
 if __name__ == '__main__':

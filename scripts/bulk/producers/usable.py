@@ -325,7 +325,8 @@ def measure(site, cache, p):
               'ul_pads_fit_pass': (pads(pas, pad_m2), f'{pad_note}; at least {p["receptor_pass_ft"]:,} ft from every home'),
               'ul_layers': ('; '.join(layers), None)}
     return {'fp': fp, 'values': values, 'layers': layers, 'notes': notes, 'fetched': fetched,
-            'blocks': blocks_all, 'review': rev, 'pass': pas, 'homes': hs}
+            'blocks': blocks_all, 'review': rev, 'pass': pas, 'homes': hs,
+            'setback': fp['m'].difference(interior), 'excluded': {k: v.intersection(fp['m']) for k, v in excl.items()}}
 
 
 def run(site, cache):
