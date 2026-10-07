@@ -44,9 +44,8 @@ The run reads the profile's first ```json block (`product_profile.py` lists the 
 # <Portfolio>: screening limits (DRAFT v0.1, <date>)
 Status: draft for Mike's approval. Nothing is screened against these until he approves.
 
-## 0. Values the run reads   a ```json block: version, approved, pad_mw, mw_per_acre, pad_min_width_ft,
-                             edge_setback_ft, building_buffer_ft, max_slope_pct, exclude_sfha, exclude_nwi,
-                             exclude_nlcd, receptor_review_ft, receptor_pass_ft, buildings_required
+## 0. Values the run reads   a ```json block; every key, its meaning and default: product_profile.py
+                             (the Amrize profile is a complete worked example)
 
 ## 1. Product basis        target MW, density, pad acres, service voltage, hookup cap, land available, skipped topics
 ## 2. Usable land          exclusions (buildings, flood, wetlands, pits, slope, line right-of-way, edge setback by neighbor) + pad rules (one block, min width)
