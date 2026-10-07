@@ -381,7 +381,7 @@ def site_layers(site_f, s, fp, cache, outlines, profile, ref_nh, ref_h, counts):
         hp, lab, yr, info = min(r['homes'], key=lambda h: h[0].distance(r['fp']['m']))
         d = hp.distance(r['fp']['m'])
         hf = folder(site_f, f"Nearest home: {d / 0.3048:,.0f} ft ({esc(lab)})", visible=False)
-        desc = (f"<b>{esc(lab)}</b><br/>{info['sqft']:,} sq ft; tag {esc(info['verified'] or '?')}; imagery {yr or '?'}"
+        desc = (f"<b>{esc(lab)}</b><br/>{info['sqft']:,} sq ft; imagery {yr or '?'}; outline check: {esc(info['verified'] or '?')} (FEMA's check of the building outline, not of the use tag)"
                 + (f"<br/>{esc(info['address'])}" if info['address'] else '')
                 + f"<br/>{d:,.0f} m ({d / 0.3048:,.0f} ft) from the site edge" + (' - on the site' if d == 0 else '')
                 + '<br/><i>FEMA USA Structures</i>')

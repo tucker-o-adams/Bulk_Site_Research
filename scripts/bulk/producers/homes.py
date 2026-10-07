@@ -6,7 +6,8 @@ A home = a building whose OCC_CLS is Residential, or Unclassified (counted as a 
 two size rules from the profile (Tucker, 2026-10-07, after spot checks found sheds and 100,000 sq ft warehouses
 among the "homes"): a Residential building smaller than home_min_residential_sqft is a shed or garage, and an
 Unclassified building counts only inside home_unclassified_sqft [min, max] - house-sized. Size = the dataset's
-SQFEET, else the footprint area. Many Residential tags are modeled (VAL_METHOD Unverified), so some error remains;
+SQFEET, else the footprint area. The dataset does not say how each use tag was assigned (VAL_METHOD describes the
+check of the building OUTLINE, not of the tag), so some tags are wrong;
 kmz.py draws each site's nearest home with its tags for checking.
 Every home counts - one farmhouse weighs the same as a subdivision - including a Residential building on the site
 itself (homes_on_site says how many), since a house on the owner's land may be occupied. An Unclassified building
