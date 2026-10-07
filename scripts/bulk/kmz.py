@@ -11,6 +11,9 @@ workbook was computed from. Folders:
                                    only with --group-folders); popup = key values + sources   (off)
     A2. Site footprints            the shape the fp_* columns were measured over: parcel boundary
                                    (green) or, with no parcel, the square around the pin (blue)  (off)
+    U. Usable land vs homes        with a product profile (run.py --profile): per site, the usable land a pad could use,
+                                   colored by distance from actual homes (red < review, amber review-pass, green >= pass),
+                                   and the nearest home with a connector; state subfolders            (off)
     A3. Approximate locations      sites located only to a landmark, ZIP or county (location tier L3-L5):
                                    a circle of the location's uncertainty radius; these sites' pins are
                                    grey and get no flood, wetland or neighbour layers              (ON)
@@ -36,7 +39,10 @@ from cache import Cache, coord_key, _safe                # noqa: E402
 from batch_paths import support, publish                 # noqa: E402
 from geom import point_dist_m, geojson_polygon_dist_m    # noqa: E402
 from shapely.geometry import shape, box, mapping           # noqa: E402
-from producers import footprint, wetlands                  # noqa: E402
+from shapely.ops import nearest_points, transform, unary_union   # noqa: E402
+from producers import footprint, homes, usable, wetlands    # noqa: E402
+from sites import Site                                     # noqa: E402
+import product_profile as prof                             # noqa: E402
 
 CLIP_M = 1500     # polygons in E/F are clipped to this box around the site they were fetched for
 
@@ -237,7 +243,62 @@ def site_desc(s, srcs):
         (srcs.get('healthcare', 'Nursing homes & hospitals'), f"nursing home {esc(s.get('nursing_home_nearest_name'))} {m(s.get('nursing_home_nearest_m'))} ({fmt(s.get('nursing_home_nearest_beds'))} beds); "
                                                              f"hospital {esc(s.get('hospital_nearest_name'))} {m(s.get('hospital_nearest_m'))} ({esc(s.get('hospital_nearest_type'))})"),
     ]
+    ft = lambda k, d: f"{float((s.get('_profile') or {}).get(k) or d):,.0f} ft"
+    if s.get('home_nearest_m') not in (None, '') or s.get('homes_within_pass') not in (None, ''):
+        rows.append((srcs.get('homes', 'Homes'), f"nearest home {m(s.get('home_nearest_m'))} ({esc(s.get('home_nearest_class'))}); on site <b>{fmt(s.get('homes_on_site'))}</b>; "
+                                               f"within {ft('receptor_review_ft', 1000)} <b>{fmt(s.get('homes_within_review'))}</b>, within {ft('receptor_pass_ft', 2000)} {fmt(s.get('homes_within_pass'))}"
+                                               f"<br/>Census estimate: {fmt(s.get('hu_near_review'))} / {fmt(s.get('hu_near_pass'))} housing units"))
+    if s.get('ul_layers'):
+        rows.append((srcs.get('usable', 'Usable land'), f"usable <b>{fmt(s.get('ul_usable_acres'))} ac</b> of {fmt(s.get('ul_site_acres'))} ac; largest block {fmt(s.get('ul_largest_block_acres'))} ac<br/>"
+                                                      f"pads that fit: <b>{fmt(s.get('ul_pads_fit'))}</b>; at least {ft('receptor_review_ft', 1000)} from every home <b>{fmt(s.get('ul_pads_fit_review'))}</b>; "
+                                                      f"at least {ft('receptor_pass_ft', 2000)} <b>{fmt(s.get('ul_pads_fit_pass'))}</b><br/>excluded: {esc(s.get('ul_excluded'))}<br/><i>{esc(s.get('ul_layers'))}</i>"))
     return '<table cellpadding="2" style="font-size:11px">' + ''.join(f'<tr><td valign="top" style="color:#666;white-space:nowrap"><i>{esc(k)}</i></td><td>{v}</td></tr>' for k, v in rows) + '</table>'
+
+
+def draw_usable(doc, b, sites, groups, by_group, fkey, profile, srcs):
+    """Folder U: the usable land usable.measure() counted, recomputed from the cache (offline), split by distance from
+    actual homes, plus the nearest home and a connector. Off by default; state subfolders."""
+    offline = Cache(CACHE, offline=True)
+    outlines = footprint.batch_outlines(b)
+    homes.PROFILE = profile
+    rev_ft, pass_ft = profile['receptor_review_ft'], profile['receptor_pass_ft']
+    U = folder(doc, f'U. Usable land vs homes (pad {prof.pad_acres(profile):,.2f} ac)', visible=False, description=(
+        f'Usable land a pad could use (after the edge setback, buildings, flood, wetlands, land cover and slope), colored by '
+        f'distance from actual homes (FEMA USA Structures): red under {rev_ft:,} ft, amber {rev_ft:,}-{pass_ft:,} ft, green {pass_ft:,} ft '
+        'or more. Only blocks wide enough for a pad are drawn. The red icon is the nearest home; the line is the shortest distance.'))
+    n = 0
+    for g in groups:
+        todo = [s for s in by_group[g] if s.get('ul_layers') and s.get('ul_pads_fit') not in (None, '')]
+        if not todo:
+            continue
+        gf = folder(U, f'{g} ({len(todo)})', visible=False)
+        for s in todo:
+            site = Site(site_id=s['site_id'], lat=float(s['lat']), lng=float(s['lng']), acres_stated=footprint.row_acres(s),
+                        outline=outlines.get(s['site_id']))
+            r = usable.measure(site, offline, profile)
+            if 'error' in r:
+                continue
+            inv = footprint.projection(site.lat, site.lng)[1]
+            to_ll = lambda geom: mapping(transform(inv, geom))
+            sf = folder(gf, f"{s['site_id']}: {fmt(s.get('ul_pads_fit'))} pads, {fmt(s.get('ul_pads_fit_pass'))} at {pass_ft:,} ft", visible=False)
+            allb = unary_union(r['blocks']) if r['blocks'] else None
+            rev = unary_union(r['review']) if r['review'] else None
+            far = unary_union(r['pass']) if r['pass'] else None
+            for geom, style, label in ((allb.difference(rev) if allb is not None and rev is not None else allb, 'ulNear', f'under {rev_ft:,} ft from a home'),
+                                       (rev.difference(far) if rev is not None and far is not None else rev, 'ulMid', f'{rev_ft:,}-{pass_ft:,} ft'),
+                                       (far, 'ulFar', f'{pass_ft:,} ft or more')):
+                if geom is not None and not geom.is_empty:
+                    add_poly_pm(sf, f"{s['site_id']} usable, {label}: {geom.area / footprint.AC:,.1f} ac", style, '', to_ll(geom))
+            if r['homes']:
+                hp, lab, yr = min(r['homes'], key=lambda h: h[0].distance(r['fp']['m']))
+                d = hp.distance(r['fp']['m'])
+                lng, lat = inv(hp.x, hp.y)
+                add_point_pm(sf, f"nearest home {d:,.0f} m ({d / 0.3048:,.0f} ft)", 'home', f'{esc(lab)}; imagery {yr or "?"}', lng, lat)
+                if d > 0:
+                    a, b_ = nearest_points(hp, r['fp']['m'])
+                    add_line_pm(sf, 'distance to nearest home', 'connector', '', [[inv(a.x, a.y), inv(b_.x, b_.y)]])
+            n += 1
+    U.find(NS + 'name').text += f': {n} sites'
 
 
 def main():
@@ -250,6 +311,9 @@ def main():
     sites = list(csv.DictReader(open(support(b, 'sites.csv'), encoding='utf-8-sig')))
     run = json.load(open(support(b, 'run.json'), encoding='utf-8'))
     srcs = {n: p['source'].split(' (')[0] for n, p in run['producers'].items()}
+    profile = {**prof.DEFAULTS, **((run.get('profile') or {}).get('values') or {})} if run.get('profile') else None
+    for s in sites:
+        s['_profile'] = profile
     # States are the only subfolders unless the user asks for group folders (rule, 2026-09-23)
     use_group = a.group_folders and any(s.get('group') for s in sites)
     fkey = (lambda s: s.get('group') or 'Sites') if use_group else (lambda s: s.get('state') or 'State not given')
@@ -281,6 +345,11 @@ def main():
     sub(sub(ic, 'Icon'), 'href', ICON + 'shapes/placemark_circle.png')
     st = sub(doc, 'Style', id='approxCircle'); ls = sub(st, 'LineStyle'); sub(ls, 'color', 'ffb4b4b4'); sub(ls, 'width', '2')
     ps = sub(st, 'PolyStyle'); sub(ps, 'color', '22b4b4b4'); sub(ps, 'fill', '1'); sub(ps, 'outline', '1')
+    for sid, colour in (('ulNear', 'ff0000ff'), ('ulMid', 'ff00a5ff'), ('ulFar', 'ff00c800')):   # KML colours are aabbggrr
+        st = sub(doc, 'Style', id=sid); ls = sub(st, 'LineStyle'); sub(ls, 'color', colour); sub(ls, 'width', '1.5')
+        ps = sub(st, 'PolyStyle'); sub(ps, 'color', '66' + colour[2:]); sub(ps, 'fill', '1'); sub(ps, 'outline', '1')
+    st = sub(doc, 'Style', id='home'); ic = sub(st, 'IconStyle'); sub(ic, 'scale', '0.8'); sub(ic, 'color', 'ff0000ff')
+    sub(sub(ic, 'Icon'), 'href', ICON + 'shapes/homegardenbusiness.png')
     for sid, line in (('fpParcel', 'ff00ff00'), ('fpSquare', 'ffffc864')):      # outline only: imagery shows through
         st = sub(doc, 'Style', id=sid); ls = sub(st, 'LineStyle'); sub(ls, 'color', line); sub(ls, 'width', '2.5')
         ps = sub(st, 'PolyStyle'); sub(ps, 'fill', '0'); sub(ps, 'outline', '1')
@@ -378,6 +447,8 @@ def main():
         ls = sub(pm, 'LineString'); sub(ls, 'tessellate', '1'); sub(ls, 'coordinates', f"{s['lng']},{s['lat']},0 {fp[0]},{fp[1]},0")
 
     # ---- D. Substations within 5 km
+    if profile and any(s.get('ul_layers') for s in sites):
+        draw_usable(doc, b, sites, groups, by_group, fkey, profile, srcs)
     D = folder(doc, 'D. Substations within 5 km of any site (HIFLD mirror, 2021)', visible=False)
     seen_s, nearest_sub = set(), {}
     dtiers = defaultdict(list)

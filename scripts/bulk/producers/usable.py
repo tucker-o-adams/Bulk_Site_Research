@@ -3,8 +3,11 @@
 (BACKLOG 9i, 2026-10-07). Runs only with a product profile (run.py --profile); every distance and limit comes
 from it (product_profile.py).
 
-Usable land = the site footprint (producers/footprint.py: intake outline, parcel or square) shrunk by the edge
-setback, minus each of:
+Usable land = the site footprint (producers/footprint.py: intake outline, parcel or square) inside the edge
+setback, minus each of the layers below. The setback is measured from the site's OUTER edge only (Tucker,
+2026-10-07): gaps up to GAP_FILL_M between the site's own parcels (roads, rail, digitizing slivers) are filled
+before measuring, so they cut no strip through the site; holes wider than that (likely other owners' land) keep
+the setback. Pads still sit only on the site's own land, never on a filled gap.
 
     buildings   FEMA USA Structures footprints, grown by building_buffer_ft
     flood       FEMA NFHL 1% annual-chance zones (SFHA), when exclude_sfha - the footprint producer's answer
@@ -19,8 +22,11 @@ width, then grown back), which removes every part too narrow to hold a pad. Pads
 remaining blocks of floor(block area / pad area) - an area count, not a layout; a test-fit decides the real number.
 
 The same count is repeated inside two receptor zones: usable land at least receptor_review_ft and at least
-receptor_pass_ft from every 2020 Census block with a home (producers/housing.py home_blocks, the same blocks
-as home_block_dist_m). So "pads at the pass distance >= 1" means a pad can sit far enough from every home.
+receptor_pass_ft from every actual home (producers/homes.py: FEMA USA Structures, Residential or Unclassified).
+So "pads at the pass distance >= 1" means a pad can sit that far from every home.
+
+measure() returns the geometries too (usable blocks, and the parts beyond each distance), so kmz.py draws
+exactly what was counted.
 
 A failed layer fails the measured fields (rerun): a missing layer would overstate usable land. The one exception
 is buildings when the profile sets buildings_required false - then the values carry a note instead.
@@ -28,13 +34,15 @@ is buildings when the profile sets buildings_required false - then the values ca
 import math
 import numpy as np
 import rasterio
+import rasterio.transform
+import shapely
 from rasterio import features
 from shapely.geometry import shape
 from shapely.ops import transform, unary_union
 from cache import coord_key
 from geom import arcgis_envelope_query
 from provenance import Value, failed, now_iso
-from producers import flood, footprint, housing, wetlands
+from producers import flood, footprint, homes, wetlands
 import product_profile as prof
 
 NAME = 'usable'
@@ -49,9 +57,11 @@ NLCD_COVERAGE = 'mrlc_download__NLCD_2021_Land_Cover_L48'
 DEM = 'https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer'
 DEM_MAX_PX, DEM_TARGET_M = 1500, 10
 SLOPE_MIN_PATCH_M2 = 0.25 * AC
+FAR_CELL_M = 3                  # grid for "at least d from every home" (far_from); 3 m: 0.2 s a site, never lets ground closer than d
+GAP_FILL_M = 50                 # = the grouping gap: gaps this wide between the site's own parcels are inside the site
 METHOD = ('footprint shrunk by the edge setback, minus buildings (+buffer), SFHA, NWI, NLCD excluded classes and slope over '
           'the limit; opened by the pad minimum width; pads = sum of floor(block / pad area); repeated beyond the review and '
-          'pass distances from 2020 blocks with homes')
+          'pass distances from actual homes (USA Structures)')
 
 FIELDS = ['ul_basis', 'ul_site_acres', 'ul_usable_acres', 'ul_excluded', 'ul_largest_block_acres', 'ul_pads_fit',
           'ul_pads_fit_review', 'ul_pads_fit_pass', 'ul_layers']
@@ -142,20 +152,50 @@ def pads(blocks, pad_m2):
     return sum(int(b.area // pad_m2) for b in blocks)
 
 
-def run(site, cache):
-    if PROFILE is None:
-        raise SystemExit('usable needs a product profile: run.py --profile Outputs/<batch>/input/thresholds.md')
-    p = PROFILE
+def far_from(area, points, d, cell_m=FAR_CELL_M):
+    """The part of area at least d from every point. A cell_m grid over the area; a cell is kept when its centre is at
+    least d + half its diagonal from the nearest point (so no kept ground is closer than d); kept cells are turned back
+    into polygons and clipped to the area. Far faster than unioning thousands of d-metre circles."""
+    x0, y0, x1, y1 = area.bounds
+    nx, ny = max(1, math.ceil((x1 - x0) / cell_m)), max(1, math.ceil((y1 - y0) / cell_m))
+    xs = x0 + (np.arange(nx) + 0.5) * cell_m
+    ys = y1 - (np.arange(ny) + 0.5) * cell_m
+    gx, gy = np.meshgrid(xs, ys)
+    inside = shapely.contains_xy(area.buffer(cell_m * 0.7072), gx, gy)     # cells that reach into the area; clipped below
+    keep = np.zeros(gx.shape, dtype='uint8')
+    if inside.any():
+        tree = shapely.STRtree(points)
+        cells = shapely.points(gx[inside], gy[inside])
+        _, dist = tree.query_nearest(cells, return_distance=True, all_matches=False)
+        keep[inside] = dist >= d + cell_m * 0.7072
+    if not keep.any():
+        return None
+    tf = rasterio.transform.from_origin(x0, y1, cell_m, cell_m)
+    parts = [shape(g) for g, v in features.shapes(keep, mask=keep.astype(bool), transform=tf) if v]
+    return unary_union(parts).intersection(area)
+
+
+def inside_setback(fp, edge_m):
+    """The part of the site's own land at least edge_m inside its outer edge: gaps up to GAP_FILL_M are closed first."""
+    if not edge_m:
+        return fp['m']
+    h = GAP_FILL_M / 2
+    closed = fp['m'].buffer(h).buffer(-h)
+    return closed.buffer(-edge_m).intersection(fp['m'])
+
+
+def measure(site, cache, p):
+    """{'fp', 'values' (field -> (value, note)) or 'error', 'layers', 'blocks', 'review', 'pass', 'homes'}; geometry in
+    footprint metres. A failed layer comes back as 'error'."""
     la, ln = site.lat, site.lng
     fp = footprint.shape_at(la, ln, cache, site.acres_stated, site.outline)
     if fp['stage'] == 'failed':
-        return [failed(f, SOURCE, LYR, METHOD, fp['error'] + '; rerun') for f in FIELDS]
+        return {'fp': fp, 'error': fp['error'] + '; rerun', 'layers': [], 'notes': [], 'fetched': None}
     fp['center'] = (la, ln)
     site_m2 = fp['m'].area
     pad_m2 = prof.pad_acres(p) * AC
-    edge_m, width_m = prof.m(p, 'edge_setback_ft'), prof.m(p, 'pad_min_width_ft')
-    interior = fp['m'].buffer(-edge_m) if edge_m else fp['m']
-
+    width_m = prof.m(p, 'pad_min_width_ft')
+    interior = inside_setback(fp, prof.m(p, 'edge_setback_ft'))
     excl, layers, notes, fetched_all, errors = {}, [], [], [], []
 
     def take(label, geom, fetched, err, required=True):
@@ -181,35 +221,51 @@ def run(site, cache):
         take(f"land cover (NLCD {','.join(map(str, p['exclude_nlcd']))})", *land_cover(fp, cache, p['exclude_nlcd']))
     if p['max_slope_pct'] is not None:
         take(f"slope > {p['max_slope_pct']}%", *steep(fp, cache, p['max_slope_pct']))
-    blocks, f3, e3 = housing.home_blocks(site, cache, fp)
-    take('homes (Census blocks)', None, f3, e3)
-
+    hs, f3, e3 = homes.points(site, cache, fp)
+    take('homes (USA Structures)', None, f3, e3)
     fetched = max([f for f in fetched_all if f] or [now_iso()])
-    basis_note = f"over the {fp['basis']}" + (' - a stand-in square, not the site' if 'square' in fp['basis'] else '')
-    mk = lambda fld, val, n=None: Value(fld, val, SOURCE, LYR, METHOD, fetched_at=fetched,
-                                        note='; '.join(x for x in [basis_note, n] + notes if x))
-    out = [mk('ul_basis', fp['basis']), mk('ul_site_acres', round(site_m2 / AC, 2))]
     if errors:
-        why = '; '.join(errors) + '; rerun - a missing layer would overstate usable land'
-        return out + [failed(f, SOURCE, LYR, METHOD, why) for f in FIELDS[2:-1]] + [mk('ul_layers', '; '.join(layers))]
+        return {'fp': fp, 'error': '; '.join(errors) + '; rerun - a missing layer would overstate usable land',
+                'layers': layers, 'notes': notes, 'fetched': fetched}
 
     removed = unary_union(list(excl.values())) if excl else None
     usable = interior.difference(removed) if removed is not None else interior
-    parts = [f"edge setback {(site_m2 - interior.area) / AC:,.1f} ac"] + \
-            [f'{k} {v.intersection(interior).area / AC:,.1f} ac' for k, v in excl.items()]
     blocks_all = opened(usable, width_m)
-    rev_m, pass_m = housing.receptor_m(p)
-    homes = unary_union([g for _, g in blocks]) if blocks else None
+    rev_m, pass_m = homes.receptor_m(p)
+    union_all = unary_union(blocks_all) if blocks_all else None
 
     def beyond(d):
-        return blocks_all if homes is None else opened(unary_union(blocks_all).difference(homes.buffer(d)) if blocks_all else None, width_m)
+        if union_all is None:
+            return []
+        return blocks_all if not hs else opened(far_from(union_all, [h[0] for h in hs], d), width_m)
 
+    rev, pas = beyond(rev_m), beyond(pass_m)
+    parts = [f"edge setback {(site_m2 - interior.area) / AC:,.1f} ac"] + \
+            [f'{k} {v.intersection(interior).area / AC:,.1f} ac' for k, v in excl.items()]
     pad_note = (f"pad {prof.pad_acres(p):,.2f} ac ({p['pad_mw']} MW at {p['mw_per_acre']} MW/ac), min width {p['pad_min_width_ft']} ft; "
                 'an area count, not a layout')
-    return out + [mk('ul_usable_acres', round(usable.area / AC, 2)),
-                  mk('ul_excluded', '; '.join(parts), 'layers overlap, so these do not add up to the excluded total'),
-                  mk('ul_largest_block_acres', round(max((b.area for b in blocks_all), default=0) / AC, 2), pad_note),
-                  mk('ul_pads_fit', pads(blocks_all, pad_m2), pad_note),
-                  mk('ul_pads_fit_review', pads(beyond(rev_m), pad_m2), f'{pad_note}; at least {p["receptor_review_ft"]:,} ft from every block with a home'),
-                  mk('ul_pads_fit_pass', pads(beyond(pass_m), pad_m2), f'{pad_note}; at least {p["receptor_pass_ft"]:,} ft from every block with a home'),
-                  mk('ul_layers', '; '.join(layers))]
+    values = {'ul_usable_acres': (round(usable.area / AC, 2), None),
+              'ul_excluded': ('; '.join(parts), 'edge setback from the outer edge only; layers overlap, so these do not add up to the excluded total'),
+              'ul_largest_block_acres': (round(max((b.area for b in blocks_all), default=0) / AC, 2), pad_note),
+              'ul_pads_fit': (pads(blocks_all, pad_m2), pad_note),
+              'ul_pads_fit_review': (pads(rev, pad_m2), f'{pad_note}; at least {p["receptor_review_ft"]:,} ft from every home'),
+              'ul_pads_fit_pass': (pads(pas, pad_m2), f'{pad_note}; at least {p["receptor_pass_ft"]:,} ft from every home'),
+              'ul_layers': ('; '.join(layers), None)}
+    return {'fp': fp, 'values': values, 'layers': layers, 'notes': notes, 'fetched': fetched,
+            'blocks': blocks_all, 'review': rev, 'pass': pas, 'homes': hs}
+
+
+def run(site, cache):
+    if PROFILE is None:
+        raise SystemExit('usable needs a product profile: run.py --profile Outputs/<batch>/input/thresholds.md')
+    r = measure(site, cache, PROFILE)
+    fp = r['fp']
+    if fp['stage'] == 'failed':
+        return [failed(f, SOURCE, LYR, METHOD, r['error']) for f in FIELDS]
+    basis_note = f"over the {fp['basis']}" + (' - a stand-in square, not the site' if 'square' in fp['basis'] else '')
+    mk = lambda fld, val, n=None: Value(fld, val, SOURCE, LYR, METHOD, fetched_at=r['fetched'],
+                                        note='; '.join(x for x in [basis_note, n] + r.get('notes', []) if x))
+    out = [mk('ul_basis', fp['basis']), mk('ul_site_acres', round(fp['m'].area / AC, 2))]
+    if 'error' in r:
+        return out + [failed(f, SOURCE, LYR, METHOD, r['error']) for f in FIELDS[2:-1]] + [mk('ul_layers', '; '.join(r['layers']))]
+    return out + [mk(f, *r['values'][f]) for f in FIELDS[2:]]

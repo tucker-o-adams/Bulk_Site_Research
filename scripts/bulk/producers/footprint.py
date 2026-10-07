@@ -152,10 +152,21 @@ def overlay_features(fp, la, ln, cache, producer, key_url, reach_m, layer_url, o
 def clip(feats, fp):
     """[(properties, part of the feature inside the footprint, in metres)]"""
     out, env = [], fp['ll'].envelope
+    x0, y0, x1, y1 = fp['ll'].bounds
     for f in feats:
         try:
             g = shape(f.get('geometry'))
             if not g.intersects(env):
+                continue
+            # trim to the footprint's box (+~100 m) before reprojecting: one NWI river polygon can carry 375,000 vertices.
+            # A true intersection (clip_by_rect returns the whole box for a polygon with a hole around the site); the
+            # source polygon is repaired only if that fails - repairing a 375,000-vertex polygon first takes minutes
+            bx = box(x0 - 0.001, y0 - 0.001, x1 + 0.001, y1 + 0.001)
+            try:
+                g = g.intersection(bx)
+            except Exception:
+                g = g.buffer(0).intersection(bx)
+            if g.is_empty:
                 continue
             g = transform(fp['fwd'], g)
             g = g if g.is_valid else g.buffer(0)

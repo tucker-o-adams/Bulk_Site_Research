@@ -10,18 +10,12 @@ more), so the rural figures are coarse and the block-at-point row shows how
 much area that one block covers. Raw counts only; no density class until the
 thresholds are agreed.
 
-Home distance (BACKLOG 9j, 2026-10-07) - measured from the site footprint (intake outline, parcel or square;
-producers/footprint.py), not the pin:
-    home_block_dist_m   distance to the nearest *edge* of any 2020 block with HU100 >= 1. Every home counts: one
-                        farmhouse weighs the same as a subdivision. Rural blocks are large and the home may sit
-                        anywhere in its block, so this can only understate the true distance - errors fall toward
-                        REVIEW, never toward a false PASS. When the footprint is an intake outline (an owner's
-                        own land), the site is taken out of each block first: homes are assumed off that land, and
-                        buildings on it are removed from usable land anyway (producers/usable.py). A parcel or the
-                        square around a pin may hold a home (a farmhouse on a broker's tract), so nothing is taken out
-    hu_near_review/pass housing units within the profile's receptor distances of the footprint (default 1,000 /
-                        2,000 ft): each block's HU100 split by the share of its (off-site) area inside the distance.
-                        Context only - never softens home_block_dist_m
+Homes near the footprint (BACKLOG 9j, 2026-10-07), Census context only - the home distance rules use actual
+homes (producers/homes.py, FEMA USA Structures):
+    hu_near_review/pass housing units within the profile's receptor distances of the site footprint (intake outline,
+                        parcel or square; default 1,000 / 2,000 ft): each 2020 block's HU100 split by the share of
+                        its area inside the distance. For an intake outline the site is taken out of each block
+                        first. Block counts are spread evenly over large rural blocks, so these are estimates
 """
 import math, urllib.parse
 from shapely.geometry import shape
@@ -42,13 +36,13 @@ METHOD = ('TIGERweb 2020 blocks within 1 mi of the point: HU100/POP100 summed ov
 NOTE = 'raw Census 2020 counts; rural blocks are large, so sums are coarse there and block-at-point area is given'
 
 FIELDS = ['hu_block_at_point', 'pop_block_at_point', 'block_at_point_acres', 'hu_within_0_5mi', 'pop_within_0_5mi',
-          'hu_within_1mi', 'pop_within_1mi', 'blocks_within_1mi', 'home_block_dist_m', 'hu_near_review', 'hu_near_pass']
+          'hu_within_1mi', 'pop_within_1mi', 'blocks_within_1mi', 'hu_near_review', 'hu_near_pass']
 HOME_FIELDS = FIELDS[8:]
 PROFILE = None           # run.py sets the batch's product profile; None = product_profile.DEFAULTS distances
 MARGIN_M = 300
 METHOD_HOME = ('TIGERweb 2020 blocks with HU100 >= 1 intersecting the footprint bounding box grown by the pass distance '
-               '+ 300 m; distance from the footprint to the nearest block edge (site taken out of each block for an intake '
-               'outline); HU100 split by the share of each block off-site area within the review / pass distance')
+               '+ 300 m (site taken out of each block for an intake outline); HU100 split by the share of each block '
+               'area within the review / pass distance')
 
 
 def receptor_m(p=None):
@@ -94,16 +88,16 @@ def _home_values(site, cache):
     if err:
         return [failed(f, SOURCE, LYR, METHOD_HOME, err) for f in HOME_FIELDS]
     rev_m, pass_m = receptor_m()
-    note = (f"from the {fp['basis']}; review {rev_m / prof.FT:,.0f} ft, pass {pass_m / prof.FT:,.0f} ft; block edges "
-            'understate the distance to the home itself (conservative)')
+    note = (f"from the {fp['basis']}; review {rev_m / prof.FT:,.0f} ft, pass {pass_m / prof.FT:,.0f} ft; Census estimate, "
+            'context only - home distances come from actual homes (homes producer)')
     mk = lambda fld, val, n=note: Value(fld, val, SOURCE, LYR, METHOD_HOME, vintage=VINTAGE, fetched_at=fetched or now_iso(), note=n)
     if not blocks:
         why = f'no 2020 block with a home within {pass_m + MARGIN_M:,.0f} m of the footprint'
-        return [absent('home_block_dist_m', SOURCE, LYR, METHOD_HOME, note=why, vintage=VINTAGE), mk('hu_near_review', 0, why),
-                mk('hu_near_pass', 0, why)]
-    near = lambda d: sum(hu * g.intersection(fp['m'].buffer(d)).area / g.area for hu, g in blocks if g.area > 0)
-    dist = min(g.distance(fp['m']) for _, g in blocks)
-    return [mk('home_block_dist_m', round(dist, 1)), mk('hu_near_review', round(near(rev_m), 1)),
+        return [mk('hu_near_review', 0, why), mk('hu_near_pass', 0, why)]
+    def near(d):
+        zone = fp['m'].buffer(d)                     # once per distance, not once per block
+        return sum(hu * g.intersection(zone).area / g.area for hu, g in blocks if g.area > 0)
+    return [mk('hu_near_review', round(near(rev_m), 1)),
             mk('hu_near_pass', round(near(pass_m), 1))]
 
 
