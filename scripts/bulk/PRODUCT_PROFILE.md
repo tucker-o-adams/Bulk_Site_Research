@@ -27,8 +27,9 @@ Ask these of the client's documents first. Ask a person only for what the docume
 4. **Land available:** all of the owner's land, or only some (site control agreement)?
 5. **"Empty" land:** what rules land out (buildings, active pits, stockpiles, water, steep ground)?
 6. **One block or patches:** must the pad be contiguous? Minimum width?
-7. **Setbacks:** from homes and other sensitive receptors (schools, worship, healthcare), and from the site edge. How loud is the product? Lean conservative when the client says loud.
-8. **Power:** service voltage, who pays the hookup charge (CIAC) and up to what cap. Is there a large-load threshold?
+7. **Setbacks:** from homes and other sensitive receptors (schools, worship, healthcare), and from the site's outer edge - by what is next door (road frontage, industrial neighbor, anything else). How loud is the product? Lean conservative when the client says loud.
+7a. **What counts as a home:** which building tags (Residential; untagged ones only if house-sized?), the smallest size that is a home and not a shed, and what to do with homes on the site itself (counted, or flagged for review).
+8. **Power:** service voltage, who pays the hookup charge (CIAC) and up to what cap. Is there a large-load threshold? Which line and substation voltages count, and is distance measured from where a pad could go (usable land)? How wide a right-of-way under lines is excluded?
 9. **Flood and wetlands:** a knockout, or just subtracted from usable land?
 10. **Fiber:** screened now or later?
 11. **Groups:** does the client sort sites (e.g. fits / can expand / outside)? Define each group in measurable terms.
@@ -48,9 +49,9 @@ Status: draft for Mike's approval. Nothing is screened against these until he ap
                              exclude_nlcd, receptor_review_ft, receptor_pass_ft, buildings_required
 
 ## 1. Product basis        target MW, density, pad acres, service voltage, hookup cap, land available, skipped topics
-## 2. Usable land          exclusions (buildings, flood, wetlands, pits, slope, edge setback) + pad rules (one block, min width)
-## 3. Noise / receptors    PASS / REVIEW / NO-GO distances, receptor list, how homes are located, why
-## 4. Power                PASS / REVIEW / NO-GO rules, the cost arithmetic behind the distances
+## 2. Usable land          exclusions (buildings, flood, wetlands, pits, slope, line right-of-way, edge setback by neighbor) + pad rules (one block, min width)
+## 3. Noise / receptors    PASS / REVIEW / NO-GO distances, receptor list, what counts as a home (tags, sizes, on-site), why
+## 4. Power                PASS / REVIEW / NO-GO rules, voltages, measured from (usable land / site edge), the cost arithmetic
 ## 5. Site grouping        gap, resulting site count
 ## 6. Groups               rule per group (if the client uses groups)
 ## Open items
