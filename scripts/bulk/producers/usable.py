@@ -74,7 +74,7 @@ METHOD = ('footprint shrunk by the edge setback, minus buildings (+buffer), SFHA
           'pass distances from actual homes (USA Structures)')
 
 FIELDS = ['ul_basis', 'ul_site_acres', 'ul_usable_acres', 'ul_excluded', 'ul_largest_block_acres', 'ul_pads_fit',
-          'ul_pads_fit_review', 'ul_pads_fit_pass', 'ul_line_kv_m', 'ul_sub_kv_m', 'ul_sub_headroom_m', 'ul_layers']
+          'ul_pads_fit_review', 'ul_pads_fit_pass', 'ul_line_kv_m', 'ul_sub_kv_m', 'ul_sub_115kv_m', 'ul_layers']
 
 
 def _bbox_ll(fp, grow_m=0):
@@ -341,7 +341,7 @@ def measure(site, cache, p):
               'ul_pads_fit_pass': (pads(pas, pad_m2), f'{pad_note}; at least {p["receptor_pass_ft"]:,} ft from every home'),
               'ul_line_kv_m': (round(pw['line'][0], 1) if pw['line'] else None, pw_note(line_kv, 'line')),
               'ul_sub_kv_m': (round(pw['sub'][0], 1) if pw['sub'] else None, pw_note(sub_kv, 'in-service substation')),
-              'ul_sub_headroom_m': (round(pw['head'][0], 1) if pw['head'] else None, pw_note(head_kv, 'in-service substation')),
+              'ul_sub_115kv_m': (round(pw['head'][0], 1) if pw['head'] else None, pw_note(head_kv, 'in-service substation')),
               'ul_layers': ('; '.join(layers), None)}
     return {'fp': fp, 'values': values, 'layers': layers, 'notes': notes, 'fetched': fetched,
             'blocks': blocks_all, 'review': rev, 'pass': pas, 'homes': hs, 'homes_on_site': hs_on, 'power': pw,

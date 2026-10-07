@@ -19,7 +19,7 @@ workbook was computed from. Folders:
     H. Site by site                state -> site ([group ->] with --group-folders), fly-to; every theme of one
                                    site in its own folder with its own checkbox (2026-10-07: everything that is
                                    about one site lives with that site):                         (off)
-         Power                     sites with an outline or parcel: nearest qualifying line, substation and headroom
+         Power                     sites with an outline or parcel: nearest qualifying line, substation and 115 kV+
                                    substation (profile voltages), each with a line from the usable land (or the site
                                    edge when nothing is usable); a stand-in square: from the pin, as before
          Flood                     FEMA SFHA polygons over the site outline + 500 m (and 1.5 km around the pin)
@@ -288,7 +288,7 @@ def _overlay(fp, la, ln, cache, producer, pin_suffix, request, reach, layer, fie
 
 
 def draw_power(site_f, site, fp, cache, r, profile, inv):
-    """Power from the site: the nearest qualifying line, substation and headroom substation (profile voltages), each
+    """Power from the site: the nearest qualifying line, substation and 115 kV+ substation (profile voltages), each
     with a line from the usable land - where a pad could go - or from the site edge when nothing is usable."""
     lines, subs, _, err = power_site.near_site(site, cache, fp)
     pf = folder(site_f, 'Power: nearest from the usable land' if r and r['blocks'] else 'Power: nearest from the site edge', visible=False)
@@ -300,7 +300,7 @@ def draw_power(site_f, site, fp, cache, r, profile, inv):
     shown = set()
     for label, items, ok, kind in ((f'line >= {line_kv} kV', lines, lambda q: power_site.line_ok(q, line_kv), 'line'),
                                    (f'substation >= {sub_kv} kV', subs, lambda q: power_site.sub_ok(q, sub_kv), 'sub'),
-                                   (f'headroom substation >= {head_kv} kV', subs, lambda q: power_site.sub_ok(q, head_kv), 'sub')):
+                                   (f'{head_kv:g} kV+ substation', subs, lambda q: power_site.sub_ok(q, head_kv), 'sub')):
         nb = power_site.nearest(items, target, ok)
         if not nb:
             continue
@@ -444,13 +444,13 @@ def site_layers(site_f, s, fp, cache, outlines, profile, ref_nh, ref_h, counts):
         counts['nearest homes'] += 1
     if r.get('homes_on_site'):
         of = folder(site_f, f"On-site homes: review ({len(r['homes_on_site'])})", visible=False)
-        for hp, lab, yr, info in r['homes_on_site']:
+        for n, (hp, lab, yr, info) in enumerate(sorted(r['homes_on_site'], key=lambda h: (-h[0].y, h[0].x)), 1):   # numbered north to south
             desc = (f"<b>{esc(lab)}</b> on the site itself - not counted as a home; check it against imagery, the assessor or the owner"
                     f"<br/>{info['sqft']:,} sq ft; imagery {yr or '?'}" + (f"<br/>{esc(info['address'])}" if info['address'] else '')
                     + '<br/><i>FEMA USA Structures</i>')
             x, y = inv(hp.x, hp.y)
-            add_point_pm(of, f'on-site: {esc(lab)}', 'homeReview', desc, x, y)
-            add_poly_pm(of, 'on-site building outline', 'homeReviewBldg', desc, to_ll(info['poly']))
+            kind = lab.split(' / ')[-1]
+            add_point_pm(of, f"{s['site_id']} on-site home {n}: {esc(kind)}, {info['sqft']:,} sq ft", 'homeReview', desc, x, y)
         counts['on-site homes'] += len(r['homes_on_site'])
 
 

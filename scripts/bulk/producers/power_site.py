@@ -8,13 +8,13 @@ The voltages come from the product profile (product_profile.py; defaults 69 / 69
     power_line_min_kv       a line counts at this voltage or above. A line with no published voltage counts only when
                             its HIFLD voltage class is 100 kV or above - unknown is never assumed high enough
     power_sub_min_kv        a substation counts at this MAX_VOLT or above, IN SERVICE, and not a TAP (a line tap)
-    power_headroom_sub_kv   the larger substation the headroom check looks for
+    power_115kv_sub_kv      the larger substation looked for alongside (115 kV+: a rough sign that more power could be added)
 
     pw_from                 'intake outline' / 'parcel boundary' / 'pin (no site outline)'
     line_crosses_site       any transmission line, any voltage, crossing the footprint
     line_kv_site_m, _kv     nearest qualifying line from the site edge, and its voltage
     sub_kv_site_m, _name, _kv          nearest qualifying substation from the site edge
-    sub_headroom_site_m, _name, _kv    nearest headroom substation from the site edge
+    sub_115kv_site_m, _name, _kv       nearest 115 kV+ substation from the site edge
 
 producers/usable.py repeats the three distances from the usable land (where a pad could go), from the same data.
 
@@ -40,13 +40,13 @@ METHOD = ('HIFLD lines and substations near the site (the 15 km answers around t
           'the footprint reaches past them); distance from the footprint edge, 0 when on the site; voltages from the profile')
 NOTE = 'HIFLD mirrors (lines edited 2025-08, substations 2021-02); line geometry may sit 20-50 m off visible towers'
 FIELDS = ['pw_from', 'line_crosses_site', 'line_kv_site_m', 'line_kv_site_kv', 'sub_kv_site_m', 'sub_kv_site_name', 'sub_kv_site_kv',
-          'sub_headroom_site_m', 'sub_headroom_site_name', 'sub_headroom_site_kv']
+          'sub_115kv_site_m', 'sub_115kv_site_name', 'sub_115kv_site_kv']
 HIGH_CLASSES = ('100', '220', '345', '500', '735', 'DC')     # HIFLD VOLT_CLASS bands at or above 100 kV
 
 
 def kvs(p=None):
     p = p or PROFILE or prof.DEFAULTS
-    return p['power_line_min_kv'], p['power_sub_min_kv'], p['power_headroom_sub_kv']
+    return p['power_line_min_kv'], p['power_sub_min_kv'], p['power_115kv_sub_kv']
 
 
 CLASS_KV = {'UNDER 100': 99, '100-161': 161, '220-287': 287, '345': 345, '500': 500, '735 AND ABOVE': 765, 'DC': 500}
@@ -174,13 +174,13 @@ def run(site, cache):
         return [failed(f, SOURCE, LYR, METHOD, err) for f in FIELDS]
     line_kv, sub_kv, head_kv = kvs()
     frm = fp['basis'] if on_site else 'pin (no site outline)'
-    note = f'{NOTE}; from the {frm}; line >= {line_kv} kV, substation >= {sub_kv} kV in service (headroom >= {head_kv} kV)'
+    note = f'{NOTE}; from the {frm}; line >= {line_kv} kV, substation >= {sub_kv} kV in service (and a {head_kv} kV+ substation)'
     mk = lambda fld, val: Value(fld, val, SOURCE, LYR, METHOD, fetched_at=fetched or now_iso(), note=note)
     out = [mk('pw_from', frm), mk('line_crosses_site', bool(on_site and any(g.intersects(fp['m']) for g, _ in lines)))]
     ln_ = nearest(lines, target, lambda p: line_ok(p, line_kv))
     out += ([mk('line_kv_site_m', round(ln_[0], 1)), mk('line_kv_site_kv', transmission._kv(ln_[2]) or ln_[2].get('VOLT_CLASS'))] if ln_ else
             [absent(f, SOURCE, LYR, METHOD, note=f'no line >= {line_kv} kV in the data searched') for f in ('line_kv_site_m', 'line_kv_site_kv')])
-    for tag, kv in (('sub_kv_site', sub_kv), ('sub_headroom_site', head_kv)):
+    for tag, kv in (('sub_kv_site', sub_kv), ('sub_115kv_site', head_kv)):
         sb = nearest(subs, target, lambda p, kv=kv: sub_ok(p, kv))
         out += ([mk(f'{tag}_m', round(sb[0], 1)), mk(f'{tag}_name', substations._shown(sb[2].get('NAME'))),
                  mk(f'{tag}_kv', substations._kv(sb[2].get('MAX_VOLT')))] if sb else
