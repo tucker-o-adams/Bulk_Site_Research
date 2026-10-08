@@ -54,9 +54,17 @@ NOTE_SQUARE = ('the square around the pin stands in for the site - it is not a p
                'the ground around the pin')
 NOTE_NWI = 'NWI is photointerpreted, not a jurisdictional determination'
 
-FIELDS = ['fp_basis', 'fp_acres', 'fp_flood_zones', 'fp_sfha_acres', 'fp_sfha_pct', 'fp_floodway_acres',
-          'fp_flood_unmapped_acres', 'fp_nwi_acres', 'fp_nwi_pct', 'fp_nwi_types']
-FLOOD_FIELDS, NWI_FIELDS = FIELDS[2:7], FIELDS[7:]
+# one filterable column per flood zone type, % of the footprint (2026-10-08). Overlapping zones are counted once, under
+# the most severe (this order), so the zone columns and fp_flood_pct_unmapped add to 100.
+ZONE_COLS = [('floodway', 'fp_flood_pct_floodway'), ('VE', 'fp_flood_pct_ve'), ('V', 'fp_flood_pct_v'), ('AE', 'fp_flood_pct_ae'),
+             ('AH', 'fp_flood_pct_ah'), ('AO', 'fp_flood_pct_ao'), ('A', 'fp_flood_pct_a'), ('AR', 'fp_flood_pct_ar'),
+             ('A99', 'fp_flood_pct_a99'), ('X levee', 'fp_flood_pct_x_levee'), ('X 0.2%', 'fp_flood_pct_x_500yr'),
+             ('X', 'fp_flood_pct_x_minimal'), ('D', 'fp_flood_pct_d_undetermined'), ('other', 'fp_flood_pct_other')]
+HAZARD_ZONES = {'floodway', 'VE', 'V', 'AE', 'AH', 'AO', 'A', 'AR', 'A99', 'X levee', 'X 0.2%'}   # 1% and 0.2% annual chance
+FLOOD_FIELDS = (['fp_flood_zones', 'fp_sfha_acres', 'fp_sfha_pct', 'fp_floodway_acres', 'fp_flood_unmapped_acres']
+                + [c for _, c in ZONE_COLS] + ['fp_flood_pct_unmapped', 'fp_flood_pct_any_zone'])
+NWI_FIELDS = ['fp_nwi_acres', 'fp_nwi_pct', 'fp_nwi_types']
+FIELDS = ['fp_basis', 'fp_acres'] + FLOOD_FIELDS + NWI_FIELDS
 
 WHY_NO_PARCEL = {'no_county': 'no US county contains the pin', 'unregistered': 'no parcel service registered for the county',
                  'excluded': 'county excluded from the statewide parcel layer', 'no_polygon': 'parcel service returned no polygon at the pin',
@@ -190,6 +198,30 @@ def zone_label(p):
     return z
 
 
+def zone_key(p):
+    """The ZONE_COLS key a NFHL polygon belongs to."""
+    lab = zone_label(p)
+    if lab.endswith('floodway'):
+        return 'floodway'
+    return lab if lab in dict(ZONE_COLS) else 'other'
+
+
+def zone_shares(mapped, total_m2):
+    """{column: % of the footprint}: each zone's ground, minus ground already given to a more severe zone."""
+    by = {}
+    for p, g in mapped:
+        by.setdefault(zone_key(p), []).append(g)
+    taken, out = None, {}
+    for key, col in ZONE_COLS:
+        g = unary_union(by[key]) if key in by else None
+        if g is not None and taken is not None:
+            g = g.difference(taken)
+        out[col] = round(100 * (g.area if g is not None else 0.0) / total_m2, 2)
+        if g is not None:
+            taken = g if taken is None else taken.union(g)
+    return out
+
+
 def is_sfha(p):
     return (p.get('SFHA_TF') or '').upper() == 'T' or p.get('FLD_ZONE') in flood.SFHA_ZONES
 
@@ -246,6 +278,8 @@ def run(site, cache):
             why = 'no FEMA flood zone covers any of the footprint (Area Not Included or no NFHL study); see fema_determination'
             out += [absent(f, flood.SOURCE, flood.NFHL, METHOD_FLOOD, note=why) for f in FLOOD_FIELDS[:4]]
             out.append(mk('fp_flood_unmapped_acres', round(unmapped_ac, 4), why))
+            out += [mk(c, 0.0, why) for _, c in ZONE_COLS] + [mk('fp_flood_pct_unmapped', 100.0, why),
+                                                               absent('fp_flood_pct_any_zone', flood.SOURCE, flood.NFHL, METHOD_FLOOD, note=why)]
         else:
             part_note = note + (f'; {unmapped_ac:,.3f} ac of the footprint has no FEMA determination - SFHA figures cover '
                                 'the mapped part only' if unmapped_ac >= 0.0005 else '')
@@ -255,6 +289,12 @@ def run(site, cache):
                     mk('fp_sfha_pct', round(100 * sfha * AC / total, 2), part_note),
                     mk('fp_floodway_acres', round(area_ac([(p, g) for p, g in mapped if 'FLOODWAY' in (p.get('ZONE_SUBTY') or '').upper()]), 4), part_note),
                     mk('fp_flood_unmapped_acres', round(unmapped_ac, 4), part_note)]
+            shares = zone_shares(mapped, total)
+            zone_note = part_note + '; % of the footprint; overlapping zones counted once, under the most severe'
+            out += [mk(c, shares[c], zone_note) for _, c in ZONE_COLS]
+            out.append(mk('fp_flood_pct_unmapped', round(100 * unmapped_ac * AC / total, 2), zone_note))
+            out.append(mk('fp_flood_pct_any_zone', round(sum(shares[c] for k, c in ZONE_COLS if k in HAZARD_ZONES), 2),
+                          zone_note + '; any 1% or 0.2% annual-chance zone (A, AE, AH, AO, AR, A99, V, VE, floodway, X 0.2%, X levee)'))
 
     # ---- wetlands
     feats, fetched, err = overlay_features(fp, la, ln, cache, 'wetlands', wetlands.near_request(la, ln), wetlands.SEARCH_M,

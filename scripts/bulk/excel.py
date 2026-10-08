@@ -40,7 +40,10 @@ BAND_TITLES = {
     'utility': 'Serving utility and average price (EIA 861)', 'hazards': 'Natural hazard ratings (FEMA National Risk Index)',
     'superfund': 'EPA Superfund (NPL) sites',
 }
-FP_FLOOD = ['fp_flood_zones', 'fp_sfha_acres', 'fp_sfha_pct', 'fp_floodway_acres', 'fp_flood_unmapped_acres']
+FP_FLOOD = ['fp_flood_pct_any_zone', 'fp_sfha_pct', 'fp_sfha_acres', 'fp_flood_pct_floodway', 'fp_flood_pct_ve', 'fp_flood_pct_v',
+            'fp_flood_pct_ae', 'fp_flood_pct_ah', 'fp_flood_pct_ao', 'fp_flood_pct_a', 'fp_flood_pct_ar', 'fp_flood_pct_a99',
+            'fp_flood_pct_x_levee', 'fp_flood_pct_x_500yr', 'fp_flood_pct_x_minimal', 'fp_flood_pct_d_undetermined',
+            'fp_flood_pct_other', 'fp_flood_pct_unmapped', 'fp_floodway_acres', 'fp_flood_unmapped_acres', 'fp_flood_zones']
 FP_NWI = ['fp_nwi_acres', 'fp_nwi_pct', 'fp_nwi_types']
 BAND_COLORS = ['1F3864', '2E5A46', '7A4A00', '4A235A', '0B5345', '6E2C00', '1B4F72', '4D5656', '5B2C6F', '145A32',
                '78281F', '1A5276', '3D3D3D']      # one per band: Site + 12 producers
