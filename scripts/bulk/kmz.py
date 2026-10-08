@@ -562,6 +562,25 @@ def main():
         st = sub(doc, 'Style', id=sid); ls = sub(st, 'LineStyle'); sub(ls, 'color', line); sub(ls, 'width', '2.5')
         ps = sub(st, 'PolyStyle'); sub(ps, 'fill', '0'); sub(ps, 'outline', '1')
 
+    # labels of the many small pins (homes, neighbors, on-site homes) stay hidden until the pin is hovered: each style
+    # becomes a StyleMap - normal = label scale 0, highlight = the original style
+    for sid_h in ('home', 'homeReview', 'school', 'worship', 'nursing', 'hospital'):
+        st = doc.find(f"{NS}Style[@id='{sid_h}']")
+        if st is None:
+            continue
+        st.set('id', f'{sid_h}_h')
+        quiet = ET.fromstring(ET.tostring(st)); quiet.set('id', f'{sid_h}_n')
+        ls = quiet.find(NS + 'LabelStyle')
+        if ls is None:
+            ls = ET.SubElement(quiet, NS + 'LabelStyle')
+        sc = ls.find(NS + 'scale') if ls.find(NS + 'scale') is not None else ET.SubElement(ls, NS + 'scale')
+        sc.text = '0'
+        doc.insert(list(doc).index(st) + 1, quiet)
+        sm = ET.Element(NS + 'StyleMap', id=sid_h)
+        for key, ref in (('normal', f'{sid_h}_n'), ('highlight', f'{sid_h}_h')):
+            pair = ET.SubElement(sm, NS + 'Pair'); ET.SubElement(pair, NS + 'key').text = key; ET.SubElement(pair, NS + 'styleUrl').text = f'#{ref}'
+        doc.insert(list(doc).index(quiet) + 1, sm)
+
     # ---- A. Sites
     A = folder(doc, f'A. Sites ({len(sites)})', visible=False, open_=True)
     by_group = defaultdict(list)
