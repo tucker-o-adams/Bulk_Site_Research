@@ -32,6 +32,8 @@ BAND_TITLES = {
     'footprint': 'Site footprint: outline, parcel, else square around pin',
     'homes': 'Homes (FEMA USA Structures)', 'usable': 'Usable land and pads (product profile)',
     'power_site': 'Power from the site edge (HIFLD)', 'sensitive': 'Schools, worship, healthcare from the site edge',
+    'utility': 'Serving utility and average price (EIA 861)', 'hazards': 'Natural hazard ratings (FEMA National Risk Index)',
+    'superfund': 'EPA Superfund (NPL) sites',
 }
 FP_FLOOD = ['fp_flood_zones', 'fp_sfha_acres', 'fp_sfha_pct', 'fp_floodway_acres', 'fp_flood_unmapped_acres']
 FP_NWI = ['fp_nwi_acres', 'fp_nwi_pct', 'fp_nwi_types']

@@ -249,6 +249,18 @@ def site_desc(s, srcs):
         (srcs.get('healthcare', 'Nursing homes & hospitals'), f"nursing home {esc(s.get('nursing_home_nearest_name'))} {m(s.get('nursing_home_nearest_m'))} ({fmt(s.get('nursing_home_nearest_beds'))} beds); "
                                                              f"hospital {esc(s.get('hospital_nearest_name'))} {m(s.get('hospital_nearest_m'))} ({esc(s.get('hospital_nearest_type'))})"),
     ]
+    if s.get('utility_name'):
+        rows.append((srcs.get('utility', 'Utility'), f"serving utility <b>{esc(s.get('utility_name'))}</b> ({esc(s.get('utility_type'))}; {esc(s.get('utility_grid_operator'))}); "
+                                                   f"average industrial price {fmt(s.get('industrial_cents_kwh_2024'))}¢/kWh (2024), {fmt(s.get('industrial_cents_kwh_2020'))}¢ (2020)" + (f" - <b>{esc(s.get('industrial_price_basis'))}</b>" if str(s.get('industrial_price_basis') or '').startswith('retail-choice') else '')
+                                                   + (f"<br/>also at the pin: {esc(s.get('utility_others_at_pin'))}" if s.get('utility_others_at_pin') else '')))
+    if s.get('nri_overall'):
+        rows.append((srcs.get('hazards', 'Hazards'), f"FEMA risk (relative to US tracts): overall <b>{esc(s.get('nri_overall'))}</b>; tornado {esc(s.get('nri_tornado'))}; "
+                                                   f"strong wind {esc(s.get('nri_strong_wind'))}; hail {esc(s.get('nri_hail'))}; hurricane {esc(s.get('nri_hurricane'))}; "
+                                                   f"earthquake {esc(s.get('nri_earthquake'))}; wildfire {esc(s.get('nri_wildfire'))}; inland flooding {esc(s.get('nri_inland_flooding'))}"))
+    if s.get('npl_on_site') not in (None, ''):
+        rows.append((srcs.get('superfund', 'Superfund'), ('<b>EPA Superfund (NPL) site point on the site</b>: ' if str(s.get('npl_on_site')) == 'True' else
+                                                         'nearest EPA Superfund (NPL) site: ') + (f"{esc(s.get('npl_nearest_name'))} ({esc(s.get('npl_nearest_status'))}) {m(s.get('npl_nearest_m'))}"
+                                                         if s.get('npl_nearest_m') not in (None, '') else 'none within 5 km')))
     ft = lambda k, d: f"{float((s.get('_profile') or {}).get(k) or d):,.0f} ft"
     if s.get('home_nearest_m') not in (None, '') or s.get('homes_within_pass') not in (None, ''):
         rows.append((srcs.get('homes', 'Homes'), f"nearest home {m(s.get('home_nearest_m'))} ({esc(s.get('home_nearest_class'))}); on site <b>{fmt(s.get('homes_on_site'))}</b>; "
