@@ -15,7 +15,7 @@ from datetime import date
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from memo import Broker, rd, num                                              # noqa: E402
+from broker_facts import Broker, rd, num                                      # noqa: E402
 from rating_rules import (power_score, capped, indicated_priority, assigned_priority,   # noqa: E402
                           METHOD_VERSION, IMPORTANT, SUPPORTING)
 from cache import Cache, coord_key                                            # noqa: E402

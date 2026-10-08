@@ -97,6 +97,10 @@ Appendices:
 - **C. Method, sources and gaps**.
 - **D. Ratings by site** (landscape): one row per site, grouped by market. Columns: Site · Location (shaded) · the seven dimension scores (Power, Investment, Land, Site control, Community, Connectivity, Market; shaded 1–5, U = unknown) · Screeners · Indicated · Named adjustments · Assigned · Why (the rules). Evidence and confidence for every score stay in `ratings.csv`.
 
+The broker wording in Appendix A (Site control; Power, timing, utility; Fiber; Caveats and other notes) and in Appendix B's
+broker column comes from `broker_facts.py`, which the workbook's **Broker says** sheet also uses (README, Workbook): change
+the wording there and the memo and the workbook follow together.
+
 The ratings come from `rate.py` (method: `design_site_rating.md`). `memo.py` runs `rating_check.py` on `ratings.csv` and
 will not write the summary memo from ratings that fail it (missing confidence or reason, a score above its confidence cap,
 a priority the rules do not give, an adjustment without a reason, another method version, or a changed location status).

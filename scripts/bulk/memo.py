@@ -29,11 +29,8 @@ from docx_lite import Doc          # noqa: E402
 from broker_text import broker_words   # noqa: E402
 import location_status as LS       # noqa: E402
 from batch_paths import support, publish   # noqa: E402
+from broker_facts import TAG_FULL, STAGE, Broker, rd, num, g, tagged, market_of   # noqa: E402  (the broker wording, shared with excel.py)
 
-TAG = {'confirmed_written': 'confirmed', 'confirmed_prescreen': 'pre-screen', 'utility_estimate': 'utility est.',
-       'broker_estimate': 'broker est.', 'pending': 'pending', 'untagged': ''}
-STAGE = OrderedDict([('under_contract', 'Under contract'), ('loi_or_negotiating', 'LOI / negotiating'), ('owner_identified', 'Owner identified, no terms'),
-                     ('tract_identified', 'Tract identified, no terms'), ('no_site_yet', 'No site yet (searching)'), ('no_site_control', 'No site control (stated)')])
 TIER = OrderedDict([('L1', 'Parcel'), ('L2', 'Point on the site'), ('L3', 'Near a named substation, intersection or landmark'),
                     ('L4', 'Within a ZIP'), ('L5', 'Within a county'), ('', 'No location')])
 SITE_LEVEL = LS.SITE_LEVEL
@@ -53,104 +50,11 @@ BRITISH = re.compile(r'(?i)\b(\w*(?:centre|neighbour|colour|metre|licence|favour
 BOX = '☐'
 
 
-def rd(path):
-    if not os.path.exists(path):
-        return []
-    with open(path, encoding='utf-8-sig', newline='') as f:
-        return list(csv.DictReader(f))
-
-
-def num(v):
-    try:
-        return float(str(v).replace(',', ''))
-    except (TypeError, ValueError):
-        return None
-
-
 def dist(v):
     x = num(v)
     if x is None:
         return '—'
     return f'{x:,.0f} m' if x < 1000 else f'{x / 1000:,.1f} km'
-
-
-def g(v, suffix=''):
-    x = num(v)
-    if x is None:
-        return '—' if v in (None, '') else str(v)
-    return (f'{x:,.0f}' if abs(x) >= 100 or x.is_integer() else f'{x:,.1f}') + suffix
-
-
-def tagged(value, tag):
-    t = TAG.get(tag, tag)
-    return f'{value} ({t})' if t else str(value)
-
-
-class Broker:
-    """Key broker-stated facts for one site, from evidence_checked.csv."""
-    def __init__(self, rows):
-        self.rows = rows
-
-    def get(self, dim, fld, kinds=None):
-        return [r for r in self.rows if r['dimension'] == dim and r['field'] == fld and (kinds is None or r['kind'] in kinds)]
-
-    def first(self, dim, fld, kinds=None):
-        x = self.get(dim, fld, kinds)
-        return x[0] if x else None
-
-    def mw(self):
-        """(headline MW, kind, tag, text): an actual figure first, then a target/request, then an 'up to'."""
-        for fld, kinds, label in (('mw', ('actual',), ''), ('mw_full', ('actual',), ''), ('mw', ('target',), 'requested '), ('mw', ('range_high',), 'up to ')):
-            r = self.first('power_capacity', fld, kinds)
-            if r:
-                return num(r['value']), ('actual' if not label else 'request' if label.startswith('req') else 'up_to'), r['tag_norm'], f"{label}{g(r['value'])} MW"
-        return None, None, None, '—'
-
-    def timing(self):
-        for fld in ('available', 'initial_available', 'full_available'):
-            r = self.first('power_timing', fld)
-            if r:
-                full = self.first('power_timing', 'full_available')
-                txt = r['value'] + (f"; full {full['value']}" if fld == 'initial_available' and full else '')
-                return tagged(txt, r['tag_norm'])
-        return ''
-
-    def connection(self):
-        u = self.first('power_connection', 'utility')
-        kv = self.first('power_connection', 'voltage_kv')
-        sub = self.first('power_connection', 'substation')
-        st = self.first('power_connection', 'substation_status')
-        parts = [u['value'] if u else '', f"{g(kv['value'])} kV" if kv else '',
-                 (f"sub {sub['value']}" + (' (new)' if st and st['value'] == 'new_or_planned' and '(new)' not in sub['value'] else '')) if sub else '']
-        return ' · '.join(p for p in parts if p)
-
-    def fiber(self):
-        s = self.first('fiber', 'status')
-        if not s:
-            return ''
-        if s['value'] != 'quoted':
-            return s['value'].replace('_', ' ')
-        nrc = self.first('fiber', 'nrc_usd'); r1 = self.first('fiber', 'route1_ft'); r2 = self.first('fiber', 'route2_ft')
-        c = self.first('fiber', 'carrier')
-        return (f"{c['value'] if c else ''} build ${num(nrc['value']) / 1e6:,.2f}M" if nrc else 'quoted') + \
-               (f"; routes {g(r1['value'])} / {g(r2['value'])} ft" if r1 and r2 else '')
-
-    def acres(self):
-        a = self.first('acreage', 'acres', ('actual',))
-        if a:
-            return num(a['value']), tagged(f"{g(a['value'])} ac", a['tag_norm'])
-        t = self.first('acreage', 'acres', ('target',))
-        return None, (f"target ~{g(t['value'])} ac" if t else '')
-
-    def stage(self):
-        r = self.first('site_control', 'stage')
-        return r['value'] if r else ''
-
-    def constraints(self):
-        return [r['value'] for r in self.get('grid_constraints', 'constraint')]
-
-    def flood_claims(self):
-        return [r['value'] for r in self.get('flood_wetlands', 'claim')]
 
 
 def save(d, path):
@@ -230,7 +134,7 @@ def main():
     ids = [s['site_id'] for s in sites_list]
     sname = {s['site_id']: s['name'] for s in sites_list}
     B = {sid: Broker(ev_by[sid]) for sid in ids}
-    market = {s['site_id']: s['section'].split(' (')[0].split(' · ')[0].title().replace('Msa', 'MSA') for s in sites_list}
+    market = {s['site_id']: market_of(s['section']) for s in sites_list}
     tier = {sid: (located.get(sid) or {}).get('location_tier', '') for sid in ids}
     basis = {sid: (located.get(sid) or {}).get('location_basis', '') for sid in ids}
     R = lambda sid, f: (run_sites.get(sid) or {}).get(f, '')
@@ -615,10 +519,6 @@ def main():
     d.heading('Appendix A: Site by site', 1)
     note('One row per site, grouped by market. Broker-stated except Location (our status) and the three "ours" columns (our checks; Flood and Neighbors on '
          'confirmed sites only; Proximity from the placed point where the site is not confirmed, marked "placed").')
-
-    def dedupe(xs):
-        w = [(x, set(re.findall(r'[a-z0-9]+', x.lower()))) for x in xs]
-        return [x for i, (x, s) in enumerate(w) if not any(j != i and s < s2 or (s == s2 and j < i) for j, (_, s2) in enumerate(w))]
     rows, cells, rules = [], {}, []
     for m in markets:
         if rows:
@@ -634,7 +534,7 @@ def main():
                   f"hospital {near(sid, 'hospital_nearest_m')}\nnursing home {near(sid, 'nursing_home_nearest_m')}") if ok else ''
             rows.append([f'**{sid}**', slabel(sid).replace('Confirmed: ', 'Conf.: '), STAGE.get(br.stage(), br.stage()),
                          (tagged(txt, t_) if t_ else txt) + (f"\n{br.timing()}" if br.timing() else '') + (f"\n{br.connection()}" if br.connection() else ''),
-                         br.fiber() or '—', prox, fl, nb, '\n'.join(dedupe(br.constraints() + vals(sid, 'other', 'detail')))])
+                         br.fiber() or '—', prox, fl, nb, '\n'.join(br.caveats())])
             cells[(len(rows) - 1, 1)] = fill(sid)
     widths = [0.55, 0.95, 0.9, 1.75, 1.1, 1.05, 0.85, 1.3, 1.95]
     d.table(['Site', 'Location', 'Site control', 'Power, timing, utility', 'Fiber', 'Proximity (ours)', 'Flood (ours)', 'Neighbors (ours)', 'Caveats and other notes'],
@@ -644,7 +544,7 @@ def main():
     d.heading('Appendix B: Ownership and data handling', 1)
     rows = []
     for sid in confirmed:
-        said = '; '.join(vals(sid, 'site_control', 'owner_type') + vals(sid, 'site_control', 'detail')) or '—'
+        said = B[sid].owner() or '—'
         rows.append([f'**{sid}**', said, (R(sid, 'parcel_owner').strip() or '(none in the record)') + (' (internal)' if sid in internal else '')])
     if rows:
         note('Owner of record on the confirmed sites (county parcel data; for a carve-out, the owner of the parent parcel).')
@@ -676,7 +576,7 @@ def main():
              f"({cells_info['cells_copied']} cells are identical across sites: market-level, not site-level, evidence).")
     d.bullet(f"{check['evidence_rows']} evidence rows and {check['clue_rows']} location clues extracted in-session; every quote was verified "
              f"word for word against its source cell (extract_check.py, {len(check['errors'])} errors, {len(check['warnings'])} warnings).")
-    d.bullet('Confidence tags normalized to one scale: confirmed in writing > confirmed at pre-screen > utility estimate (verbal) > broker estimate > pending.')
+    d.bullet(f"Confidence tags normalized to one scale: {' > '.join(t for t in TAG_FULL.values() if t)}.")
     d.bullet('Locations: coordinates as given; named existing substations looked up in HIFLD; intersections computed from Census TIGER roads; '
              'landmarks from OpenStreetMap; ZIP and county centroids otherwise. Each candidate is checked against the stated county and ZIP.')
     d.heading('Sources (free / public)', 2)

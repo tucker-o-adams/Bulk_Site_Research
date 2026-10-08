@@ -96,7 +96,7 @@ def check_rows(rows, status=None):
 
 
 if __name__ == '__main__':
-    from memo import rd                                                       # noqa: E402
+    from broker_facts import rd                                               # noqa: E402
     from batch_paths import support                                           # noqa: E402
     b = sys.argv[1].rstrip('/\\')
     summ = support(b, 'broker_summary.csv')

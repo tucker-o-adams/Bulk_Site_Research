@@ -135,11 +135,20 @@ workbook on `review` before anyone relies on an acreage.
 .venv_fema/Scripts/python.exe scripts/bulk/excel.py Outputs/<batch>/ --name <Title>
 ```
 
-Writes `<Title>.xlsx` in the batch folder: **Sites** (one row per site, producer bands over
-field names, absent cells grey / failed cells red, frozen site columns, autofilter), **Gaps**
-(every absent/failed value with the source's note), **Sources** (one row per producer: source,
-URL, vintage, method, fields, tallies), **Provenance** (full site × field table), **Run** (input
-file + sha256, run time, counts, rejected rows, status meanings). Distances stay in metres.
+Writes `<Title>.xlsx` at the top of the batch folder (`batch_paths.publish`): **Sites** (our checks: one row per site,
+producer bands over field names, absent cells gray / failed cells red, frozen site columns, autofilter), **Broker says**
+(the broker's statements, never merged with our checks: one row per site grouped by market, in the summary memo's words —
+site control and what the broker says about the owner; MW, its kind and confidence; timing; connection / utility; ¢/kWh;
+fiber; acres; zoning; flood claims; caveats and other notes — confidence tags as in the memos), **Broker evidence**
+(every broker statement: value, kind, confidence, the verbatim quote and its source cell), **Gaps** (every absent/failed
+value with the source's note), **Sources** (one row per producer: source, URL, vintage, method, fields, tallies),
+**Provenance** (full site × field table), **Run** (input file + sha256, run time, counts, rejected rows, status meanings).
+Distances stay in meters.
+
+The broker sheets come from `input/site_list.csv` and `input/evidence_checked.csv`, only once `extract_check.py` has passed;
+without them the workbook has the other five sheets. Their wording is `broker_facts.py`, which `memo.py` also uses, so the
+workbook and the memos say the same thing: "headline MW", "timing" and "connection / utility" read together are the summary
+memo's Appendix A "Power, timing, utility" cell, and the Site control, Fiber and Caveats columns are its cells word for word.
 
 ## KMZ
 

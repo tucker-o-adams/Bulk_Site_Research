@@ -3,12 +3,16 @@
 
     .venv_fema/Scripts/python.exe scripts/bulk/excel.py Outputs/<batch>/ [--name <title>]
 
-Reads sites.csv, provenance.csv, run.json in the batch folder and writes
-<batch>.xlsx beside them with five sheets:
+Reads sites.csv, provenance.csv, run.json (Supporting outputs/) and, when the broker text has been extracted and
+checked, input/site_list.csv and input/evidence_checked.csv; writes <batch>.xlsx at the top of the batch folder:
 
-    Sites        one row per site; producer bands over field names; absent cells
-                 shaded grey and failed cells red so a blank is never read as zero
-    Gaps         every absent / failed value with the source's note
+    Sites           our checks: one row per site; producer bands over field names; absent cells
+                    shaded gray and failed cells red so a blank is never read as zero
+    Broker says     the broker's statements, one row per site grouped by market, in the summary memo's
+                    words (broker_facts.py): site control, MW and its confidence, timing, connection,
+                    cost, fiber, acreage, zoning, flood claims, caveats. Never merged with our checks
+    Broker evidence every broker statement: value, kind, confidence, the verbatim quote and its cell
+    Gaps            every absent / failed value with the source's note
     Sources      one row per producer: source, URL, vintage, method, fields, tallies
     Provenance   the full site x field table, filterable
     Run          input file and hash, run time, counts, rejected rows
@@ -23,6 +27,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from sites import REQUIRED, OPTIONAL          # noqa: E402
 from batch_paths import support, publish      # noqa: E402
+from broker_facts import (Broker, STAGE, TAG_FULL, MW_KIND, rd, tagged, market_of)   # noqa: E402
 
 BAND_TITLES = {
     'transmission': 'Transmission (HIFLD)', 'substations': 'Substations (HIFLD)', 'flood': 'Flood at the pin (FEMA NFHL)',
@@ -39,12 +44,25 @@ FP_FLOOD = ['fp_flood_zones', 'fp_sfha_acres', 'fp_sfha_pct', 'fp_floodway_acres
 FP_NWI = ['fp_nwi_acres', 'fp_nwi_pct', 'fp_nwi_types']
 BAND_COLORS = ['1F3864', '2E5A46', '7A4A00', '4A235A', '0B5345', '6E2C00', '1B4F72', '4D5656', '5B2C6F', '145A32',
                '78281F', '1A5276', '3D3D3D']      # one per band: Site + 12 producers
+# Broker says: (band, [(header, width)]); the band titles name the summary memo's Appendix A / B column they match
+BROKER_BANDS = [('Site', [('site_id', 9), ('name', 30), ('market', 20)]),
+                ('Site control (Appendix A; owner: Appendix B)', [('site control', 18), ('about the owner', 30)]),
+                ('Power, timing, utility (Appendix A)', [('MW', 7), ('MW kind', 13), ('MW confidence', 16), ('headline MW', 20), ('timing', 30),
+                                                         ('connection / utility', 30), ('¢/kWh', 20)]),
+                ('Fiber (Appendix A)', [('fiber', 30)]),
+                ('Land', [('acres', 16), ('zoning', 40)]),
+                ('Flood', [('flood claims', 40)]),
+                ('Caveats and other notes (Appendix A)', [('caveats and other notes', 70)])]
+BROKER_COLORS = ['1F3864', '833C0B', 'C55A11', '833C0B', 'C55A11', '833C0B', 'C55A11']     # Site, then broker bands in two browns
+EVIDENCE_COLS = ['site_id', 'dimension', 'field', 'value', 'unit', 'kind', 'confidence', 'tag_raw', 'quote', 'source_cell', 'column',
+                 'note', 'dup_sites']
 
 FILL_ABSENT = PatternFill('solid', fgColor='E7E6E6')
 FILL_FAILED = PatternFill('solid', fgColor='F8CBAD')
 FILL_NA = PatternFill('solid', fgColor='DDEBF7')          # not_assessable: location too rough for this field
 FILL_HDR = PatternFill('solid', fgColor='D9D9D9')
 THIN = Side(style='thin', color='BFBFBF')
+RULE = Border(top=Side(style='medium', color='000000'))   # between markets, as in the memo's tables
 FONT_HDR = Font(bold=True)
 FONT_BAND = Font(bold=True, color='FFFFFF')
 WRAP = Alignment(wrap_text=True, vertical='top')
@@ -71,6 +89,90 @@ def autosize(ws, min_w=8, max_w=60):
                 widths[i] = max(widths[i], min(max_w, len(str(v))))
     for i, w in widths.items():
         ws.column_dimensions[get_column_letter(i)].width = max(min_w, w + 2)
+
+
+def confidence(tag):
+    return TAG_FULL.get(tag, tag) or 'untagged'
+
+
+def bands_header(ws, bands, colors, row=2):
+    """A colored band row over a bold header row (the Sites layout)."""
+    col = 1
+    for bi, (title, cols) in enumerate(bands):
+        c0 = col
+        for h, w in cols:
+            cell = ws.cell(row + 1, col, h)
+            cell.font = FONT_HDR; cell.fill = FILL_HDR; cell.alignment = Alignment(wrap_text=True, vertical='bottom')
+            ws.column_dimensions[get_column_letter(col)].width = w
+            col += 1
+        ws.merge_cells(start_row=row, start_column=c0, end_row=row, end_column=col - 1)
+        cell = ws.cell(row, c0, title); cell.font = FONT_BAND; cell.alignment = Alignment(horizontal='center')
+        cell.fill = PatternFill('solid', fgColor=colors[bi % len(colors)])
+    return col - 1
+
+
+def broker_sheets(wb, b, name):
+    """'Broker says' and 'Broker evidence' from the checked broker-text extraction, or None when there is none. The
+    wording is broker_facts.py's, the same as the summary memo's; nothing from our checks is mixed in."""
+    inp = os.path.join(b, 'input')
+    ev, sites_list = rd(os.path.join(inp, 'evidence_checked.csv')), rd(os.path.join(inp, 'site_list.csv'))
+    ck = os.path.join(inp, 'extract_check.json')
+    if not ev or not sites_list:
+        print('  no broker sheets: input/evidence_checked.csv or input/site_list.csv not found (broker text not extracted)')
+        return None
+    if not (os.path.exists(ck) and json.load(open(ck, encoding='utf-8')).get('ok')):
+        print('  no broker sheets: extract_check.py has not passed for this batch')
+        return None
+    ev_by = defaultdict(list)
+    for r in ev:
+        ev_by[r['site_id']].append(r)
+    market = {s['site_id']: market_of(s['section']) for s in sites_list}
+    markets = list(dict.fromkeys(market[s['site_id']] for s in sites_list))
+    ids = [s['site_id'] for m in markets for s in sites_list if market[s['site_id']] == m]   # grouped by market, as Appendix A
+    sname = {s['site_id']: s['name'] for s in sites_list}
+
+    # ------------------------------------------------------------------ Broker says
+    ws = wb.create_sheet('Broker says', 1)
+    ws.cell(1, 1, f'{name} — {len(ids)} sites — BROKER-STATED, NOT OUR CHECK: every value is what the broker says '
+                  '(input/evidence_checked.csv, quotes checked word for word); our checks are on Sites. Same words as the summary '
+                  'memo: confidence in parentheses is confirmed = confirmed in writing, pre-screen = confirmed at pre-screen, '
+                  'utility est. = utility estimate (verbal), broker est. = broker estimate, pending. "headline MW", "timing" and '
+                  '"connection / utility", read together, are the memo\'s "Power, timing, utility" cell. Every statement, with its '
+                  'quote: Broker evidence.').font = Font(italic=True)
+    ncol = bands_header(ws, BROKER_BANDS, BROKER_COLORS)
+    for r, sid in enumerate(ids, 4):
+        br = Broker(ev_by[sid])
+        v, k, t, txt = br.mw()
+        row = [sid, sname[sid], market[sid], STAGE.get(br.stage(), br.stage()), br.owner(),
+               v, MW_KIND.get(k, ''), confidence(t) if t else '', tagged(txt, t) if t else txt, br.timing(), br.connection(), br.cost(),
+               br.fiber() or '—', br.acres()[1], br.zoning(), '\n'.join(br.flood_claims()), '\n'.join(br.caveats())]
+        for c, x in enumerate(row, 1):
+            cell = ws.cell(r, c, x if x != '' else None)
+            cell.alignment = WRAP
+            if r > 4 and market[sid] != market[ids[r - 5]]:
+                cell.border = RULE
+        if isinstance(v, float):
+            ws.cell(r, 6).number_format = '#,##0.0'
+    ws.freeze_panes = 'B4'
+    ws.auto_filter.ref = f'A3:{get_column_letter(ncol)}{3 + len(ids)}'
+    ws.row_dimensions[3].height = 30
+
+    # ------------------------------------------------------------------ Broker evidence
+    be = wb.create_sheet('Broker evidence', 2)
+    be.cell(1, 1, f'{name} — {len(ev)} broker statements — BROKER-STATED, NOT OUR CHECK. One row per statement: value as extracted, '
+                  'kind (actual / target / range_low / range_high / text), confidence on one scale (tag_raw = the broker\'s own words), the '
+                  'verbatim quote and the cell it came from. dup_sites: the same cell is shared by these sites (market-level, not '
+                  'site-level, evidence).').font = Font(italic=True)
+    for c, h in enumerate(EVIDENCE_COLS, 1):
+        cell = be.cell(2, c, h); cell.font = FONT_HDR; cell.fill = FILL_HDR
+    order = {sid: i for i, sid in enumerate(ids)}
+    for r in sorted(ev, key=lambda r: order.get(r['site_id'], len(order))):     # stable: file order within a site
+        be.append([num(r['value']) if h == 'value' else confidence(r['tag_norm']) if h == 'confidence' else r.get(h) or None
+                   for h in EVIDENCE_COLS])
+    be.freeze_panes = 'B3'; be.auto_filter.ref = f'A2:{get_column_letter(len(EVIDENCE_COLS))}{2 + len(ev)}'
+    autosize(be, max_w=60)
+    be.column_dimensions['A'].width = 10       # not the legend's width
+    return len(ids), len(ev)
 
 
 def main():
@@ -115,13 +217,13 @@ def main():
         bands.append((BAND_TITLES.get(n, n), [f for f in p['fields'] if n != 'footprint' or f not in gone]))
         if n in moved:
             bands.append(moved[n])
-    legend = (f'{name} — {len(sites)} sites — run {run["run_at"][:16].replace("T", " ")} UTC — distances in metres '
-              '(1 mi = 1,609 m) — grey = source confirmed nothing there (absent), red = source failed (see Gaps), '
+    legend = (f'{name} — {len(sites)} sites — run {run["run_at"][:16].replace("T", " ")} UTC — distances in meters '
+              '(1 mi = 1,609 m) — gray = source confirmed nothing there (absent), red = source failed (see Gaps), '
               'blue = not assessable: the site is located only to a landmark, ZIP or county (location_tier L3-L5)')
     if has_fp:
         legend += ('   |   basis: "parcel boundary" = a parcel polygon resolved; the fp_* footprint columns (flood zones, SFHA, '
                    'floodway, wetland acres) are measured over that parcel. "<n> m square" = no parcel resolved, so the fp_* '
-                   'columns are measured over a square centred on the pin - 200 m x 200 m (9.88 ac), or sized to acres_stated '
+                   'columns are measured over a square centered on the pin - 200 m x 200 m (9.88 ac), or sized to acres_stated '
                    'when the input gives a larger acreage - ground around the site, '
                    'not a parcel, and no parcel acreage is claimed. Point columns (fema_*, nwi_*) are always at the pin.')
     elif has_parcel:
@@ -163,6 +265,8 @@ def main():
     autosize(ws, max_w=28)
     for c in range(1, len(all_fields) + 1):
         ws.column_dimensions[get_column_letter(c)].width = min(ws.column_dimensions[get_column_letter(c)].width, 18)
+
+    broker = broker_sheets(wb, b, name)
 
     # ------------------------------------------------------------------ Gaps
     g = wb.create_sheet('Gaps')
@@ -223,6 +327,8 @@ def main():
                  ('absent values', sum(1 for p in prov if p['status'] == 'absent')),
                  ('failed values', sum(1 for p in prov if p['status'] == 'failed')),
                  ('cache hits / misses', f"{run['cache']['hits']} / {run['cache']['misses']}"),
+                 ('broker statements', f'{broker[1]} (input/evidence_checked.csv; Broker says, Broker evidence)' if broker else
+                                       'none: broker text not extracted and checked'),
                  ('status meanings', 'ok = source returned a value; absent = source confirmed nothing there (an answer, not an error); '
                                      'failed = source unreachable, value null; manual = supplied by a person')]:
         rn.append([k, v])
@@ -230,8 +336,15 @@ def main():
         rn.append([f'rejected row {n}', f'{sid}: {why}'])
     autosize(rn, max_w=100)
 
+    from memo import BRITISH        # American spelling in everything a reader sees (memo.py warns the same way)
+    brit = {sh.title: sorted({m.group(0) for row in sh.iter_rows(values_only=True) for v in row if isinstance(v, str)
+                              for m in BRITISH.finditer(v)}) for sh in wb.worksheets}
     out = publish(b, f'{name}.xlsx', wb.save)
-    print(f'wrote {out}: Sites {len(sites)} rows x {len(all_fields)} cols | Gaps {len(gaps)} | Sources {len(producers)} | Provenance {len(prov)}')
+    found = ['{}: {}'.format(k, ', '.join(v)) for k, v in brit.items() if v]
+    if found:
+        print(f"  workbook: British spellings (ours to fix, or in the source text): {'; '.join(found)}")
+    print(f'wrote {out}: Sites {len(sites)} rows x {len(all_fields)} cols | '
+          + (f'Broker says {broker[0]} rows | Broker evidence {broker[1]} | ' if broker else '') + f'Gaps {len(gaps)} | Sources {len(producers)} | Provenance {len(prov)}')
 
 
 if __name__ == '__main__':
