@@ -472,15 +472,27 @@ def site_layers(site_f, s, fp, cache, outlines, profile, ref_nh, ref_h, counts):
 
     rev_ft, pass_ft = profile['receptor_review_ft'], profile['receptor_pass_ft']
     uf = folder(site_f, f"Usable land: {fmt(s.get('ul_pads_fit'))} pads, {fmt(s.get('ul_pads_fit_pass'))} at {pass_ft:,} ft", visible=False)
+    # colored by each piece's actual distance from the nearest receptor (not by whether a whole pad fits in the band:
+    # a strip 2,000+ ft away that is too narrow for a pad is still purple). The pad counts need a full pad in the band.
     allb = unary_union(r['blocks']) if r['blocks'] else None
-    rev = unary_union(r['review']) if r['review'] else None
-    far = unary_union(r['pass']) if r['pass'] else None
-    for geom, style, label in ((allb.difference(rev) if allb is not None and rev is not None else allb, 'ulNear', f'under {rev_ft:,} ft from a home or sensitive neighbor (red)'),
-                               (rev.difference(far) if rev is not None and far is not None else rev, 'ulMid', f'{rev_ft:,}-{pass_ft:,} ft (yellow)'),
-                               (far, 'ulFar', f'{pass_ft:,} ft or more (purple)')):
-        if geom is not None and not geom.is_empty:
+    pts = [h[0] for h in r['homes']] + [x[0] for x in r['sensitive']]
+    rev_m, pass_m = homes.receptor_m(profile)
+    if allb is not None and pts:
+        far1, far2 = usable.far_from(allb, pts, rev_m), usable.far_from(allb, pts, pass_m)
+        empty = allb.difference(allb)
+        far1 = far1 if far1 is not None else empty
+        far2 = far2 if far2 is not None else empty
+        bands = ((allb.difference(far1), 'ulNear'), (far1.difference(far2), 'ulMid'), (far2, 'ulFar'))
+    else:
+        bands = ((None, 'ulNear'), (None, 'ulMid'), (allb, 'ulFar'))
+    labels = {'ulNear': f'under {rev_ft:,} ft from a home or sensitive neighbor (red)', 'ulMid': f'{rev_ft:,}-{pass_ft:,} ft (yellow)',
+              'ulFar': f'{pass_ft:,} ft or more (purple)'}
+    for geom, style in bands:
+        if geom is not None and not geom.is_empty and geom.area > 1:
             counts['usable polygons'] += 1
-            add_poly_pm(uf, f'usable, {label}: {geom.area / footprint.AC:,.1f} ac', style, 'blocks wide enough for a pad', to_ll(geom))
+            add_poly_pm(uf, f'usable, {labels[style]}: {geom.area / footprint.AC:,.1f} ac', style,
+                        'usable blocks, colored by distance from the nearest home or sensitive neighbor; pad counts need a whole '
+                        'pad inside a band, so a narrow strip may hold none', to_ll(geom))
 
 
 def main():
