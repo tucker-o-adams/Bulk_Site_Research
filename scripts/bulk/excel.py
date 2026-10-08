@@ -25,14 +25,16 @@ from sites import REQUIRED, OPTIONAL          # noqa: E402
 from batch_paths import support, publish      # noqa: E402
 
 BAND_TITLES = {
-    'transmission': 'Transmission (HIFLD)', 'substations': 'Substations (HIFLD)', 'flood': 'Flood (FEMA NFHL)',
-    'wetlands': 'Wetlands (USFWS NWI)', 'metro': 'Metro (Census urban areas)', 'datacenter': 'Data centers (PeeringDB)',
+    'transmission': 'Transmission (HIFLD)', 'substations': 'Substations (HIFLD)', 'flood': 'Flood at the pin (FEMA NFHL)',
+    'wetlands': 'Wetlands at and near the pin (USFWS NWI)', 'metro': 'Metro (Census urban areas)', 'datacenter': 'Data centers (PeeringDB)',
     'housing': 'Housing (Census 2020 blocks)', 'schools': 'Schools (NCES)', 'worship': 'Places of worship (HIFLD)',
     'healthcare': 'Nursing homes & hospitals (CMS)', 'parcel': 'Parcel (county / state GIS)',
-    'footprint': 'Site footprint: parcel, else square around pin (FEMA, NWI)',
+    'footprint': 'Site footprint: outline, parcel, else square around pin',
     'homes': 'Homes (FEMA USA Structures)', 'usable': 'Usable land and pads (product profile)',
     'power_site': 'Power from the site edge (HIFLD)', 'sensitive': 'Schools, worship, healthcare from the site edge',
 }
+FP_FLOOD = ['fp_flood_zones', 'fp_sfha_acres', 'fp_sfha_pct', 'fp_floodway_acres', 'fp_flood_unmapped_acres']
+FP_NWI = ['fp_nwi_acres', 'fp_nwi_pct', 'fp_nwi_types']
 BAND_COLORS = ['1F3864', '2E5A46', '7A4A00', '4A235A', '0B5345', '6E2C00', '1B4F72', '4D5656', '5B2C6F', '145A32',
                '78281F', '1A5276', '3D3D3D']      # one per band: Site + 12 producers
 
@@ -101,7 +103,16 @@ def main():
         site_cols.insert(1, 'basis')
     prod_fields = [f for p in producers.values() for f in p['fields']]
     extra_cols = [c for c in sites[0].keys() if c not in site_cols and c not in prod_fields and c not in OPTIONAL]
-    bands = [('Site', site_cols + extra_cols)] + [(BAND_TITLES.get(n, n), p['fields']) for n, p in producers.items()]
+    # the footprint's flood and wetland shares sit with the Flood and Wetlands groups, right after their pin values
+    moved = {'flood': ('Flood across the whole site (FEMA NFHL; % of site acres)', FP_FLOOD),
+             'wetlands': ('Wetlands across the whole site (USFWS NWI; % of site acres)', FP_NWI)}
+    moved = {k: v for k, v in moved.items() if k in producers and 'footprint' in producers}
+    gone = {f for _, fs in moved.values() for f in fs}
+    bands = [('Site', site_cols + extra_cols)]
+    for n, p in producers.items():
+        bands.append((BAND_TITLES.get(n, n), [f for f in p['fields'] if n != 'footprint' or f not in gone]))
+        if n in moved:
+            bands.append(moved[n])
     legend = (f'{name} — {len(sites)} sites — run {run["run_at"][:16].replace("T", " ")} UTC — distances in metres '
               '(1 mi = 1,609 m) — grey = source confirmed nothing there (absent), red = source failed (see Gaps), '
               'blue = not assessable: the site is located only to a landmark, ZIP or county (location_tier L3-L5)')
