@@ -5,6 +5,10 @@ EPA publishes each NPL site as one point (its location), not its boundary, so "o
 the footprint; a large NPL site whose point lies outside can still reach onto the land - read the distance with that in
 mind. Measured from the footprint edge (producers/footprint.py: intake outline, parcel or square). NPL only: brownfields
 and hazardous-waste (RCRA) sites are separate EPA layers, not checked here.
+
+Distances follow the Phase I environmental site assessment standard (ASTM E1527-21 minimum search distances, from the
+property boundary; 2026-10-08): an active NPL site within 1 mile, a deleted (cleaned-up) NPL site within 0.5 mile, and
+anything on the site. A proposed NPL site is counted as active. The nearest site within 5 km stays as context.
 """
 from shapely.geometry import Point
 from cache import coord_key
@@ -18,8 +22,10 @@ SOURCE = 'EPA Superfund National Priorities List sites (points)'
 VINTAGE = None
 SEARCH_M = 5000
 METHOD = f"EPA NPL site points within the footprint's bounding box grown by {SEARCH_M} m; distance from the footprint edge"
-NOTE = 'NPL sites are points, not boundaries; NPL only (no brownfields or RCRA)'
-FIELDS = ['npl_on_site', 'npl_nearest_m', 'npl_nearest_name', 'npl_nearest_status', 'npl_within_5km']
+NOTE = 'NPL sites are points, not boundaries; NPL only (no brownfields or RCRA); 1 mi / 0.5 mi per ASTM E1527-21 search distances'
+ACTIVE_M, DELETED_M = 1609.344, 804.672        # ASTM E1527-21: 1 mile (NPL), 0.5 mile (deleted NPL)
+FIELDS = ['npl_on_site', 'npl_active_within_1mi', 'npl_deleted_within_half_mi', 'npl_nearest_m', 'npl_nearest_name',
+          'npl_nearest_status']
 
 
 def run(site, cache):
@@ -43,10 +49,12 @@ def run(site, cache):
             x, y = fp['fwd'](*g['coordinates'][:2])
             pts.append((Point(x, y).distance(fp['m']), f.get('properties') or {}))
     pts.sort(key=lambda t: t[0])
-    within = sum(1 for dd, _ in pts if dd <= SEARCH_M)
+    deleted = lambda p: 'DELETED' in (p.get('Status') or '').upper()
+    out = [mk('npl_on_site', bool(pts) and pts[0][0] == 0),
+           mk('npl_active_within_1mi', sum(1 for dd, p in pts if dd <= ACTIVE_M and not deleted(p))),
+           mk('npl_deleted_within_half_mi', sum(1 for dd, p in pts if dd <= DELETED_M and deleted(p)))]
     if not pts or pts[0][0] > SEARCH_M:
         why = f'no NPL site within {SEARCH_M:,} m of the site'
-        return [mk('npl_on_site', False)] + [absent(f, SOURCE, LYR, METHOD, note=why) for f in FIELDS[1:4]] + [mk('npl_within_5km', 0)]
+        return out + [absent(f, SOURCE, LYR, METHOD, note=why) for f in FIELDS[3:]]
     d0, p0 = pts[0]
-    return [mk('npl_on_site', d0 == 0), mk('npl_nearest_m', round(d0, 1)), mk('npl_nearest_name', p0.get('Site_Name')),
-            mk('npl_nearest_status', p0.get('Status')), mk('npl_within_5km', within)]
+    return out + [mk('npl_nearest_m', round(d0, 1)), mk('npl_nearest_name', p0.get('Site_Name')), mk('npl_nearest_status', p0.get('Status'))]

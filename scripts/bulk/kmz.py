@@ -258,9 +258,16 @@ def site_desc(s, srcs):
                                                    f"strong wind {esc(s.get('nri_strong_wind'))}; hail {esc(s.get('nri_hail'))}; hurricane {esc(s.get('nri_hurricane'))}; "
                                                    f"earthquake {esc(s.get('nri_earthquake'))}; wildfire {esc(s.get('nri_wildfire'))}; inland flooding {esc(s.get('nri_inland_flooding'))}"))
     if s.get('npl_on_site') not in (None, ''):
-        rows.append((srcs.get('superfund', 'Superfund'), ('<b>EPA Superfund (NPL) site point on the site</b>: ' if str(s.get('npl_on_site')) == 'True' else
-                                                         'nearest EPA Superfund (NPL) site: ') + (f"{esc(s.get('npl_nearest_name'))} ({esc(s.get('npl_nearest_status'))}) {m(s.get('npl_nearest_m'))}"
-                                                         if s.get('npl_nearest_m') not in (None, '') else 'none within 5 km')))
+        flags = []
+        if str(s.get('npl_on_site')) == 'True':
+            flags.append('<b>an NPL site point is on the site</b>')
+        if str(s.get('npl_active_within_1mi') or '0') not in ('0', '0.0'):
+            flags.append(f"<b>{esc(s.get('npl_active_within_1mi'))} active NPL site(s) within 1 mi</b>")
+        if str(s.get('npl_deleted_within_half_mi') or '0') not in ('0', '0.0'):
+            flags.append(f"<b>{esc(s.get('npl_deleted_within_half_mi'))} deleted NPL site(s) within 0.5 mi</b>")
+        rows.append((srcs.get('superfund', 'Superfund'), ('; '.join(flags) + '<br/>' if flags else 'none within the Phase I search distances (1 mi active, 0.5 mi deleted)<br/>')
+                     + ('nearest: ' + (f"{esc(s.get('npl_nearest_name'))} ({esc(s.get('npl_nearest_status'))}) {m(s.get('npl_nearest_m'))}"
+                                        if s.get('npl_nearest_m') not in (None, '') else 'none within 5 km'))))
     ft = lambda k, d: f"{float((s.get('_profile') or {}).get(k) or d):,.0f} ft"
     if s.get('home_nearest_m') not in (None, '') or s.get('homes_within_pass') not in (None, ''):
         rows.append((srcs.get('homes', 'Homes'), f"nearest home {m(s.get('home_nearest_m'))} ({esc(s.get('home_nearest_class'))}); on site <b>{fmt(s.get('homes_on_site'))}</b>; "
