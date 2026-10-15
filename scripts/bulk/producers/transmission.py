@@ -19,10 +19,10 @@ rejected for silently missing 69 kV lines.
 import json, math, urllib.parse
 from provenance import Value, absent, failed, now_iso
 from cache import coord_key
+from tbdi_geo import registry as shared
 
 NAME = 'transmission'
-LYR = ('https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/'
-       'US_Electric_Power_Transmission_Lines/FeatureServer/0')
+LYR = shared.layer_url('hifld-transmission')    # tbdi-geo source registry
 SOURCE = 'HIFLD US Electric Power Transmission Lines (ArcGIS mirror of retired HIFLD Open)'
 VINTAGE = '2025-08-26'          # layer editingInfo.dataLastEditDate, checked 2026-09-21
 RADIUS_M = 15000

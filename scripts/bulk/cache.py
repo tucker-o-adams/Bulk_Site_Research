@@ -15,6 +15,8 @@ service refetches rather than serving the old service's answer.
 import json, os, re, time, urllib.parse, urllib.request
 from datetime import datetime, timezone
 
+from tbdi_geo import arcgis
+
 UA = {'User-Agent': 'Mozilla/5.0 (TBDI bulk site research)'}
 
 
@@ -136,38 +138,21 @@ def _fetch(url, timeout):
 
 
 def _truncated(resp):
-    return isinstance(resp, dict) and bool(resp.get('exceededTransferLimit') or
-                                           (resp.get('properties') or {}).get('exceededTransferLimit'))
+    return arcgis.truncated(resp)
 
 
 def _page(url, first, timeout):
-    """(merged response, pages, error). Follows resultOffset until the service stops flagging
-    exceededTransferLimit. Records are never de-duplicated - a source can hold identical records (three
-    IRS filings geocoded to one address) and the count must match a single uncapped request. A page that
-    repeats the first page means the service ignores resultOffset: report it, never a partial answer."""
-    parts = urllib.parse.urlsplit(url)
-    if not parts.path.rstrip('/').endswith('/query'):
-        return None, 1, 'result truncated at the service record limit and the request is not a pageable /query'
-    q = [(k, v) for k, v in urllib.parse.parse_qsl(parts.query, keep_blank_values=True) if k != 'resultOffset']
-    feats = list(first.get('features') or [])
-    head = json.dumps(feats[:3], sort_keys=True)
-    resp, pages = first, 1
-    while _truncated(resp):
-        if pages >= MAX_PAGES:
-            return None, pages, f'result still truncated after {pages} pages - use a smaller radius'
-        nxt = urllib.parse.urlunsplit(parts._replace(query=urllib.parse.urlencode(q + [('resultOffset', len(feats))])))
-        resp = _fetch(nxt, timeout)
-        if isinstance(resp, dict) and 'error' in resp:
-            return None, pages, f"result truncated and paging failed: {str(resp['error'])[:120]}"
-        page = resp.get('features') or []
-        if not page or json.dumps(page[:3], sort_keys=True) == head:
-            return None, pages, ('result truncated at the service record limit and the service does not page '
-                                 '(resultOffset ignored) - use a smaller radius')
-        feats += page
-        pages += 1
-    merged = dict(first)
-    merged['features'] = feats
-    merged.pop('exceededTransferLimit', None)
-    if isinstance(merged.get('properties'), dict):
-        merged['properties'] = {k: v for k, v in merged['properties'].items() if k != 'exceededTransferLimit'}
+    """(merged response, pages, error). The paging is tbdi-geo's (`arcgis.complete`), shared with
+    tbdi-pasa since 2026-10-15; it was written here first. It follows resultOffset until the service
+    stops flagging exceededTransferLimit, never de-duplicates (a source can hold identical records -
+    three IRS filings geocoded to one address - and the count must match a single uncapped request),
+    and refuses rather than return part: not a /query, an error on a page, a service that ignores
+    resultOffset, or MAX_PAGES reached. A refusal is this pipeline's `failed`, never cached."""
+    base, params = arcgis.split_url(url)
+    try:
+        merged, pages = arcgis.complete(
+            lambda u, p: _fetch(u + '?' + urllib.parse.urlencode(p), timeout), base, params, first,
+            max_pages=MAX_PAGES)
+    except arcgis.QueryFailed as e:
+        return None, 1, str(e)
     return merged, pages, None

@@ -17,9 +17,10 @@ urban area >= 250k within SEARCH_M with geometry simplified to ~100 m.
 from cache import coord_key
 from geom import arcgis_query, geojson_polygon_dist_m
 from provenance import Value, absent, failed, now_iso
+from tbdi_geo import registry as shared
 
 NAME = 'metro'
-LYR = 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Urban/MapServer/0'
+LYR = shared.layer_url('census-tigerweb-urban')  # tbdi-geo source registry
 SOURCE = 'Census TIGERweb 2020 Urban Areas (POP100 = Census 2020 count)'
 VINTAGE = '2020'
 SEARCH_M = 300000

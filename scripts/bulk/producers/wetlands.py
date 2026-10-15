@@ -24,12 +24,12 @@ from datetime import date
 from geom import arcgis_query, geojson_polygon_dist_m
 from provenance import Value, absent, failed, now_iso
 from cache import coord_key
+from tbdi_geo import registry as shared
 
 NAME = 'wetlands'
-BASE = 'https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services'
-WET = f'{BASE}/Wetlands/MapServer/0'
-STATUS = f'{BASE}/Wetlands_Status/MapServer/0'
-IMGYR = f'{BASE}/Data_Source/MapServer/2'
+WET = shared.layer_url('usfws-nwi')              # tbdi-geo source registry
+STATUS = shared.layer_url('usfws-nwi-status')
+IMGYR = shared.layer_url('usfws-nwi-source', 2)
 LYR = WET
 SOURCE = 'USFWS National Wetlands Inventory (NWI)'
 VINTAGE = None                      # per site: imagery year from Data_Source

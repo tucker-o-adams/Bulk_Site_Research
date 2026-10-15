@@ -186,7 +186,8 @@ sources; 49 of those carry an operator-looking owner** (CSL / Kinetic / Windstre
 telephone co. / a `-PU` public-utility parcel number). Per-site evidence:
 `data/reference/parcel-proposals/remaining-probe.csv`, produced by
 `reference/probe_remaining_parcels.py`. **Nothing is registered** — every source below still needs
-review before it goes into `parcel-services.json`.
+review before it goes into the county registry (`parcel-services.json` until 2026-10-15; now tbdi-geo's
+`data/counties.json`, with `data/reference/county-services.json` as this repo's overlay).
 
 | State | Left | Hit | Operator owner | Route that works | Still open |
 |---|---|---|---|---|---|

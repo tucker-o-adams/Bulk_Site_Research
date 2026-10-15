@@ -10,9 +10,10 @@ is reported).
 from cache import coord_key
 from geom import arcgis_query
 from provenance import Value, absent, failed, now_iso
+from tbdi_geo import registry as shared
 
 NAME = 'hazards'
-LYR = 'https://services.arcgis.com/XG15cJAlne2vxtgt/arcgis/rest/services/National_Risk_Index_Census_Tracts/FeatureServer/0'
+LYR = shared.layer_url('fema-nri-tracts')       # tbdi-geo source registry
 SOURCE = 'FEMA National Risk Index (census tracts)'
 VINTAGE = None                   # per row: NRI_VER
 METHOD = 'NRI census tract containing the site pin; FEMA risk rating per hazard (relative to all US tracts)'

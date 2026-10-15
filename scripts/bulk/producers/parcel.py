@@ -48,9 +48,10 @@ from cache import coord_key
 from geom import arcgis_query, geojson_polygon_dist_m, ring_contains
 from provenance import Value, absent, failed, now_iso
 import registry
+from tbdi_geo import registry as shared
 
 NAME = 'parcel'
-TIGER = 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1'
+TIGER = shared.layer_url('census-tigerweb')      # tbdi-geo source registry
 LYR = TIGER
 SOURCE = 'County / state GIS parcel services (registry) + Census TIGERweb counties'
 VINTAGE = None

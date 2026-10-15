@@ -14,10 +14,10 @@ from shapely.geometry import Point
 from cache import coord_key
 from geom import arcgis_envelope_query
 from provenance import Value, absent, failed, now_iso
+from tbdi_geo import registry as shared
 
 NAME = 'superfund'
-LYR = ('https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/'
-       'Superfund_National_Priorities_List_(NPL)_Sites_with_Status_Information/FeatureServer/0')
+LYR = shared.layer_url('epa-superfund-npl')     # tbdi-geo source registry
 SOURCE = 'EPA Superfund National Priorities List sites (points)'
 VINTAGE = None
 SEARCH_M = 5000

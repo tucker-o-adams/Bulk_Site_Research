@@ -21,8 +21,10 @@ only when it returns exactly one polygon **and** carries parcel attributes: a
 state boundary layer answers a point query too.
 
 Output is a proposal per state in `data/reference/statewide-proposals/<ST>.json`.
-Nothing is registered: a person reviews and moves the winner into
-`data/reference/parcel-services.json` under `statewide`.
+Nothing is registered: a person reviews and moves the winner into the overlay
+`data/reference/county-services.json` under `statewide.<fips>.roles.parcel`
+(tbdi-geo schema: its `fields` map as `field_roles`), and from there into
+tbdi-geo's `data/counties.json` with a release, so that tbdi-pasa sees it too.
 """
 import argparse, csv, json, os, sys, urllib.parse, urllib.request
 from collections import defaultdict
@@ -190,7 +192,7 @@ def main():
         results.sort(key=lambda r: -r['score'])
         best = results[0] if results and results[0]['probe_hits'] == results[0]['probe_tried'] else None
         json.dump({'state': st, 'checked': len(urls), 'probe_points': points,
-                   'note': 'PROPOSAL ONLY — a person reviews and moves the winner into parcel-services.json.',
+                   'note': 'PROPOSAL ONLY — a person reviews and moves the winner into data/reference/county-services.json (roles.parcel).',
                    'candidates': results[:8]},
                   open(os.path.join(OUT_DIR, f'{st}.json'), 'w', encoding='utf-8'), indent=1)
         summary.append((st, len(points), best))

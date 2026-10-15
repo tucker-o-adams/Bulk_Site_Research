@@ -1,0 +1,7 @@
+{
+  "registry_version": 2,
+  "updated": "2026-10-15",
+  "note": "Mireye's overlay on tbdi-geo's county registry (data/counties.json in tbdi-geo, shared with tbdi-pasa). Same schema; an entry here replaces tbdi-geo's entry for that county or state, whole. Empty on 2026-10-15: every entry this file held as parcel-services.json moved into tbdi-geo 0.1.0. Register a reviewed service here; to share it with tbdi-pasa, move it into tbdi-geo and release. Schema: tbdi-geo src/tbdi_geo/registry.py.",
+  "statewide": {},
+  "counties": {}
+}

@@ -51,6 +51,7 @@ from geom import arcgis_envelope_query
 from provenance import Value, absent, failed, now_iso
 from producers import flood, footprint, homes, power_site, sensitive, wetlands
 import product_profile as prof
+from tbdi_geo import registry as shared
 
 NAME = 'usable'
 SOURCE = 'Usable land: site footprint minus FEMA USA Structures, NFHL, NWI, NLCD 2021, USGS 3DEP slope'
@@ -58,14 +59,14 @@ LYR = ''
 VINTAGE = None
 AC = footprint.AC
 PROFILE = None                  # run.py sets the batch's product profile
-STRUCTURES = 'https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/USA_Structures_View/FeatureServer/0'
+STRUCTURES = shared.layer_url('fema-usa-structures')   # tbdi-geo source registry
 NLCD_WCS = 'https://www.mrlc.gov/geoserver/mrlc_download/wcs'
 NLCD_COVERAGE = 'mrlc_download__NLCD_2021_Land_Cover_L48'
-DEM = 'https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer'
+DEM = shared.base('usgs-3dep')
 DEM_MAX_PX, DEM_TARGET_M = 1500, 10
 SLOPE_MIN_PATCH_M2 = 0.25 * AC
 FAR_CELL_M = 3                  # grid for "at least d from every home" (far_from); 3 m: 0.2 s a site, never lets ground closer than d
-ROADS = 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Transportation/MapServer'
+ROADS = shared.base('census-tigerweb-transport')
 ROAD_LAYERS = (2, 6, 8)         # primary roads, secondary roads (full detail), local roads
 ROAD_NEAR_M = 30                # an edge this close to a road centreline fronts the road (right-of-way width) - hypothesis
 IND_NEAR_M = 150                # an industrial building this close beyond an edge makes it an industrial neighbor - hypothesis

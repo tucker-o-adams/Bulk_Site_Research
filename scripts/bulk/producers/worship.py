@@ -11,10 +11,10 @@ from cache import coord_key
 from geom import arcgis_query
 from provenance import Value, absent, failed, now_iso
 from producers.pointsets import score_points, counts
+from tbdi_geo import registry as shared
 
 NAME = 'worship'
-LYR = ('https://services.arcgis.com/XG15cJAlne2vxtgt/ArcGIS/rest/services/'
-       'All_Places_Of_Worship__HiFLD_Open_/FeatureServer/42')
+LYR = shared.layer_url('hifld-worship')         # tbdi-geo source registry
 SOURCE = 'HIFLD All Places of Worship (ArcGIS mirror; IRS 501(c)(3) geocodes)'
 VINTAGE = '2025-03-24'
 SEARCH_M = 5000

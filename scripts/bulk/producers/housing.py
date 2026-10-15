@@ -24,9 +24,10 @@ from cache import coord_key
 from geom import arcgis_envelope_query, arcgis_query, point_dist_m
 from provenance import Value, absent, failed, now_iso
 import product_profile as prof
+from tbdi_geo import registry as shared
 
 NAME = 'housing'
-LYR = 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Census2020/MapServer/10'
+LYR = shared.layer_url('census-tigerweb-blocks-2020')   # tbdi-geo source registry
 SOURCE = 'Census TIGERweb 2020 Census Blocks (HU100 housing units, POP100 population)'
 VINTAGE = '2020'
 HALF_MI, ONE_MI = 804.672, 1609.344

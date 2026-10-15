@@ -2,17 +2,21 @@
 """Per-county (and statewide) parcel services, and how to choose one.
 
 There is no national public parcel layer, so a parcel boundary needs a service
-that is specific to the county — or to the state, where one exists. This module
-holds the lookup; `data/reference/parcel-services.json` holds the services.
+that is specific to the county — or to the state, where one exists.
 
-Schema (ported from tbdi-pasa `data/reference/county-services.json`, whose
-design this follows deliberately):
+Since 2026-10-15 the services live in **tbdi-geo** (`data/counties.json`), the
+library this pipeline shares with tbdi-pasa, so a county either tool registers
+reaches the other on the next release. This repo's own file,
+`data/reference/county-services.json`, is an **overlay** in the same schema:
+reviewed entries not yet released to tbdi-geo. An overlay entry replaces
+tbdi-geo's entry for that county or state, whole. Until 2026-10-15 the services
+were in `data/reference/parcel-services.json`; every entry moved into tbdi-geo
+0.1.0, and that file was renamed to the overlay and emptied.
 
-    {"registry_version": 1, "updated": "...",
-     "statewide": {"<state_fips>": {"state": "VA", "service": {...}}},
-     "counties":  {"<county_geoid>": {"county": "...", "state": "VA",
-                                      "publisher": "...", "reviewed": "2026-09-09",
-                                      "review_notes": "...", "service": {...}}}}
+The shared schema is tbdi-pasa's `roles` shape (`registry.py` in tbdi-geo has
+it in full). This module hands the rest of the pipeline the shape it was
+written for — a parcel `service` whose `fields` maps our roles to the county's
+column names:
 
     service = {"base": "<MapServer or FeatureServer url>", "layer": 0,
                "name": "...", "owner": "...",
@@ -26,31 +30,54 @@ design this follows deliberately):
     statewide layer carries but we may not use, and "check_point" [lat, lng] for
     check_sources.py where the service cannot count its records (WMS).
 
+In tbdi-geo those `fields` are the parcel role's `field_roles`. A county
+tbdi-pasa registered and Mireye never reviewed may have none: its polygon is
+used and its APN and owner come back empty, never guessed.
+
 A county entry wins over the statewide one: the county is the authority and
 everyone else is a copy of unknown age.
 
-Three tiers, in order (tbdi-pasa's rule, and the reason this file is reviewed
+Three tiers, in order (tbdi-pasa's rule, and the reason the registry is reviewed
 by a person): **registry** → **discovery proposal** (written by
 `discover_parcel_service.py`, never used by a run until someone moves it in) →
 **unresolved**, which records what was tried. An unresolved parcel is a valid
 result. A wrong parcel silently poisons buildable acres, the flood and wetland
 clips, and the KMZ outline, so nothing is auto-registered.
 """
-import json, os
+import os
+
+from tbdi_geo import registry as shared
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-PATH = os.path.join(ROOT, 'data', 'reference', 'parcel-services.json')
+PATH = os.path.join(ROOT, 'data', 'reference', 'county-services.json')     # overlay on tbdi-geo
 PROPOSALS = os.path.join(ROOT, 'data', 'reference', 'parcel-proposals')
 
-_REG = None
+
+def _service(role):
+    """A tbdi-geo parcel role in the shape this pipeline reads: `fields` is the role map."""
+    svc = dict(role)
+    svc['fields'] = dict(role.get('field_roles') or {})
+    return svc
+
+
+def _entry(entry):
+    """An entry's metadata (county, state, reviewed...) without its roles."""
+    return {k: v for k, v in entry.items() if k != 'roles'}
 
 
 def load():
-    global _REG
-    if _REG is None:
-        _REG = json.load(open(PATH, encoding='utf-8')) if os.path.exists(PATH) else \
-            {'registry_version': 1, 'statewide': {}, 'counties': {}}
-    return _REG
+    """The parcel services in this pipeline's shape:
+    {"statewide": {fips: {..., "service": svc}}, "counties": {geoid: {..., "service": svc}}}.
+    Entries that register no parcel role (tbdi-pasa's other county roles) are left out."""
+    reg = shared.counties(PATH)
+    out = {'registry_version': reg.get('registry_version'), 'updated': reg.get('updated'),
+           'statewide': {}, 'counties': {}, '_overlay': reg.get('_overlay')}
+    for section in ('statewide', 'counties'):
+        for key, e in (reg.get(section) or {}).items():
+            role = (e.get('roles') or {}).get('parcel')
+            if role:
+                out[section][key] = {**_entry(e), 'service': _service(role)}
+    return out
 
 
 def for_county(county_geoid, state_fips=None):
@@ -59,15 +86,11 @@ def for_county(county_geoid, state_fips=None):
     scope is 'county' or 'statewide'; entry carries the review metadata for the
     citation. A county entry wins over the statewide one.
     """
-    reg = load()
-    e = (reg.get('counties') or {}).get(str(county_geoid))
-    if e and e.get('service'):
-        return e['service'], 'county', e
-    st = str(state_fips or str(county_geoid)[:2])
-    s = (reg.get('statewide') or {}).get(st)
-    if s and s.get('service'):
-        return s['service'], 'statewide', s
-    return None, None, None
+    found = shared.parcel_services(str(county_geoid), PATH, state_fips=state_fips)
+    if not found:
+        return None, None, None
+    f = found[0]
+    return _service(f['service']), f['scope'], _entry(f['entry'])
 
 
 def field(service, role, default=None):

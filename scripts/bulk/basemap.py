@@ -33,6 +33,7 @@ import rasterio
 from rasterio.transform import from_bounds
 
 from cache import UA, coord_key
+from tbdi_geo import registry as shared
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CACHE = os.path.abspath(os.path.join(HERE, '..', '..', 'data', 'cache'))
@@ -73,7 +74,7 @@ def fetch_bytes(url, tries=3, timeout=300):
 
 
 # ---------------------------------------------------------------- NAIP
-NAIP = 'https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer'
+NAIP = shared.base('usgs-naip')                 # tbdi-geo source registry
 TILE_MAX = 2400          # NAIP exportImage caps at 4000 px a side, and in practice 500s on tiles near 8 M px (a test-batch site, 2026-09-24)
 
 

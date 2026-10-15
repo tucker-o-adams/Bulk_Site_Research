@@ -5,8 +5,11 @@
         --geoid 17197 [--county "Will County" --state IL] [--probe 41.45,-88.08]
 
 Writes `data/reference/parcel-proposals/<geoid>.json` for a person to review.
-Nothing here is used by a run until someone moves the chosen service into
-`data/reference/parcel-services.json`.
+Nothing here is used by a run until someone moves the chosen service into the
+overlay `data/reference/county-services.json` (tbdi-geo schema: the service
+goes under `counties.<geoid>.roles.parcel`, its `fields` map as `field_roles`),
+and from there into tbdi-geo's `data/counties.json` with a release, so that
+tbdi-pasa sees it too.
 
 Why propose and not register (ported argument from tbdi-pasa
 `tools/admin/county_discover.py`): the same search that finds the county GIS
@@ -524,7 +527,8 @@ def main():
     out = os.path.join(OUT_DIR, f'{a.geoid}.json')
     with open(out, 'w', encoding='utf-8') as f:
         json.dump({'geoid': a.geoid, 'county': county, 'state': state, 'probe': a.probe,
-                   'note': 'PROPOSAL ONLY - a person reviews this and moves the chosen service into parcel-services.json. '
+                   'note': 'PROPOSAL ONLY - a person reviews this and moves the chosen service into data/reference/county-services.json '
+                           '(roles.parcel, fields as field_roles). '
                            'Nothing here is used by a run.',
                    'nsgic_2025': nsgic,
                    'openaddresses_urls': oa_urls,
@@ -539,7 +543,8 @@ def main():
               '\nthese, check the county GIS department\'s own ArcGIS server — commonly'
               '\n  https://gis.<county>.<state>.us/arcgis/rest/services   or   https://maps.<county>gov.../arcgis/rest/services'
               '\nA layer owned by a soil district, a consultant, or another state\'s county is a copy of unknown age.')
-    print('\nReview one, then add it to data/reference/parcel-services.json under "counties".')
+    print('\nReview one, then add it to data/reference/county-services.json under counties.<geoid>.roles.parcel'
+          '\n(tbdi-geo schema: its fields map becomes field_roles).')
 
 
 if __name__ == '__main__':

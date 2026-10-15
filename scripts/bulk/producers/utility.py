@@ -21,10 +21,11 @@ says so for those states.
 from cache import coord_key
 from geom import arcgis_query
 from provenance import Value, absent, failed, now_iso
+from tbdi_geo import registry as shared
 
 NAME = 'utility'
 RETAIL_CHOICE = {'CT', 'DC', 'DE', 'IL', 'MA', 'MD', 'ME', 'NH', 'NJ', 'NY', 'OH', 'PA', 'RI', 'TX', 'MI'}
-LYR = 'https://services8.arcgis.com/peDZJliSvYims39Q/arcgis/rest/services/Electricity_Rates_H3_Res5/FeatureServer/7'
+LYR = shared.layer_url('eia-861-utility-rates')  # tbdi-geo source registry
 SOURCE = 'EIA Form 861 retail service territories and rates (Esri PolicyMap layer)'
 VINTAGE = 'EIA 861, 2024'
 METHOD = ('retail service territory polygons containing the site pin; average revenue per kWh = revenue / sales by '

@@ -34,9 +34,10 @@ from cache import coord_key
 from geom import arcgis_envelope_query
 from provenance import Value, absent, failed, now_iso
 import product_profile as prof
+from tbdi_geo import registry as shared
 
 NAME = 'homes'
-LYR = 'https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/USA_Structures_View/FeatureServer/0'
+LYR = shared.layer_url('fema-usa-structures')   # tbdi-geo source registry
 SOURCE = 'FEMA USA Structures (OCC_CLS Residential, or Unclassified as a possible home)'
 VINTAGE = None                   # per site: the imagery years of the homes found
 CLASSES = ('Residential', 'Unclassified')

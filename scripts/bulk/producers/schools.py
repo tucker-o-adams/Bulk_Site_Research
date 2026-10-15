@@ -10,10 +10,11 @@ from cache import coord_key
 from geom import arcgis_query
 from provenance import Value, absent, failed, now_iso
 from producers.pointsets import score_points, counts
+from tbdi_geo import registry as shared
 
 NAME = 'schools'
-PUB = 'https://nces.ed.gov/opengis/rest/services/K12_School_Locations/EDGE_GEOCODE_PUBLICSCH_2425/MapServer/0'
-PRV = 'https://nces.ed.gov/opengis/rest/services/K12_School_Locations/EDGE_GEOCODE_PRIVATESCH_2324/MapServer/0'
+PUB = shared.layer_url('nces-schools-public')    # tbdi-geo source registry
+PRV = shared.layer_url('nces-schools-private')
 LYR = PUB
 SOURCE = 'NCES EDGE school locations (public 2024-25, private 2023-24)'
 VINTAGE = '2024-25 public / 2023-24 private'

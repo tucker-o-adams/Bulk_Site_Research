@@ -32,14 +32,15 @@ from geom import arcgis_query, point_dist_m, polygon_dist_m  # noqa: E402
 from shapely.geometry import LineString  # noqa: E402
 from shapely.ops import unary_union  # noqa: E402
 import registry                             # noqa: E402
+from tbdi_geo import registry as shared
 
 ROOT = os.path.abspath(os.path.join(HERE, '..', '..'))
-SUBS = 'https://services5.arcgis.com/HDRa0B57OVrv2E1q/ArcGIS/rest/services/Electric_Substations/FeatureServer/0'
+SUBS = shared.layer_url('hifld-substations')     # tbdi-geo source registry
 ZCTA = 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/PUMA_TAD_TAZ_UGA_ZCTA/MapServer/1'
-COUNTY = 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1'
+COUNTY = shared.layer_url('census-tigerweb')
 GEOCODER = 'https://geocoding.geo.census.gov/geocoder/locations/onelineaddress'
 NOMINATIM = 'https://nominatim.openstreetmap.org/search'
-ROADS = 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Transportation/MapServer'
+ROADS = shared.base('census-tigerweb-transport')
 ROAD_LAYERS = (2, 6, 8)       # primary, secondary, local
 NAME = 'locate'
 FIPS = {'AL': '01', 'AK': '02', 'AZ': '04', 'AR': '05', 'CA': '06', 'CO': '08', 'CT': '09', 'DE': '10', 'DC': '11', 'FL': '12', 'GA': '13',

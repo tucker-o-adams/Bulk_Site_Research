@@ -25,9 +25,10 @@ from datetime import datetime, timezone
 from geom import arcgis_query, geojson_polygon_dist_m
 from provenance import Value, absent, failed, now_iso
 from cache import coord_key
+from tbdi_geo import registry as shared
 
 NAME = 'flood'
-NFHL = 'https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer'
+NFHL = shared.base('fema-nfhl')                  # tbdi-geo source registry
 LYR = NFHL
 SOURCE = 'FEMA National Flood Hazard Layer (NFHL)'
 VINTAGE = None                      # per site: the effective FIRM panel date

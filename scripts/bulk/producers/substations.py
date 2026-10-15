@@ -18,10 +18,10 @@ from datetime import datetime, timezone
 from cache import coord_key
 from geom import arcgis_query, point_dist_m
 from provenance import Value, absent, failed, now_iso
+from tbdi_geo import registry as shared
 
 NAME = 'substations'
-LYR = ('https://services5.arcgis.com/HDRa0B57OVrv2E1q/ArcGIS/rest/services/'
-       'Electric_Substations/FeatureServer/0')
+LYR = shared.layer_url('hifld-substations')     # tbdi-geo source registry
 SOURCE = 'HIFLD Electric Substations (ArcGIS mirror of retired HIFLD Open)'
 VINTAGE = '2021-02-25'          # layer editingInfo.dataLastEditDate, checked 2026-09-21
 RADIUS_M = 15000
