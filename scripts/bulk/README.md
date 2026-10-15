@@ -245,7 +245,7 @@ Python 3.12. `python -m venv .venv_fema` then `.venv_fema/Scripts/pip install -r
 environment the Aug 2026 FEMA figure work used.
 
 **tbdi-geo** (also in `requirements-bulk.txt`, pinned to a tag of the private repo
-`tucker-o-adams/tbdi-geo`) is what this pipeline shares with tbdi-pasa since 2026-10-15: the source
+`tucker-o-adams/Unified_site_analysis_suite`) is what this pipeline shares with tbdi-pasa since 2026-10-15: the source
 registry the producers read their layer URLs from, the county parcel registry (`registry.py` reads it,
 with `data/reference/county-services.json` as this repo's overlay of reviewed entries not yet released),
 and the paging of capped ArcGIS answers (`cache.py`). Change those in tbdi-geo, release, and bump the pin
