@@ -38,3 +38,9 @@ TPDS site data/
 Outputs/tpds-texas-test1/
 test_1_results.md
 design_incomplete_inputs.md
+
+# --- TPDS / Amrize program: client parcels, outputs and agreements; not in git ---
+Outputs/amrize-usa/
+Outputs/amrize-usa-sample50/
+Outputs/amrize-va-001/
+Reference/TPDS Trinity/
