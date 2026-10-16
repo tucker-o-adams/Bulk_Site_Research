@@ -9,12 +9,11 @@ authoritative for K-12. Colleges are not included.
 from cache import coord_key
 from geom import arcgis_query
 from provenance import Value, absent, failed, now_iso
-from producers.pointsets import score_points, counts
-from tbdi_geo import registry as shared
+from producers.pointsets import ONE_MI, counts, layer, score_points
 
 NAME = 'schools'
-PUB = shared.layer_url('nces-schools-public')    # tbdi-geo source registry
-PRV = shared.layer_url('nces-schools-private')
+PUB = layer('school_public')                     # tbdi-geo neighbour kinds
+PRV = layer('school_private')
 LYR = PUB
 SOURCE = 'NCES EDGE school locations (public 2024-25, private 2023-24)'
 VINTAGE = '2024-25 public / 2023-24 private'
@@ -54,5 +53,5 @@ def run(site, cache):
     c5, c1 = counts(scored)
     return [mk('school_nearest_m', round(d)), mk('school_nearest_name', n), mk('school_nearest_type', t),
             mk('school_nearest_city', p.get('CITY')), mk('schools_within_0_5mi', c5), mk('schools_within_1mi', c1),
-            mk('public_schools_within_1mi', sum(1 for s in scored if s[3] == 'public' and s[0] <= 1609.344)),
-            mk('private_schools_within_1mi', sum(1 for s in scored if s[3] == 'private' and s[0] <= 1609.344))]
+            mk('public_schools_within_1mi', sum(1 for s in scored if s[3] == 'public' and s[0] <= ONE_MI)),
+            mk('private_schools_within_1mi', sum(1 for s in scored if s[3] == 'private' and s[0] <= ONE_MI))]

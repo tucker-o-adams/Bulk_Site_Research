@@ -33,8 +33,8 @@ Three ways to ask a service for the polygon at a point (`service.protocol`):
   * `wms`      OGC WMS `GetFeatureInfo` as JSON, for a GeoServer that publishes
                parcels "view only or through OGC WMS" (OKMaps). One request per
                site, never a harvest.
-Building the request (except `query`'s URL, kept here for its 1 cm geometry precision), reading any
-protocol's answer and picking the parcel under the pin are tbdi-geo's `parcels` (shared with tbdi-pasa).
+Building the request, reading any protocol's answer and picking the parcel under the pin are tbdi-geo's
+`parcels` (shared with tbdi-pasa).
 A service may name a `vintage` field: statewide layers are compiled from counties
 refreshed at different times, so the county's own date beats the layer's.
 
@@ -78,11 +78,8 @@ EXPECTED_OWNER = None
 
 def request_url(svc, la, ln):
     """The URL that asks a registered service for the polygon at one point, by its protocol (tbdi-geo parcels).
-    `query` keeps this repo's own URL: geometryPrecision=7 rounds the returned boundary to ~1 cm, and acreage is
-    measured on that boundary, so a fresh fetch matches what earlier batches measured."""
-    if svc.get('protocol', 'query') == 'query':
-        return arcgis_query(f"{svc['base']}/{svc['layer']}", la, ln, '*', geometry=True, fmt='geojson', precision=7)
-    return parcels.request_url(svc, ln, la)
+    precision=7 (query only) rounds the returned boundary to ~1 cm; acreage is measured on that boundary."""
+    return parcels.request_url(svc, ln, la, precision=7)
 
 
 def features(resp, svc):

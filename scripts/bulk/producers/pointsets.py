@@ -3,8 +3,19 @@
 point features: schools, places of worship, healthcare. Each producer names
 its sources; this does the distance work and the counts."""
 from geom import point_dist_m
+from tbdi_geo import registry as shared
+from tbdi_geo import rules
 
-HALF_MI, ONE_MI = 804.672, 1609.344
+# The report rings are tbdi-geo's (rules.NEIGHBOUR_RINGS_MI); the field names (*_within_0_5mi, *_within_1mi) are
+# this repo's, so a ring tbdi-geo changes fails here at import, not as a mislabelled count.
+assert rules.NEIGHBOUR_RINGS_MI == (0.5, 1.0), rules.NEIGHBOUR_RINGS_MI
+HALF_MI, ONE_MI = (r * 1609.344 for r in rules.NEIGHBOUR_RINGS_MI)
+
+
+def layer(kind):
+    """The layer URL tbdi-geo names for a neighbour kind (rules.NEIGHBOURS: home, school_public, worship ...)."""
+    sid, lyr = next((s, ly) for k, _, s, ly, _, _ in rules.NEIGHBOURS if k == kind)
+    return shared.layer_url(sid, lyr)
 
 
 def score_points(features, lat, lng, name_fn):

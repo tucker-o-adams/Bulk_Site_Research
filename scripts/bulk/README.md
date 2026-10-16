@@ -248,26 +248,27 @@ environment the Aug 2026 FEMA figure work used.
 `tucker-o-adams/Unified_site_analysis_suite`) is what this pipeline shares with tbdi-pasa since 2026-10-15: the source
 registry the producers read their layer URLs from, the county parcel registry (`registry.py` reads it,
 with `data/reference/county-services.json` as this repo's overlay of reviewed entries not yet released),
-and the paging of capped ArcGIS answers (`cache.py`). Since 0.2.0 (2026-10-16) it also holds the parcel
-protocols and the small rules both tools apply to the same sources, and this pipeline uses them in place of
-its own copies:
+and the paging of capped ArcGIS answers (`cache.py`). Since 0.2.0 (2026-10-16; pinned 0.2.1) it also holds
+the parcel protocols and the small rules both tools apply to the same sources, and this pipeline uses them in
+place of its own copies:
 
 | Here | tbdi-geo |
 |---|---|
-| `producers/parcel.py` request (`identify`, `wms`), answer reading, parcel under the pin, `NEAR_M`, `as_date` | `parcels.request_url`, `features`, `at_point`, `distance_m`, `NEAR_M`, `as_date` |
+| `producers/parcel.py` requests (all three protocols; `query` asks `precision=7`), answer reading, parcel under the pin, `NEAR_M`, `as_date` | `parcels.request_url`, `features`, `at_point`, `distance_m`, `NEAR_M`, `as_date` |
 | `group_parcels.py` `label` (the sjoin stays here) | `parcels.components` |
 | `producers/footprint.py` zone order, `zone_label`, `zone_key`, `HAZARD_ZONES`, `is_sfha`; `producers/flood.py` SFHA test | `rules.ZONE_ORDER`, `zone_label`, `zone_key`, `HAZARD_KEYS`, `is_sfha`, `SFHA_ZONES` |
 | `producers/utility.py` serving-utility choice, `RETAIL_CHOICE`, `OUT`, price basis | `rules.serving_utility`, `RETAIL_CHOICE`, `UTILITY_FIELDS`, `price_basis` |
 | `producers/hazards.py` `HAZARDS` | `rules.NRI_HAZARDS` |
 | `producers/superfund.py` 1 mi / 0.5 mi, deleted test | `rules.NPL_SEARCH_MI`, `npl_is_deleted` |
-| `producers/wetlands.py` `STALE_BEFORE` | `rules.STALE_BEFORE` |
+| `producers/wetlands.py` `STALE_BEFORE`, `stale_note` | `rules.STALE_BEFORE`, `stale_note` |
+| `producers/pointsets.py` count rings (0.5 mi, 1 mi); `schools.py`, `worship.py`, `homes.py` layers | `rules.NEIGHBOUR_RINGS_MI`; `rules.NEIGHBOURS` source ids and layers |
 | `basemap.py` NAIP's `cleared_for`, the audience test | registry `usgs-naip` `cleared_for`, `rules.cleared`, `AUDIENCES` |
 
-Kept here on purpose, because tbdi-geo's version would change an output: the `query` parcel URL
-(`geometryPrecision=7`, which tbdi-geo's request lacks; acreage is measured on the returned boundary), and
-`wetlands.stale_note` (tbdi-geo's wording differs, `--` for `-`, and it also flags a year given as text).
-Geocoding (`geocode.py`, the Census batch geocoder) and the CMS files (`data/reference/cms_*.csv`) also stay:
-tbdi-geo's are the one-line geocoder and live CMS services, different sources rather than copies.
+Kept here on purpose, because tbdi-geo's would change an answer or is a different source: the 5 km search for
+the nearest neighbor (tbdi-geo's `NEIGHBOUR_SEARCH_MI` is 3 mi), the neighbor labels, homes' Unclassified size
+rule (a product profile's), geocoding (`geocode.py`, the Census batch geocoder; tbdi-geo has the one-line
+service) and the CMS files (`data/reference/cms_*.csv`, built from CMS itself; tbdi-geo has a hosted copy and
+CMS's API).
 
 Change shared code in tbdi-geo, release, and bump the pin here and in tbdi-pasa. Working across both,
 install the checkout editable instead: `.venv_fema/Scripts/pip install -e ../tbdi-geo`.

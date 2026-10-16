@@ -41,12 +41,8 @@ NOTE = 'NWI is photointerpreted, not a jurisdictional determination; acres are w
 STALE_BEFORE = rules.STALE_BEFORE   # imagery older than this gets the stale-mapping note (tbdi-geo rules)
 
 
-def stale_note(year):
-    """The stale-mapping caveat for an imagery year, or None when the mapping is recent enough (or undated)."""
-    if isinstance(year, int) and year < STALE_BEFORE:
-        return (f'STALE MAPPING: NWI here is interpreted from {year} imagery (before {STALE_BEFORE}); '
-                'confirm against current imagery before relying on it - review, not a knockout')
-    return None
+# The stale-mapping caveat for an imagery year, or None when the mapping is recent enough (or undated)
+stale_note = rules.stale_note
 
 
 FIELDS = ['nwi_mapping_status', 'nwi_image_year', 'nwi_mapping_age_years', 'nwi_project', 'nwi_at_point', 'nwi_type_at_point',

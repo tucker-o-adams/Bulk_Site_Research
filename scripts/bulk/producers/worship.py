@@ -10,11 +10,10 @@ on the fragile list (BACKLOG.md) with OpenStreetMap as the fallback.
 from cache import coord_key
 from geom import arcgis_query
 from provenance import Value, absent, failed, now_iso
-from producers.pointsets import score_points, counts
-from tbdi_geo import registry as shared
+from producers.pointsets import counts, layer, score_points
 
 NAME = 'worship'
-LYR = shared.layer_url('hifld-worship')         # tbdi-geo source registry
+LYR = layer('worship')                          # tbdi-geo neighbour kinds
 SOURCE = 'HIFLD All Places of Worship (ArcGIS mirror; IRS 501(c)(3) geocodes)'
 VINTAGE = '2025-03-24'
 SEARCH_M = 5000

@@ -34,10 +34,10 @@ from cache import coord_key
 from geom import arcgis_envelope_query
 from provenance import Value, absent, failed, now_iso
 import product_profile as prof
-from tbdi_geo import registry as shared
+from producers.pointsets import layer
 
 NAME = 'homes'
-LYR = shared.layer_url('fema-usa-structures')   # tbdi-geo source registry
+LYR = layer('home')                             # tbdi-geo neighbour kinds (the where clause and size rules are ours)
 SOURCE = 'FEMA USA Structures (OCC_CLS Residential, or Unclassified as a possible home)'
 VINTAGE = None                   # per site: the imagery years of the homes found
 CLASSES = ('Residential', 'Unclassified')
