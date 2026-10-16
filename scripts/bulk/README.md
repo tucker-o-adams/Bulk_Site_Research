@@ -271,7 +271,7 @@ service) and the CMS files (`data/reference/cms_*.csv`, built from CMS itself; t
 CMS's API).
 
 Change shared code in tbdi-geo, release, and bump the pin here and in tbdi-pasa. Working across both,
-install the checkout editable instead: `.venv_fema/Scripts/pip install -e ../tbdi-geo`.
+install the checkout editable instead: `.venv_fema/Scripts/pip install -e ../TBDI_Site_Research_Master`.
 
 ## Checks
 
