@@ -26,13 +26,14 @@ from geom import arcgis_query, geojson_polygon_dist_m
 from provenance import Value, absent, failed, now_iso
 from cache import coord_key
 from tbdi_geo import registry as shared
+from tbdi_geo import rules
 
 NAME = 'flood'
 NFHL = shared.base('fema-nfhl')                  # tbdi-geo source registry
 LYR = NFHL
 SOURCE = 'FEMA National Flood Hazard Layer (NFHL)'
 VINTAGE = None                      # per site: the effective FIRM panel date
-SFHA_ZONES = {'A', 'AE', 'AH', 'AO', 'AR', 'A99', 'V', 'VE'}
+SFHA_ZONES = rules.SFHA_ZONES
 SFHA_SEARCH_M = 1000
 METHOD = (f'NFHL L28 Flood Hazard Zones within {SFHA_SEARCH_M} m of the point (geometry simplified to ~2 m): '
           'zone = polygon containing the point; nearest SFHA polygon by exact point-to-polygon distance; '
@@ -83,7 +84,7 @@ def run(site, cache):
         d = geojson_polygon_dist_m(f.get('geometry'), ln, la)
         if d == 0.0 and at_point is None:
             at_point = p
-        if (p.get('SFHA_TF') or '').upper() == 'T' or p.get('FLD_ZONE') in SFHA_ZONES:
+        if rules.is_sfha(p.get('FLD_ZONE'), p.get('SFHA_TF')):
             if nearest_sfha is None or d < nearest_sfha[0]:
                 nearest_sfha = (d, p.get('FLD_ZONE'))
     zone = at_point or {}
@@ -127,7 +128,7 @@ def run(site, cache):
         bfe = zone.get('STATIC_BFE')
         bfe = None if bfe is None or float(bfe) <= -9999 else float(bfe)
         out += [mk('fema_flood_zone', z), mk('fema_zone_subtype', zone.get('ZONE_SUBTY')),
-                mk('fema_sfha', (zone.get('SFHA_TF') or '').upper() == 'T' or z in SFHA_ZONES),
+                mk('fema_sfha', rules.is_sfha(z, zone.get('SFHA_TF'))),
                 mk('fema_static_bfe_ft', bfe), mk('fema_dfirm_id', dfirm)]
     else:
         why = {'area_not_included': 'FEMA carries this point as Area Not Included on the effective FIRM (L22 ANI_TF=T); no flood determination exists',

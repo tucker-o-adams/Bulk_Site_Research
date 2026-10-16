@@ -29,6 +29,7 @@ import pandas as pd
 from shapely.geometry import MultiPolygon, Polygon, mapping
 from shapely.ops import unary_union
 from shapely.validation import make_valid
+from tbdi_geo import parcels
 
 K = '{http://www.opengis.net/kml/2.2}'
 SQM_PER_ACRE = 4046.8564
@@ -64,21 +65,14 @@ def read_kmz(path):
 
 
 def label(g, gap):
-    """Connected components of 'within gap metres'. g is in a metric CRS. Returns a component number per row."""
+    """Connected components of 'within gap metres'. g is in a metric CRS. Returns a component number per row.
+    The grouping is tbdi-geo's parcels.components; the geometry test (an sjoin) stays here."""
     # only one side is buffered, so by the full gap (+0.5 m: shared edges digitized a hair apart still touch)
     near = gpd.sjoin(g[['geometry']], g[['geometry']].set_geometry(g.buffer(gap + 0.5)), predicate='intersects')
-    parent = list(range(len(g)))
-
-    def find(i):
-        while parent[i] != i:
-            parent[i] = parent[parent[i]]
-            i = parent[i]
-        return i
-    for a, b in zip(near.index, near.index_right):
-        ra, rb = find(a), find(b)
-        if ra != rb:
-            parent[ra] = rb
-    return pd.Series([find(i) for i in range(len(g))], index=g.index)
+    pos = {ix: i for i, ix in enumerate(g.index)}
+    pairs = {(pos[a], pos[b]) for a, b in zip(near.index, near.index_right)}
+    comp = parcels.components(len(g), lambda i, j: (i, j) in pairs or (j, i) in pairs)
+    return pd.Series(comp, index=g.index)
 
 
 def join(values, limit=None):

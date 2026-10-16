@@ -29,10 +29,12 @@ Three honest limits, carried on every row:
 Three ways to ask a service for the polygon at a point (`service.protocol`):
   * `query`    (default) ArcGIS layer `/query`, returned as GeoJSON.
   * `identify` ArcGIS MapServer `/identify`, for a service that disables `/query`
-               (TxGIO StratMap). Esri rings are converted to GeoJSON here.
+               (TxGIO StratMap). Esri rings are converted to GeoJSON by tbdi-geo.
   * `wms`      OGC WMS `GetFeatureInfo` as JSON, for a GeoServer that publishes
                parcels "view only or through OGC WMS" (OKMaps). One request per
                site, never a harvest.
+Building the request (except `query`'s URL, kept here for its 1 cm geometry precision), reading any
+protocol's answer and picking the parcel under the pin are tbdi-geo's `parcels` (shared with tbdi-pasa).
 A service may name a `vintage` field: statewide layers are compiled from counties
 refreshed at different times, so the county's own date beats the layer's.
 
@@ -42,12 +44,12 @@ given by `run.py --expected-owner` or an `expected_owner` input column. For a
 portfolio batch the owner of record is the cheapest evidence that the pin landed
 on the right parcel; anything else is flagged for a person to look at.
 """
-import math, re, urllib.parse
-from datetime import datetime, timezone
+import math, re
 from cache import coord_key
-from geom import arcgis_query, geojson_polygon_dist_m, ring_contains
+from geom import arcgis_query
 from provenance import Value, absent, failed, now_iso
 import registry
+from tbdi_geo import parcels
 from tbdi_geo import registry as shared
 
 NAME = 'parcel'
@@ -64,12 +66,10 @@ FIELDS = ['parcel_county', 'parcel_county_geoid', 'parcel_source_scope', 'parcel
           'parcel_apn', 'parcel_owner', 'parcel_address', 'parcel_acres_gis', 'parcel_acres_stated_by_county',
           'parcel_acres_input', 'parcel_apn_matches_input', 'parcel_owner_check', 'parcel_vertices', 'parcel_use', 'parcel_status']
 
-# A returned polygon that does not contain the pin is accepted only this close to it - a WMS pixel
-# tolerance (OKMaps returned VIANOK05's parcel 0.6 m off the pin; a GetFeatureInfo pixel is ~1 m) -
-# and says so in its note. Not more: a geocoded pin sits on the street centreline, and in NJ testing
-# the nearest parcel to "2 Broad St, Bloomfield" (13 m) was the neighbour, the right one 15.9 m away.
-# Street-centreline pins need an address match (BACKLOG parcel approach D), not a bigger radius.
-NEAR_M = 2
+# A returned polygon that does not contain the pin is accepted only within tbdi-geo's parcels.NEAR_M (2 m, a WMS
+# pixel) and says so in its note. Not more: a geocoded pin sits on the street centreline. Street-centreline pins
+# need an address match (BACKLOG parcel approach D), not a bigger radius.
+NEAR_M = parcels.NEAR_M
 
 # Regex for the owner a portfolio's parcels should carry; set by run.py --expected-owner.
 # An `expected_owner` column in the input CSV overrides it per site.
@@ -77,56 +77,20 @@ EXPECTED_OWNER = None
 
 
 def request_url(svc, la, ln):
-    """The URL that asks a registered service for the polygon at one point, by its protocol."""
-    proto = svc.get('protocol', 'query')
-    if proto == 'identify':
-        d = 0.001
-        return (f"{svc['base']}/identify?f=json&geometryType=esriGeometryPoint&sr=4326&tolerance=0"
-                f"&layers=all:{svc['layer']}&returnGeometry=true&geometry={ln},{la}"
-                f"&mapExtent={ln - d},{la - d},{ln + d},{la + d}&imageDisplay=400,400,96")
-    if proto == 'wms':
-        d = 0.0005                     # GeoServer answers only at a street-level scale
-        lyr = urllib.parse.quote(str(svc['layer']))
-        return (f"{svc['base']}?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo&SRS=EPSG:4326"
-                f"&BBOX={ln - d},{la - d},{ln + d},{la + d}&WIDTH=101&HEIGHT=101&X=50&Y=50"
-                f"&LAYERS={lyr}&QUERY_LAYERS={lyr}&STYLES=&INFO_FORMAT=application/json&FEATURE_COUNT=5")
-    return arcgis_query(f"{svc['base']}/{svc['layer']}", la, ln, '*', geometry=True, fmt='geojson', precision=7)
-
-
-def esri_polygon(g):
-    """Esri JSON rings -> GeoJSON Polygon/MultiPolygon. Esri outer rings run clockwise, holes counter-clockwise."""
-    polys = []
-    for r in (g or {}).get('rings') or []:
-        r = [(p[0], p[1]) for p in r]
-        signed = sum(x1 * y2 - x2 * y1 for (x1, y1), (x2, y2) in zip(r, r[1:]))
-        if signed <= 0 or not polys:
-            polys.append([r])
-        else:
-            polys[-1].append(r)
-    if not polys:
-        return {}
-    return {'type': 'Polygon', 'coordinates': polys[0]} if len(polys) == 1 else {'type': 'MultiPolygon', 'coordinates': polys}
+    """The URL that asks a registered service for the polygon at one point, by its protocol (tbdi-geo parcels).
+    `query` keeps this repo's own URL: geometryPrecision=7 rounds the returned boundary to ~1 cm, and acreage is
+    measured on that boundary, so a fresh fetch matches what earlier batches measured."""
+    if svc.get('protocol', 'query') == 'query':
+        return arcgis_query(f"{svc['base']}/{svc['layer']}", la, ln, '*', geometry=True, fmt='geojson', precision=7)
+    return parcels.request_url(svc, ln, la)
 
 
 def features(resp, svc):
-    """GeoJSON-style features from any protocol's response."""
-    if svc.get('protocol') == 'identify':
-        return [{'geometry': esri_polygon(r.get('geometry')), 'properties': r.get('attributes') or {}}
-                for r in (resp or {}).get('results') or [] if r.get('layerId') == svc['layer']]
-    return (resp or {}).get('features') or []
+    """GeoJSON-style features from any protocol's response (tbdi-geo parcels)."""
+    return parcels.features(svc, resp)
 
 
-def as_date(v):
-    """A source's date value (epoch ms, '20250201', ISO timestamp, or a year) as an ISO date string."""
-    if v in (None, '', 'Null'):
-        return None
-    if isinstance(v, (int, float)) and v > 1e11:
-        return datetime.fromtimestamp(v / 1000, tz=timezone.utc).date().isoformat()
-    s = str(v).strip()
-    if re.fullmatch(r'\d{8}', s):
-        return f'{s[:4]}-{s[4:6]}-{s[6:]}'
-    m = re.match(r'\d{4}-\d{2}-\d{2}', s)
-    return m.group(0) if m else s
+as_date = parcels.as_date
 
 
 def ring_area_m2(ring):
@@ -157,14 +121,6 @@ def geometry_area_m2(g):
     if g.get('type') == 'MultiPolygon':
         return sum(polygon_area_m2(p) for p in g['coordinates'])
     return 0.0
-
-
-def contains(g, lng, lat):
-    polys = [g['coordinates']] if g.get('type') == 'Polygon' else g.get('coordinates', []) if g.get('type') == 'MultiPolygon' else []
-    for rings in polys:
-        if ring_contains(rings[0], lng, lat) and not any(ring_contains(h, lng, lat) for h in rings[1:]):
-            return True
-    return False
 
 
 def vertices(g):
@@ -239,14 +195,13 @@ def resolve(la, ln, cache):
         return {**r, 'stage': 'parcel_failed', 'error': e2}
     r['fetched_parcel'] = f2
     feats = features(resp, svc)
-    hits = [f for f in feats if contains(f.get('geometry') or {}, ln, la)]
-    if hits:
-        return {**r, 'stage': 'ok', 'feature': hits[0], 'hits': len(hits), 'near_m': None}
-    near = sorted(((geojson_polygon_dist_m(f.get('geometry'), ln, la), i) for i, f in enumerate(feats)
-                   if (f.get('geometry') or {}).get('coordinates')))
-    if near and near[0][0] <= NEAR_M:
-        return {**r, 'stage': 'ok', 'feature': feats[near[0][1]], 'hits': 1, 'near_m': round(near[0][0], 1)}
-    return {**r, 'stage': 'no_polygon', 'nearest_m': round(near[0][0], 1) if near else None}
+    feat, hits, off_m = parcels.at_point(feats, ln, la)
+    if feat is None:
+        return {**r, 'stage': 'no_polygon', 'nearest_m': off_m}
+    # notes give the offset to 0.1 m, measured afresh rather than re-rounding tbdi-geo's 0.01 m
+    d = parcels.distance_m(feat.get('geometry'), ln, la)
+    near_m = round(d, 1) if d > 0 else None
+    return {**r, 'stage': 'ok', 'feature': feat, 'hits': hits, 'near_m': near_m}
 
 
 def run(site, cache):
@@ -286,7 +241,7 @@ def run(site, cache):
     fetched = r['fetched_parcel'] or fetched
     if r['stage'] == 'no_polygon':
         why = f'{svc.get("name")} returned no parcel polygon containing the point' + (
-            f"; the nearest returned polygon is {r['nearest_m']:,.1f} m away (over {NEAR_M} m, so it may be a neighbour - check by hand)"
+            f"; the nearest returned polygon is {r['nearest_m']:,.1f} m away (over {NEAR_M:g} m, so it may be a neighbour - check by hand)"
             if r.get('nearest_m') is not None else '')
         return out + [absent(f, src, url, METHOD, note=why, vintage=vint) for f in FIELDS[2:-1]] + \
             [mk('parcel_status', 'unresolved: no polygon at the point', src, url, vint, why)]
@@ -304,7 +259,7 @@ def run(site, cache):
     except (TypeError, ValueError):
         stated = None
     note = NOTE + (f"; {r['hits']} parcels returned for one point" if r['hits'] > 1 else '') + (
-        f"; the polygon does not contain the pin - it is {r['near_m']} m away (within the {NEAR_M} m tolerance)"
+        f"; the polygon does not contain the pin - it is {r['near_m']} m away (within the {NEAR_M:g} m tolerance)"
         if r.get('near_m') is not None else '') + internal_note(r, cname)
 
     out += [mk('parcel_source_scope', scope, src, url, vint, note),

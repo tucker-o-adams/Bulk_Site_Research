@@ -14,4 +14,4 @@ numpy==2.5.2
 requests==2.34.2
 # What this pipeline shares with tbdi-pasa (2026-10-15): source and county registries, ArcGIS paging.
 # Private repo; installing needs GitHub access. Across both repos: pip install -e ../tbdi-geo
-tbdi-geo @ git+https://github.com/tucker-o-adams/Unified_site_analysis_suite@v0.1.1
+tbdi-geo @ git+https://github.com/tucker-o-adams/Unified_site_analysis_suite@v0.2.0

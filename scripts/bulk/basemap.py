@@ -34,10 +34,11 @@ from rasterio.transform import from_bounds
 
 from cache import UA, coord_key
 from tbdi_geo import registry as shared
+from tbdi_geo import rules
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CACHE = os.path.abspath(os.path.join(HERE, '..', '..', 'data', 'cache'))
-AUDIENCES = ('external', 'internal')
+AUDIENCES = rules.AUDIENCES
 
 
 @dataclass
@@ -133,7 +134,7 @@ def naip_fetch(bounds, epsg, key, res_m, lat, lng, cache):
 # ---------------------------------------------------------------- registry
 PROVIDERS = {
     'naip': Provider('naip', 'USGS NAIP', 'Public domain (USDA Farm Service Agency)',
-                     frozenset({'external', 'internal'}), naip_fetch),
+                     frozenset(shared.source('usgs-naip').get('cleared_for') or ()), naip_fetch),   # licence: tbdi-geo registry
 }
 
 
@@ -144,7 +145,7 @@ def check(name, audience):
     p = PROVIDERS.get(name)
     if p is None:
         raise SystemExit(f'unknown basemap {name!r}; registered: {", ".join(PROVIDERS)}')
-    if audience not in p.cleared_for:
+    if not rules.cleared({'cleared_for': p.cleared_for}, audience):
         raise SystemExit(f'basemap {name!r} ({p.licence}) is not cleared for {audience} use; '
                          f'cleared for: {", ".join(sorted(p.cleared_for))}')
     return p

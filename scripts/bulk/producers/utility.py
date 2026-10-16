@@ -22,17 +22,17 @@ from cache import coord_key
 from geom import arcgis_query
 from provenance import Value, absent, failed, now_iso
 from tbdi_geo import registry as shared
+from tbdi_geo import rules
 
 NAME = 'utility'
-RETAIL_CHOICE = {'CT', 'DC', 'DE', 'IL', 'MA', 'MD', 'ME', 'NH', 'NJ', 'NY', 'OH', 'PA', 'RI', 'TX', 'MI'}
+RETAIL_CHOICE = rules.RETAIL_CHOICE   # tbdi-geo rules
 LYR = shared.layer_url('eia-861-utility-rates')  # tbdi-geo source registry
 SOURCE = 'EIA Form 861 retail service territories and rates (Esri PolicyMap layer)'
 VINTAGE = 'EIA 861, 2024'
 METHOD = ('retail service territory polygons containing the site pin; average revenue per kWh = revenue / sales by '
           'customer class (EIA Form 861)')
 NOTE = 'average paid by all industrial customers in the year, not a large-load tariff; serving utility, not the transmission owner'
-OUT = ('NAME,TYPE,STATE,Shape__Area,CNTRL_AREA,Utility_ID,Indust_Sales_Mwh_2024,Res_Customer_Count_2024,Indust_Electricity_Rate_Nom_2024,'
-       'Indust_Electricity_Rate_Nom_2023,Indust_Electricity_Rate_Nom_2020,Cmrcl_Electricity_Rate_Nom_2024')
+OUT = ','.join(rules.UTILITY_FIELDS)
 FIELDS = ['utility_name', 'utility_type', 'utility_grid_operator', 'utility_eia_id', 'utility_others_at_pin',
           'industrial_cents_kwh_2024', 'industrial_cents_kwh_2023', 'industrial_cents_kwh_2020', 'commercial_cents_kwh_2024',
           'industrial_price_basis']
@@ -53,12 +53,8 @@ def run(site, cache):
     feats = [f['attributes'] for f in (resp or {}).get('features') or []]
     if not feats:
         return [absent(f, SOURCE, LYR, METHOD, note='no retail service territory at the pin') for f in FIELDS]
-    retail = [x for x in feats if (x.get('TYPE') or '').upper() != 'FEDERAL' and (x.get('Indust_Sales_Mwh_2024') or 0) > 0]
-    homes = [x for x in retail if (x.get('Res_Customer_Count_2024') or 0) > 0]
-    pool = homes or retail or feats
-    pool.sort(key=lambda x: x.get('Shape__Area') or float('inf'))      # the most local territory
-    a = pool[0]
-    feats = [a] + [x for x in feats if x is not a]
+    a, others = rules.serving_utility(feats)                            # tbdi-geo rules: the selection above
+    feats = [a] + others
     mk = lambda fld, val: Value(fld, val, SOURCE, LYR, METHOD, vintage=VINTAGE, fetched_at=fetched or now_iso(), note=NOTE)
     out = [mk('utility_name', a.get('NAME')), mk('utility_type', a.get('TYPE')), mk('utility_grid_operator', a.get('CNTRL_AREA')),
            mk('utility_eia_id', a.get('Utility_ID')), mk('utility_others_at_pin', '; '.join(x.get('NAME') or '' for x in feats[1:]))]
@@ -66,7 +62,5 @@ def run(site, cache):
                      ('industrial_cents_kwh_2020', 'Indust_Electricity_Rate_Nom_2020'), ('commercial_cents_kwh_2024', 'Cmrcl_Electricity_Rate_Nom_2024')):
         v = _r(a.get(col))
         out.append(mk(fld, v) if v is not None else absent(fld, SOURCE, LYR, METHOD, note='no sales in that class and year'))
-    st = (site.state or a.get('STATE') or '').upper()[:2]
-    out.append(mk('industrial_price_basis', 'retail-choice state: may be delivery only, not the all-in price' if st in RETAIL_CHOICE
-                  else 'bundled (energy and delivery)'))
+    out.append(mk('industrial_price_basis', rules.price_basis(site.state or a.get('STATE'))))
     return out

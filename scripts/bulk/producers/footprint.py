@@ -35,6 +35,7 @@ from cache import coord_key
 from geom import arcgis_envelope_query, arcgis_query
 from provenance import Value, absent, failed, now_iso
 from producers import flood, parcel, wetlands
+from tbdi_geo import rules
 
 NAME = 'footprint'
 SQUARE_M = 200
@@ -56,11 +57,14 @@ NOTE_NWI = 'NWI is photointerpreted, not a jurisdictional determination'
 
 # one filterable column per flood zone type, % of the footprint (2026-10-08). Overlapping zones are counted once, under
 # the most severe (this order), so the zone columns and fp_flood_pct_unmapped add to 100.
-ZONE_COLS = [('floodway', 'fp_flood_pct_floodway'), ('VE', 'fp_flood_pct_ve'), ('V', 'fp_flood_pct_v'), ('AE', 'fp_flood_pct_ae'),
-             ('AH', 'fp_flood_pct_ah'), ('AO', 'fp_flood_pct_ao'), ('A', 'fp_flood_pct_a'), ('AR', 'fp_flood_pct_ar'),
-             ('A99', 'fp_flood_pct_a99'), ('X levee', 'fp_flood_pct_x_levee'), ('X 0.2%', 'fp_flood_pct_x_500yr'),
-             ('X', 'fp_flood_pct_x_minimal'), ('D', 'fp_flood_pct_d_undetermined'), ('other', 'fp_flood_pct_other')]
-HAZARD_ZONES = {'floodway', 'VE', 'V', 'AE', 'AH', 'AO', 'A', 'AR', 'A99', 'X levee', 'X 0.2%'}   # 1% and 0.2% annual chance
+# The zone keys, their order and which are hazard zones are tbdi-geo's (rules.ZONE_ORDER, rules.HAZARD_KEYS); the
+# column names are this repo's. A key tbdi-geo adds without a column here fails at import, not mid-batch.
+ZONE_COL = {'floodway': 'fp_flood_pct_floodway', 'VE': 'fp_flood_pct_ve', 'V': 'fp_flood_pct_v', 'AE': 'fp_flood_pct_ae',
+            'AH': 'fp_flood_pct_ah', 'AO': 'fp_flood_pct_ao', 'A': 'fp_flood_pct_a', 'AR': 'fp_flood_pct_ar',
+            'A99': 'fp_flood_pct_a99', 'X levee': 'fp_flood_pct_x_levee', 'X 0.2%': 'fp_flood_pct_x_500yr',
+            'X': 'fp_flood_pct_x_minimal', 'D': 'fp_flood_pct_d_undetermined', 'other': 'fp_flood_pct_other'}
+ZONE_COLS = [(k, ZONE_COL[k]) for k in rules.ZONE_ORDER]
+HAZARD_ZONES = rules.HAZARD_KEYS   # 1% and 0.2% annual chance
 FLOOD_FIELDS = (['fp_flood_zones', 'fp_sfha_acres', 'fp_sfha_pct', 'fp_floodway_acres', 'fp_flood_unmapped_acres']
                 + [c for _, c in ZONE_COLS] + ['fp_flood_pct_unmapped', 'fp_flood_pct_any_zone'])
 NWI_FIELDS = ['fp_nwi_acres', 'fp_nwi_pct', 'fp_nwi_types']
@@ -187,23 +191,13 @@ def clip(feats, fp):
 
 
 def zone_label(p):
-    z = (p.get('FLD_ZONE') or '?').strip()
-    sub = (p.get('ZONE_SUBTY') or '').upper()
-    if 'FLOODWAY' in sub:
-        return f'{z} floodway'
-    if z == 'X' and '0.2' in sub:
-        return 'X 0.2%'
-    if z == 'X' and 'LEVEE' in sub:
-        return 'X levee'
-    return z
+    """A readable zone for an NFHL polygon's properties: `AE floodway`, `X 0.2%`, `X levee`, or the zone (tbdi-geo rules)."""
+    return rules.zone_label(p.get('FLD_ZONE'), p.get('ZONE_SUBTY'))
 
 
 def zone_key(p):
-    """The ZONE_COLS key a NFHL polygon belongs to."""
-    lab = zone_label(p)
-    if lab.endswith('floodway'):
-        return 'floodway'
-    return lab if lab in dict(ZONE_COLS) else 'other'
+    """The ZONE_COLS key a NFHL polygon belongs to (tbdi-geo rules)."""
+    return rules.zone_key(p.get('FLD_ZONE'), p.get('ZONE_SUBTY'))
 
 
 def zone_shares(mapped, total_m2):
@@ -223,7 +217,7 @@ def zone_shares(mapped, total_m2):
 
 
 def is_sfha(p):
-    return (p.get('SFHA_TF') or '').upper() == 'T' or p.get('FLD_ZONE') in flood.SFHA_ZONES
+    return rules.is_sfha(p.get('FLD_ZONE'), p.get('SFHA_TF'))
 
 
 def area_ac(parts):

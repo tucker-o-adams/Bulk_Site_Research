@@ -15,6 +15,7 @@ from cache import coord_key
 from geom import arcgis_envelope_query
 from provenance import Value, absent, failed, now_iso
 from tbdi_geo import registry as shared
+from tbdi_geo import rules
 
 NAME = 'superfund'
 LYR = shared.layer_url('epa-superfund-npl')     # tbdi-geo source registry
@@ -23,7 +24,8 @@ VINTAGE = None
 SEARCH_M = 5000
 METHOD = f"EPA NPL site points within the footprint's bounding box grown by {SEARCH_M} m; distance from the footprint edge"
 NOTE = 'NPL sites are points, not boundaries; NPL only (no brownfields or RCRA); 1 mi / 0.5 mi per ASTM E1527-21 search distances'
-ACTIVE_M, DELETED_M = 1609.344, 804.672        # ASTM E1527-21: 1 mile (NPL), 0.5 mile (deleted NPL)
+MI_M = 1609.344
+ACTIVE_M, DELETED_M = rules.NPL_SEARCH_MI['active'] * MI_M, rules.NPL_SEARCH_MI['deleted'] * MI_M   # ASTM E1527-21 (tbdi-geo rules)
 FIELDS = ['npl_on_site', 'npl_active_within_1mi', 'npl_deleted_within_half_mi', 'npl_nearest_m', 'npl_nearest_name',
           'npl_nearest_status']
 
@@ -49,7 +51,7 @@ def run(site, cache):
             x, y = fp['fwd'](*g['coordinates'][:2])
             pts.append((Point(x, y).distance(fp['m']), f.get('properties') or {}))
     pts.sort(key=lambda t: t[0])
-    deleted = lambda p: 'DELETED' in (p.get('Status') or '').upper()
+    deleted = lambda p: rules.npl_is_deleted(p.get('Status'))
     out = [mk('npl_on_site', bool(pts) and pts[0][0] == 0),
            mk('npl_active_within_1mi', sum(1 for dd, p in pts if dd <= ACTIVE_M and not deleted(p))),
            mk('npl_deleted_within_half_mi', sum(1 for dd, p in pts if dd <= DELETED_M and deleted(p)))]

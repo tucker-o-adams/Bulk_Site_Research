@@ -11,6 +11,7 @@ from cache import coord_key
 from geom import arcgis_query
 from provenance import Value, absent, failed, now_iso
 from tbdi_geo import registry as shared
+from tbdi_geo import rules
 
 NAME = 'hazards'
 LYR = shared.layer_url('fema-nri-tracts')       # tbdi-geo source registry
@@ -18,11 +19,7 @@ SOURCE = 'FEMA National Risk Index (census tracts)'
 VINTAGE = None                   # per row: NRI_VER
 METHOD = 'NRI census tract containing the site pin; FEMA risk rating per hazard (relative to all US tracts)'
 NOTE = 'relative ratings (risk vs. other US tracts), not design values; tract at the pin'
-HAZARDS = [('nri_overall', 'RISK_RATNG'), ('nri_tornado', 'TRND_RISKR'), ('nri_strong_wind', 'SWND_RISKR'), ('nri_hail', 'HAIL_RISKR'),
-           ('nri_hurricane', 'HRCN_RISKR'), ('nri_earthquake', 'ERQK_RISKR'), ('nri_wildfire', 'WFIR_RISKR'),
-           ('nri_inland_flooding', 'IFLD_RISKR'), ('nri_coastal_flooding', 'CFLD_RISKR'), ('nri_landslide', 'LNDS_RISKR'),
-           ('nri_ice_storm', 'ISTM_RISKR'), ('nri_winter_weather', 'WNTW_RISKR'), ('nri_lightning', 'LTNG_RISKR'),
-           ('nri_heat_wave', 'HWAV_RISKR'), ('nri_drought', 'DRGT_RISKR')]
+HAZARDS = [(f'nri_{key}', col) for key, _, col in rules.NRI_HAZARDS]   # overall + fourteen hazards (tbdi-geo rules)
 FIELDS = ['nri_tract'] + [f for f, _ in HAZARDS]
 
 

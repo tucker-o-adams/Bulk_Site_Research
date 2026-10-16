@@ -25,6 +25,7 @@ from geom import arcgis_query, geojson_polygon_dist_m
 from provenance import Value, absent, failed, now_iso
 from cache import coord_key
 from tbdi_geo import registry as shared
+from tbdi_geo import rules
 
 NAME = 'wetlands'
 WET = shared.layer_url('usfws-nwi')              # tbdi-geo source registry
@@ -37,7 +38,7 @@ SEARCH_M = 500
 METHOD = (f'NWI point queries: Wetlands polygon at the point; nearest Wetlands polygon within {SEARCH_M} m '
           'by exact point-to-polygon distance (geometry simplified to ~2 m); Wetlands_Status for mapping coverage; Data_Source for imagery year')
 NOTE = 'NWI is photointerpreted, not a jurisdictional determination; acres are whole NWI polygons, not clipped'
-STALE_BEFORE = 2000                 # imagery older than this gets the stale-mapping note
+STALE_BEFORE = rules.STALE_BEFORE   # imagery older than this gets the stale-mapping note (tbdi-geo rules)
 
 
 def stale_note(year):
